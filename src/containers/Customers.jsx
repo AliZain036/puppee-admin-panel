@@ -198,6 +198,8 @@ export default class CoverBanner extends React.Component {
                   <th>Image</th>
                   {/* <th>Image</th> */}
                   <th>Name</th>
+                  <th>Profession</th>
+                  <th>Office</th>
                   <th>Phone Number</th>
                   {/* <th>Date</th> */}
                 </tr>
@@ -212,8 +214,9 @@ export default class CoverBanner extends React.Component {
                     />
                   </td>
                   <td>John Doe</td>
+                  <td>Real Estate Agent</td>
+                  <td>Energy 21 Realtors</td>
                   <td>+1234578</td>
-
                   <td>
                     <button
                       // onClick={() =>

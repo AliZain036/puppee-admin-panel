@@ -32,6 +32,8 @@ import Followers from "./Followers";
 import Following from "./Following";
 import Referal from "./Referal";
 import ViewEvent from "./ViewEvent";
+import ViewReferal from "./ViewReferals";
+
 import Rides from "./Rides";
 class App extends React.Component {
   constructor(props) {
@@ -102,7 +104,13 @@ class App extends React.Component {
                 <Route exact={true} path="/about" component={About} />
                 <Route exact={true} path="/customers" component={Customers} />
                 <Route exact={true} path="/posts" component={Posts} />
+                <Route exact={true} path="/viewposts" component={ViewPosts} />
                 <Route exact={true} path="/events" component={Referal} />
+                <Route
+                  exact={true}
+                  path="/viewReferal"
+                  component={ViewReferal}
+                />
               </Switch>
             </Container>
           </main>

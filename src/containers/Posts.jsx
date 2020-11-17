@@ -170,9 +170,8 @@ export default class CoverBanner extends React.Component {
                   <th>Image </th>
                   <th>Name </th>
                   <th>Description</th>
-                  <th>Beds</th>
-                  <th>Baths</th>
                   <th>Address</th>
+                  <th>Date Posted</th>
                 </tr>
               </thead>
 
@@ -188,9 +187,9 @@ export default class CoverBanner extends React.Component {
                   </td>
                   <td>John Smith</td>
                   <td>Best house with a view</td>
-                  <td>4</td>
-                  <td>5</td>
+
                   <td>Fort St John, BC</td>
+                  <td>27-November-2020</td>
                   <td>
                     <button
                       // onClick={() =>
@@ -204,16 +203,18 @@ export default class CoverBanner extends React.Component {
                     </button>
                   </td>
                   <td>
-                    <button
-                      // onClick={() =>
-                      //   topic.status === "block"
-                      //     ? this.unblockPostHandler(topic.id)
-                      //     : this.blockPostHandler(topic.id)
-                      // }
-                      className={`btn btn-sm btn-success`}
-                    >
-                      View
-                    </button>
+                    <Link to="/viewposts">
+                      <button
+                        // onClick={() =>
+                        //   topic.status === "block"
+                        //     ? this.unblockPostHandler(topic.id)
+                        //     : this.blockPostHandler(topic.id)
+                        // }
+                        className={`btn btn-sm btn-success`}
+                      >
+                        View
+                      </button>
+                    </Link>
                   </td>
                 </tr>
                 <tr>
@@ -227,9 +228,9 @@ export default class CoverBanner extends React.Component {
                   </td>
                   <td>John Smith</td>
                   <td>Best house with a view</td>
-                  <td>4</td>
-                  <td>5</td>
+
                   <td>Fort St John, BC</td>
+                  <td>27-November-2020</td>
                   <td>
                     <button
                       // onClick={() =>
@@ -243,16 +244,18 @@ export default class CoverBanner extends React.Component {
                     </button>
                   </td>
                   <td>
-                    <button
-                      // onClick={() =>
-                      //   topic.status === "block"
-                      //     ? this.unblockPostHandler(topic.id)
-                      //     : this.blockPostHandler(topic.id)
-                      // }
-                      className={`btn btn-sm btn-success`}
-                    >
-                      View
-                    </button>
+                    <Link to="/viewposts">
+                      <button
+                        // onClick={() =>
+                        //   topic.status === "block"
+                        //     ? this.unblockPostHandler(topic.id)
+                        //     : this.blockPostHandler(topic.id)
+                        // }
+                        className={`btn btn-sm btn-success`}
+                      >
+                        View
+                      </button>
+                    </Link>
                   </td>
                 </tr>
                 <tr>
@@ -266,9 +269,9 @@ export default class CoverBanner extends React.Component {
                   </td>
                   <td>John Smith</td>
                   <td>Best house with a view</td>
-                  <td>4</td>
-                  <td>5</td>
+
                   <td>Fort St John, BC</td>
+                  <td>27-November-2020</td>
                   <td>
                     <button
                       // onClick={() =>
@@ -282,16 +285,18 @@ export default class CoverBanner extends React.Component {
                     </button>
                   </td>
                   <td>
-                    <button
-                      // onClick={() =>
-                      //   topic.status === "block"
-                      //     ? this.unblockPostHandler(topic.id)
-                      //     : this.blockPostHandler(topic.id)
-                      // }
-                      className={`btn btn-sm btn-success`}
-                    >
-                      View
-                    </button>
+                    <Link to="/viewposts">
+                      <button
+                        // onClick={() =>
+                        //   topic.status === "block"
+                        //     ? this.unblockPostHandler(topic.id)
+                        //     : this.blockPostHandler(topic.id)
+                        // }
+                        className={`btn btn-sm btn-success`}
+                      >
+                        View
+                      </button>
+                    </Link>
                   </td>
                 </tr>
               </tbody>
