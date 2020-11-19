@@ -139,7 +139,7 @@ export default class CoverBanner extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              <h3>List of Referals</h3>
+              <h3>List of Referrals</h3>
             </div>
             <div className="col-sm-4">
               <div className="input-group">
@@ -179,7 +179,7 @@ export default class CoverBanner extends React.Component {
             <div className="col-sm-4 pull-right mobile-space">
               <Link to="colors/colors-form">
                 <button type="button" className="btn btn-success">
-                  Add new Referal
+                  Add new Referral
                 </button>
               </Link>
             </div>

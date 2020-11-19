@@ -168,7 +168,7 @@ export default class CoverBanner extends React.Component {
                 <tr>
                   <th>Sr. #</th>
                   <th>Image </th>
-                  <th>Name </th>
+                  <th>Posted By </th>
                   <th>Description</th>
                   <th>Address</th>
                   <th>Date Posted</th>

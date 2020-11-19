@@ -198,6 +198,7 @@ export default class CoverBanner extends React.Component {
                   <th>Image</th>
                   {/* <th>Image</th> */}
                   <th>Name</th>
+                  <th>Email</th>
                   <th>Profession</th>
                   <th>Office</th>
                   <th>Phone Number</th>
@@ -214,6 +215,7 @@ export default class CoverBanner extends React.Component {
                     />
                   </td>
                   <td>John Doe</td>
+                  <td>lmn@gmail.com</td>
                   <td>Real Estate Agent</td>
                   <td>Energy 21 Realtors</td>
                   <td>+1234578</td>
