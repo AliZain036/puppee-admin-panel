@@ -26,20 +26,13 @@ export default class CoverBanner extends React.Component {
       responseMessage: "Loading Colors...",
       events: [],
       copyEvents: [],
+      userPosts: [],
     };
   }
   async componentWillMount() {
-    // connectFirebase();
-    // this.fetchBanners();
-    // let allEvents = await getAllOfCollection("MyFeed");
-    // let totalEvents = [];
-    // for (let i = 0; i < allEvents.length; i++) {
-    //   for (let j = 0; j < allEvents[i].Details.length; j++) {
-    //     totalEvents.push(allEvents[i].Details[j]);
-    //   }
-    // }
-    // // console.log(totalEvents);
-    // this.setState({ events: totalEvents, copyEvents: totalEvents });
+    var posts = [];
+    let allPosts = await getAllOfCollection("Posts");
+    this.setState({ userPosts: allPosts });
   }
 
   fetchBanners = () => {
@@ -176,129 +169,51 @@ export default class CoverBanner extends React.Component {
               </thead>
 
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>
-                    {" "}
-                    <img
-                      src="https://i.pinimg.com/originals/66/d9/f5/66d9f5afdc5337d3f9eac362b970c426.jpg"
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                  </td>
-                  <td>John Smith</td>
-                  <td>Best house with a view</td>
+                {this.state.userPosts &&
+                  this.state.userPosts.map((post, index) => {
+                    return (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>
+                          {" "}
+                          <img
+                            src={post.photos[0]}
+                            style={{ width: "50px", height: "50px" }}
+                          />
+                        </td>
+                        <td>{post.caption}</td>
 
-                  <td>Fort St John, BC</td>
-                  <td>27-November-2020</td>
-                  <td>
-                    <button
-                      // onClick={() =>
-                      //   topic.status === "block"
-                      //     ? this.unblockPostHandler(topic.id)
-                      //     : this.blockPostHandler(topic.id)
-                      // }
-                      className={`btn btn-sm btn-danger`}
-                    >
-                      Block
-                    </button>
-                  </td>
-                  <td>
-                    <Link to="/viewposts">
-                      <button
-                        // onClick={() =>
-                        //   topic.status === "block"
-                        //     ? this.unblockPostHandler(topic.id)
-                        //     : this.blockPostHandler(topic.id)
-                        // }
-                        className={`btn btn-sm btn-success`}
-                      >
-                        View
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>
-                    {" "}
-                    <img
-                      src="https://i.pinimg.com/originals/66/d9/f5/66d9f5afdc5337d3f9eac362b970c426.jpg"
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                  </td>
-                  <td>John Smith</td>
-                  <td>Best house with a view</td>
-
-                  <td>Fort St John, BC</td>
-                  <td>27-November-2020</td>
-                  <td>
-                    <button
-                      // onClick={() =>
-                      //   topic.status === "block"
-                      //     ? this.unblockPostHandler(topic.id)
-                      //     : this.blockPostHandler(topic.id)
-                      // }
-                      className={`btn btn-sm btn-danger`}
-                    >
-                      Block
-                    </button>
-                  </td>
-                  <td>
-                    <Link to="/viewposts">
-                      <button
-                        // onClick={() =>
-                        //   topic.status === "block"
-                        //     ? this.unblockPostHandler(topic.id)
-                        //     : this.blockPostHandler(topic.id)
-                        // }
-                        className={`btn btn-sm btn-success`}
-                      >
-                        View
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>
-                    {" "}
-                    <img
-                      src="https://i.pinimg.com/originals/66/d9/f5/66d9f5afdc5337d3f9eac362b970c426.jpg"
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                  </td>
-                  <td>John Smith</td>
-                  <td>Best house with a view</td>
-
-                  <td>Fort St John, BC</td>
-                  <td>27-November-2020</td>
-                  <td>
-                    <button
-                      // onClick={() =>
-                      //   topic.status === "block"
-                      //     ? this.unblockPostHandler(topic.id)
-                      //     : this.blockPostHandler(topic.id)
-                      // }
-                      className={`btn btn-sm btn-danger`}
-                    >
-                      Block
-                    </button>
-                  </td>
-                  <td>
-                    <Link to="/viewposts">
-                      <button
-                        // onClick={() =>
-                        //   topic.status === "block"
-                        //     ? this.unblockPostHandler(topic.id)
-                        //     : this.blockPostHandler(topic.id)
-                        // }
-                        className={`btn btn-sm btn-success`}
-                      >
-                        View
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
+                        <td>{post.creatorOffice}</td>
+                        <td>27-November-2020</td>
+                        <td>
+                          <button
+                            // onClick={() =>
+                            //   topic.status === "block"
+                            //     ? this.unblockPostHandler(topic.id)
+                            //     : this.blockPostHandler(topic.id)
+                            // }
+                            className={`btn btn-sm btn-danger`}
+                          >
+                            Block
+                          </button>
+                        </td>
+                        <td>
+                          <Link to={`/viewposts/${post.id}`}>
+                            <button
+                              // onClick={() =>
+                              //   topic.status === "block"
+                              //     ? this.unblockPostHandler(topic.id)
+                              //     : this.blockPostHandler(topic.id)
+                              // }
+                              className={`btn btn-sm btn-success`}
+                            >
+                              View
+                            </button>
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>

@@ -1,2 +1,2 @@
-# clobber swap admin-dashboard
-git repo containing clobber swap admin dashboard
+# Easy-Q-dashboard
+git repo containing Easy-Q admin dashboard

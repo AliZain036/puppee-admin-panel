@@ -1,23 +1,20 @@
 import firebase from "firebase";
 // import firestore from "firebase/firestore";
+var firebaseConfig = {
+  apiKey: "AIzaSyCQYSdtrJWnPWm0q068qUuLVIi1Duk7VH8",
+  authDomain: "network-desk.firebaseapp.com",
+  databaseURL: "https://network-desk.firebaseio.com",
+  projectId: "network-desk",
+  storageBucket: "network-desk.appspot.com",
+  messagingSenderId: "1018298334222",
+  appId: "1:1018298334222:web:42aaf475a1152492fa905f",
+  measurementId: "G-RW0G7FEPGT",
+};
+var fire = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-export async function connectFirebase() {
-  const firebaseConfig = {
-    apiKey: "AIzaSyBsM59wDDpCg9JQf9Q7Bk44F93vSCIBy70",
-    authDomain: "streetdrive-cb4a0.firebaseapp.com",
-    databaseURL: "https://streetdrive-cb4a0.firebaseio.com",
-    projectId: "streetdrive-cb4a0",
-    storageBucket: "streetdrive-cb4a0.appspot.com",
-    messagingSenderId: "886526762142",
-    appId: "1:886526762142:web:5e1eb873d29ce6af61af8f",
-    measurementId: "G-WB52GLTFJE",
-  };
-  // Initialize Firebase
-  if (!firebase.apps.length) {
-    console.log("FIREBASE CONNECTED!!!");
-    firebase.initializeApp(firebaseConfig);
-  }
-}
+export async function connectFirebase() {}
 
 export async function getUserId() {
   let userid = "";
@@ -38,6 +35,16 @@ export async function getAllOfCollection(collection) {
     }
   });
   return data;
+}
+
+export async function getDataWithoutDoc(collection, objectKey) {
+  let data = [];
+  let user = await firebase
+    .firestore()
+    .collection(collection)
+    .doc()
+    .get(objectKey);
+  return user;
 }
 
 export function getData(collection, doc, objectKey) {

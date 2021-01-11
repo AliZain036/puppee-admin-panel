@@ -20,31 +20,7 @@ export default class Area extends React.Component {
       programs: [],
     };
   }
-  componentWillMount() {
-    axios
-      .get(`${API_END_POINT}/api/v1/exercise`)
-      .then((response) => {
-        this.setState({
-          exercises: response.data.data,
-          loading: false,
-          responseMessage: "No Exercise Found",
-        });
-      })
-      .catch((err) => {
-        console.log("error fetching data");
-      });
-    axios
-      .get(`${API_END_POINT}/api/v1/program`)
-      .then((response) => {
-        this.setState({
-          programs: response.data.program_set,
-          responseMessage: "No Programs Found...",
-        });
-      })
-      .catch((err) => {
-        console.log("error fetching data");
-      });
-  }
+  componentWillMount() {}
 
   render() {
     const { exercises, programs } = this.state;

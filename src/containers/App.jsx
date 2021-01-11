@@ -49,14 +49,15 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    const { dispatch, history } = this.props;
-    const token = Cookie.get("clobberswap_access_token");
+    // const { dispatch, history } = this.props;
+    // const token = Cookie.get("clobberswap_access_token");
     // if (token) {
     //   axios.defaults.headers.common.Authorization = `${token}`;
     //   this.setState({ loading: false });
     // } else {
     //   history.push("/");
     // }
+    // alert("IT is coming here");
   }
 
   render() {
@@ -69,7 +70,6 @@ class App extends React.Component {
             <Breadcrumb />
             <Container fluid>
               <Switch>
-                <Route exact={true} path="/" component={Stats} />
                 <Route
                   exact={true}
                   path="/userdetails/:userId"
@@ -104,13 +104,18 @@ class App extends React.Component {
                 <Route exact={true} path="/about" component={About} />
                 <Route exact={true} path="/customers" component={Customers} />
                 <Route exact={true} path="/posts" component={Posts} />
-                <Route exact={true} path="/viewposts" component={ViewPosts} />
+                <Route
+                  exact={true}
+                  path="/viewposts/:postId"
+                  component={ViewPosts}
+                />
                 <Route exact={true} path="/events" component={Referal} />
                 <Route
                   exact={true}
                   path="/viewReferal"
                   component={ViewReferal}
                 />
+                <Route exact={true} path="/" component={Stats} />
               </Switch>
             </Container>
           </main>
