@@ -26,46 +26,32 @@ export default class CoverBanner extends React.Component {
       responseMessage: "Loading Colors...",
       events: [],
       copyEvents: [],
+      transactions: [],
+      copyTransactions: [],
     };
   }
   async componentWillMount() {
-    connectFirebase();
-    this.fetchBanners();
-
-    let allEvents = await getAllOfCollection("Events");
-    this.setState({ events: allEvents, copyEvents: allEvents });
+    let allUsers = await getAllOfCollection("Users");
+    this.setState({ allUsers: allUsers });
+    let allTransactions = await getAllOfCollection("Transactions");
+    console.log("THis is", allTransactions);
+    this.setState({
+      transactions: allTransactions,
+      copyTransactions: allTransactions,
+    });
   }
 
-  fetchBanners = () => {
-    axios
-      .get(`${API_END_POINT}/api/show-colors`, {
-        headers: { "auth-token": token },
-      })
-      .then((response) => {
-        console.log(response);
-        this.setState({
-          brands: response.data.colors,
-          pages: Math.ceil(response.data.colors.length / 10),
-          responseMessage: "No Colors Found...",
-        });
-      });
+  getUserByIDorEmail = (id) => {
+    // console.log("This is email", id);
+    // console.log("These arre al users", this.state.allUsers);
+    var myUser = "";
+    this.state.allUsers.map((user) => {
+      if (user.id === id || user.email === id) {
+        myUser = user;
+      }
+    });
+    return myUser;
   };
-
-  // const requestParams = {
-  //   "userId": userId,
-  // }
-
-  deleteBrand(brandId, index) {
-    if (confirm("Are you sure you want to delete this item?")) {
-      axios
-        .post(`${API_END_POINT}/api/delete-color`, { color_id: brandId })
-        .then((response) => {
-          const brands = this.state.brands.slice();
-          brands.splice(index, 1);
-          this.setState({ brands });
-        });
-    }
-  }
 
   handleSelect(page) {
     axios.get(`/api/area?offset=${(page - 1) * 10}`).then((response) => {
@@ -76,52 +62,23 @@ export default class CoverBanner extends React.Component {
     });
   }
 
-  handleSearch() {
-    const { q } = this.state;
-    if (q.length) {
-      this.setState({
-        loading: true,
-        brands: [],
-        responseMessage: "Loading Colors...",
-      });
-      axios
-        .get(`${API_END_POINT}/api/brands/search`, {
-          params: { searchWord: this.state.q },
-          headers: { "auth-token": token },
-        })
-        .then((response) => {
-          this.setState({
-            brands: response.data.searchedItems,
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        })
-        .catch(() => {
-          this.setState({
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        });
-    }
-  }
-
   async FilterFn(text) {
     if (text !== "") {
-      let newData = this.state.events.filter(function (item) {
-        let itemData = item.eventName
-          ? item.eventName.toUpperCase()
+      let newData = this.state.transactions.filter(function (item) {
+        let itemData = item.clientName
+          ? item.clientName.toUpperCase()
           : "".toUpperCase();
         let textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
 
       this.setState({
-        events: newData,
+        transactions: newData,
         isSearching: true,
       });
     } else {
       this.setState({
-        events: this.state.copyEvents,
+        transactions: this.state.copyTransactions,
         isSearching: false,
       });
     }
@@ -158,11 +115,11 @@ export default class CoverBanner extends React.Component {
                   //     }
                   //   })
                   // }
-                  onKeyPress={(event) => {
-                    if (event.key === "Enter") {
-                      this.handleSearch();
-                    }
-                  }}
+                  // onKeyPress={(event) => {
+                  //   if (event.key === "Enter") {
+                  //     this.handleSearch();
+                  //   }
+                  // }}
                 />
                 <span className="input-group-btn">
                   <button
@@ -176,13 +133,13 @@ export default class CoverBanner extends React.Component {
               </div>
             </div>
 
-            <div className="col-sm-4 pull-right mobile-space">
+            {/* <div className="col-sm-4 pull-right mobile-space">
               <Link to="colors/colors-form">
                 <button type="button" className="btn btn-success">
                   Add new Referral
                 </button>
               </Link>
-            </div>
+            </div> */}
           </div>
           <div className="table-responsive">
             <table className="table table-striped">
@@ -199,29 +156,43 @@ export default class CoverBanner extends React.Component {
               </thead>
 
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Melanie Wilson</td>
-                  <td>Villa</td>
-                  <td>John Doe</td>
-                  <td>Adam Smith</td>
-                  <td>27-November-2020</td>
-                  <td>Accepted</td>
-                  <td>
-                    <Link to="/viewReferal">
-                      <button
-                        // onClick={() =>
-                        //   topic.status === "block"
-                        //     ? this.unblockPostHandler(topic.id)
-                        //     : this.blockPostHandler(topic.id)
-                        // }
-                        className={`btn btn-sm btn-success`}
-                      >
-                        View
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
+                {this.state.transactions &&
+                  this.state.transactions.map((trans, index) => {
+                    var creator = this.getUserByIDorEmail(trans.creator);
+                    var receiver = this.getUserByIDorEmail(trans.receiver);
+                    return (
+                      <tr>
+                        <td>{index}</td>
+                        <td>{trans.clientName}</td>
+                        <td>{trans.propertyType}</td>
+                        <td>
+                          {creator &&
+                            creator.firstname + " " + creator.lastname}
+                        </td>
+                        <td>
+                          {" "}
+                          {receiver &&
+                            receiver.firstname + " " + receiver.lastname}
+                        </td>
+                        <td>27-November-2020</td>
+                        <td>{trans.pending}</td>
+                        <td>
+                          <Link to={`/referal/${trans.transaction_id}`}>
+                            <button
+                              // onClick={() =>
+                              //   topic.status === "block"
+                              //     ? this.unblockPostHandler(topic.id)
+                              //     : this.blockPostHandler(topic.id)
+                              // }
+                              className={`btn btn-sm btn-success`}
+                            >
+                              View
+                            </button>
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}{" "}
               </tbody>
             </table>
           </div>

@@ -17,7 +17,7 @@ export default {
     },
     {
       name: "Referals",
-      url: "/events",
+      url: "/referal",
       icon: "icon-user",
     },
     {

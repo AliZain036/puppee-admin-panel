@@ -109,10 +109,10 @@ class App extends React.Component {
                   path="/viewposts/:postId"
                   component={ViewPosts}
                 />
-                <Route exact={true} path="/events" component={Referal} />
+                <Route exact={true} path="/referal" component={Referal} />
                 <Route
                   exact={true}
-                  path="/viewReferal"
+                  path="/referal/:refId"
                   component={ViewReferal}
                 />
                 <Route exact={true} path="/" component={Stats} />

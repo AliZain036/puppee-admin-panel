@@ -9,6 +9,7 @@ import {
   connectFirebase,
   getAllOfCollection,
   getData,
+  updateData,
 } from "../backend/utility";
 const token = Cookie.get("clobberswap_access_token");
 
@@ -27,12 +28,30 @@ export default class CoverBanner extends React.Component {
       events: [],
       copyEvents: [],
       userPosts: [],
+      copyPosts: [],
     };
   }
   async componentWillMount() {
     var posts = [];
     let allPosts = await getAllOfCollection("Posts");
-    this.setState({ userPosts: allPosts });
+    this.setState({ userPosts: allPosts, copyPosts: allPosts });
+    console.log("This is the post", allPosts);
+  }
+
+  async updateThisPost(doc, field, val) {
+    let allUsers = await updateData("Posts", doc, field, val)
+      .then(() => {
+        if (val === "Block") {
+          this.componentWillMount();
+          alert("Post Blocked Successfully");
+        } else {
+          this.componentWillMount();
+          alert("Post Unblocked Successfully");
+        }
+      })
+      .catch(() => {
+        alert("Something went wrong");
+      });
   }
 
   fetchBanners = () => {
@@ -75,32 +94,25 @@ export default class CoverBanner extends React.Component {
     });
   }
 
-  handleSearch() {
-    const { q } = this.state;
-    if (q.length) {
-      this.setState({
-        loading: true,
-        brands: [],
-        responseMessage: "Loading Colors...",
+  async FilterFn(text) {
+    if (text !== "") {
+      let newData = this.state.userPosts.filter(function (item) {
+        let itemData = item.creatorName
+          ? item.creatorName.toUpperCase()
+          : "".toUpperCase();
+        let textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
       });
-      axios
-        .get(`${API_END_POINT}/api/brands/search`, {
-          params: { searchWord: this.state.q },
-          headers: { "auth-token": token },
-        })
-        .then((response) => {
-          this.setState({
-            brands: response.data.searchedItems,
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        })
-        .catch(() => {
-          this.setState({
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        });
+
+      this.setState({
+        userPosts: newData,
+        isSearching: true,
+      });
+    } else {
+      this.setState({
+        userPosts: this.state.copyPosts,
+        isSearching: false,
+      });
     }
   }
 
@@ -147,13 +159,13 @@ export default class CoverBanner extends React.Component {
               </div>
             </div>
 
-            <div className="col-sm-4 pull-right mobile-space">
+            {/* <div className="col-sm-4 pull-right mobile-space">
               <Link to="colors/colors-form">
                 <button type="button" className="btn btn-success">
                   Add new Post
                 </button>
               </Link>
-            </div>
+            </div> */}
           </div>
           <div className="table-responsive">
             <table className="table table-striped">
@@ -181,20 +193,28 @@ export default class CoverBanner extends React.Component {
                             style={{ width: "50px", height: "50px" }}
                           />
                         </td>
+
+                        <td>{post.creatorName}</td>
                         <td>{post.caption}</td>
 
                         <td>{post.creatorOffice}</td>
                         <td>27-November-2020</td>
                         <td>
                           <button
-                            // onClick={() =>
-                            //   topic.status === "block"
-                            //     ? this.unblockPostHandler(topic.id)
-                            //     : this.blockPostHandler(topic.id)
-                            // }
+                            onClick={() => {
+                              this.updateThisPost(
+                                post.id,
+                                "statusAdmin",
+                                post.statusAdmin && post.statusAdmin === "Block"
+                                  ? "Unblock"
+                                  : "Block"
+                              );
+                            }}
                             className={`btn btn-sm btn-danger`}
                           >
-                            Block
+                            {post.statusAdmin && post.statusAdmin === "Block"
+                              ? "Unblock"
+                              : "Block"}
                           </button>
                         </td>
                         <td>

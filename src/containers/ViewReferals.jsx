@@ -5,7 +5,11 @@ import { Pagination, Image } from "react-bootstrap";
 import moment from "moment";
 import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
-const token = Cookie.get("clobberswap_access_token");
+import {
+  connectFirebase,
+  getAllOfCollection,
+  getData,
+} from "../backend/utility";
 
 import HasRole from "../hoc/HasRole";
 
@@ -20,16 +24,20 @@ export default class CoverBanner extends React.Component {
       q: "",
       responseMessage: "Loading Colors...",
       eventDetail: {},
+      transactions: [],
+      detailedReferal: null,
     };
   }
-  componentWillMount() {
-    this.fetchBanners();
-  }
+  async componentWillMount() {}
 
-  componentDidMount() {
-    const { match, location, history } = this.props;
-    console.log(location.item);
-    this.setState({ eventDetail: location.item });
+  async componentDidMount() {
+    let allTransactions = await getAllOfCollection("Transactions");
+    console.log("THis is", allTransactions);
+    allTransactions.map((trans) => {
+      if (trans.transaction_id === this.props.match.params.refId) {
+        this.setState({ detailedReferal: trans });
+      }
+    });
   }
 
   fetchBanners = () => {
@@ -112,42 +120,55 @@ export default class CoverBanner extends React.Component {
             </div>
           </div>
           <div className="row content-sm-left content-md-left">
-            <div
-              className="col-sm-10  offset-sm-1"
-              style={{ textAlign: "left" }}
-            >
-              <div className="row space-1">
-                <div className="col-sm-4" style={{ textAlign: "left" }}>
-                  <h4 style={{ textAlign: "left", marginTop: "25px" }}>
-                    Client Information:
-                  </h4>
-                  <h5 style={{ textAlign: "left" }}>Melanie Wilson</h5>
-                  <h5 style={{ textAlign: "left" }}>778-7778-7778</h5>
-                  <h5 style={{ textAlign: "left" }}>
-                    melanie_wilson@gmail.com
-                  </h5>
-                  <h5 style={{ textAlign: "left" }}>
-                    Financial Pre-Qalified. Contact by phone at earliest
-                    opportunity
-                  </h5>
-                </div>
-              </div>
-              <h5 style={{ textAlign: "left", marginTop: "25px" }}>
-                Property Type: Resedential
-              </h5>
-              <h5 style={{ textAlign: "left" }}>
-                Property Location: Burnaby, BC
-              </h5>
-              <h5 style={{ textAlign: "left" }}>Price Range: $100K-$500K</h5>
-              <h5 style={{ textAlign: "left" }}>Referal Agreement: 25%</h5>
-              <h5 style={{ textAlign: "left" }}>Referal Status: Accepted</h5>
-              <button
-                className={`btn btn-sm btn-primary`}
-                style={{ marginTop: "25px" }}
+            {this.state.detailedReferal && (
+              <div
+                className="col-sm-10  offset-sm-1"
+                style={{ textAlign: "left" }}
               >
-                Download Agreement Form
-              </button>
-            </div>
+                <div className="row space-1">
+                  <div className="col-sm-4" style={{ textAlign: "left" }}>
+                    <h4 style={{ textAlign: "left", marginTop: "25px" }}>
+                      Client Information:
+                    </h4>
+                    <h5 style={{ textAlign: "left" }}>
+                      {this.state.detailedReferal.clientName}
+                    </h5>
+                    <h5 style={{ textAlign: "left" }}>
+                      {this.state.detailedReferal.clientPhone}
+                    </h5>
+                    <h5 style={{ textAlign: "left" }}>
+                      {this.state.detailedReferal.clientEmail}
+                    </h5>
+                    <h5 style={{ textAlign: "left" }}>
+                      {this.state.detailedReferal.additionalInfo}
+                    </h5>
+                  </div>
+                </div>
+                <h5 style={{ textAlign: "left", marginTop: "25px" }}>
+                  Property Type: {this.state.detailedReferal.propertyType}
+                </h5>
+                <h5 style={{ textAlign: "left" }}>
+                  Property Location:{" "}
+                  {this.state.detailedReferal.propertyLocation}
+                </h5>
+                <h5 style={{ textAlign: "left" }}>
+                  Price Range: ${this.state.detailedReferal.priceRangeValues[0]}
+                  K-${this.state.detailedReferal.priceRangeValues[1]}K
+                </h5>
+                <h5 style={{ textAlign: "left" }}>
+                  Referal Agreement: {this.state.detailedReferal.percentage}
+                </h5>
+                <h5 style={{ textAlign: "left" }}>
+                  Referal Status: {this.state.detailedReferal.status}
+                </h5>
+                <button
+                  className={`btn btn-sm btn-primary`}
+                  style={{ marginTop: "25px" }}
+                >
+                  Download Agreement Form
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
