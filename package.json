@@ -73,6 +73,7 @@
     "simple-line-icons": "2.4.1",
     "source-list-map": "2.0.0",
     "style-loader": "0.20.1",
+    "sweetalert": "^2.1.2",
     "sweetalert2": "^9.13.1",
     "uglify-js": "3.3.9",
     "url-loader": "0.6.2",

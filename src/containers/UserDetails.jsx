@@ -60,7 +60,28 @@ export default class Posts extends React.Component {
     var followingIds = "";
     allUsers.map((user) => {
       if (user.id === this.props.match.params.userId) {
+        console.log("this is detailed user", user);
+        var expertise = "";
+        user.expertise.map((ex, index) => {
+          if (user.expertise[index + 1]) {
+            expertise = expertise + ex.title + ", ";
+          } else {
+            expertise = expertise + ex.title;
+          }
+        });
+        var languages = "";
+        user.languages.map((ex, index) => {
+          if (user.languages[index + 1]) {
+            languages = languages + ex.title + ", ";
+          } else {
+            languages = languages + ex.title;
+          }
+        });
+        user.languageString = languages;
+        user.expertiseString = expertise;
         this.setState({ detailedUser: user });
+        console.log("Human readable expertise", expertise);
+        console.log("Human readable language", languages);
         followerIds = user.followers;
         followingIds = user.followings;
       }
@@ -82,8 +103,8 @@ export default class Posts extends React.Component {
     });
     this.setState({ followers: followers });
     this.setState({ followings: followings });
-    console.log("these are follower id", followers);
-    console.log("these are following id", followings);
+    // console.log("these are follower id", followers);
+    // console.log("these are following id", followings);
     let allTransactions = await getAllOfCollection("Transactions");
     let allPosts = await getAllOfCollection("Posts");
     allTransactions.map((trans) => {
@@ -97,7 +118,7 @@ export default class Posts extends React.Component {
         posts.push(post);
       }
     });
-    console.log("these are users posts", posts);
+    // console.log("these are users posts", posts);
     this.setState({ userPosts: posts });
     this.setState({ transactions: transactions });
   };
@@ -517,7 +538,9 @@ export default class Posts extends React.Component {
                                     type="text"
                                     name="name"
                                     className="form-control"
-                                    value="Real Estate"
+                                    value={
+                                      this.state.detailedUser.expertiseString
+                                    }
                                     onChange={this.handleInputChange}
                                   />
                                 </div>
@@ -532,7 +555,9 @@ export default class Posts extends React.Component {
                                     type="text"
                                     name="name"
                                     className="form-control"
-                                    value="English, French, German"
+                                    value={
+                                      this.state.detailedUser.languageString
+                                    }
                                     onChange={this.handleInputChange}
                                   />
                                 </div>
