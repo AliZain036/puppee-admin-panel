@@ -32,11 +32,15 @@ export default class CoverBanner extends React.Component {
     };
   }
   async componentDidMount() {
-    console.log("This iscomponet did mount");
-    let allUsers = await getAllOfCollection("Users");
-    this.setState({ users: allUsers });
-    this.setState({ copyUsers: allUsers });
-    console.log("This is users", allUsers);
+    if (firebase.auth().currentUser) {
+      console.log("This iscomponet did mount");
+      let allUsers = await getAllOfCollection("Users");
+      this.setState({ users: allUsers });
+      this.setState({ copyUsers: allUsers });
+      console.log("This is users", allUsers);
+    } else {
+      this.props.history.push("/login");
+    }
   }
 
   async updateThisUser(doc, field, val) {

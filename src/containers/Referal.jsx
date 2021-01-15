@@ -10,6 +10,7 @@ import {
   getAllOfCollection,
   getData,
 } from "../backend/utility";
+import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
 
 import HasRole from "../hoc/HasRole";
@@ -31,22 +32,26 @@ export default class CoverBanner extends React.Component {
     };
   }
   async componentWillMount() {
-    let allUsers = await getAllOfCollection("Users");
-    this.setState({ allUsers: allUsers });
-    let allTransactions = await getAllOfCollection("Transactions");
-    console.log("THis is", allTransactions);
-    this.setState({
-      transactions: allTransactions,
-      copyTransactions: allTransactions,
-    });
+    if (firebase.auth().currentUser) {
+      let allUsers = await getAllOfCollection("Users");
+      this.setState({ allUsers: allUsers });
+      let allTransactions = await getAllOfCollection("Transactions");
+      console.log("THis is", allTransactions);
+      this.setState({
+        transactions: allTransactions,
+        copyTransactions: allTransactions,
+      });
+    } else {
+      this.props.history.push("/login");
+    }
   }
 
-  getUserByIDorEmail = (id) => {
+  getUserByID = (id) => {
     // console.log("This is email", id);
     // console.log("These arre al users", this.state.allUsers);
     var myUser = "";
     this.state.allUsers.map((user) => {
-      if (user.id === id || user.email === id) {
+      if (user.id === id) {
         myUser = user;
       }
     });
@@ -158,24 +163,37 @@ export default class CoverBanner extends React.Component {
               <tbody>
                 {this.state.transactions &&
                   this.state.transactions.map((trans, index) => {
-                    var creator = this.getUserByIDorEmail(trans.creator);
-                    var receiver = this.getUserByIDorEmail(trans.receiver);
+                    var creator = this.getUserByID(trans.creator);
+                    var receiver = this.getUserByID(trans.receiver);
                     return (
                       <tr>
                         <td>{index}</td>
                         <td>{trans.clientName}</td>
                         <td>{trans.propertyType}</td>
-                        <td>
-                          {creator &&
-                            creator.firstname + " " + creator.lastname}
+
+                        <td style={{ cursor: "pointer", color: "black" }}>
+                          <Link
+                            style={{ color: "black" }}
+                            to={`/userdetails/${trans.creator}`}
+                          >
+                            {creator &&
+                              creator.firstname + " " + creator.lastname}
+                          </Link>
                         </td>
-                        <td>
-                          {" "}
-                          {receiver &&
-                            receiver.firstname + " " + receiver.lastname}
+                        <td style={{ cursor: "pointer", color: "black" }}>
+                          {receiver != "" ? (
+                            <Link
+                              style={{ color: "black" }}
+                              to={`/userdetails/${trans.receiver}`}
+                            >
+                              {receiver.firstname + " " + receiver.lastname}
+                            </Link>
+                          ) : (
+                            trans.receiver
+                          )}
                         </td>
                         <td>27-November-2020</td>
-                        <td>{trans.pending}</td>
+                        <td>{trans.status}</td>
                         <td>
                           <Link to={`/referal/${trans.transaction_id}`}>
                             <button

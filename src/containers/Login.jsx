@@ -40,18 +40,14 @@ class Login extends Component {
 
     this.state = {
       user: null,
-      email: "admin@admin.com",
-      password: "123123",
+      email: "admin@netdesk.com",
+      password: "123456",
       loading: false,
     };
   }
 
   async componentDidMount() {
     await connectFirebase();
-    let token = Cookie.get("clobberswap_access_token");
-    if (token) {
-      this.props.history.push("/");
-    }
   }
 
   async submit() {
@@ -62,26 +58,32 @@ class Login extends Component {
     };
     if (!this.state.loading) {
       this.setState({ loading: true });
-      let data = await getAllOfCollection("admin");
-      console.log("My data = ", data);
-      let success = false;
-      for (let i = 0; i < data.length; i++) {
-        if (email == data[i].email && password == data[i].password) {
-          console.log("You are all set to go to next screen");
-          success = true;
-          break;
-        }
-      }
-      if (success) {
-        Cookie.set("clobberswap_access_token", email, {
-          expires: 14,
-        });
-        this.setState({ loading: false });
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+      if (firebase.auth().currentUser) {
         this.props.history.push("/");
       } else {
-        alert("Email or password is incorrect");
-        this.setState({ loading: false });
+        alert("Email or Password wrong !");
       }
+      // let data = await getAllOfCollection("admin");
+      // console.log("My data = ", data);
+      // let success = false;
+      // for (let i = 0; i < data.length; i++) {
+      //   if (email == data[i].email && password == data[i].password) {
+      //     console.log("You are all set to go to next screen");
+      //     success = true;
+      //     break;
+      //   }
+      // }
+      // if (success) {
+      //   Cookie.set("clobberswap_access_token", email, {
+      //     expires: 14,
+      //   });
+      //   this.setState({ loading: false });
+      //   this.props.history.push("/");
+      // } else {
+      //   alert("Email or password is incorrect");
+      //   this.setState({ loading: false });
+      // }
       // axios
       //   .post(`${API_END_POINT}/api/login`, reqBody)
       //   .then((response) => {
@@ -199,7 +201,7 @@ class Login extends Component {
                           fontWeight: "bold",
                         }}
                       >
-                        Pido Resturant Dashboard
+                        Network Desk Dashboard
                       </div>
                     </div>
                   </CardBody>

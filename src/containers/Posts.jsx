@@ -11,6 +11,7 @@ import {
   getData,
   updateData,
 } from "../backend/utility";
+import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
 
 import HasRole from "../hoc/HasRole";
@@ -32,10 +33,14 @@ export default class CoverBanner extends React.Component {
     };
   }
   async componentWillMount() {
-    var posts = [];
-    let allPosts = await getAllOfCollection("Posts");
-    this.setState({ userPosts: allPosts, copyPosts: allPosts });
-    console.log("This is the post", allPosts);
+    if (firebase.auth().currentUser) {
+      var posts = [];
+      let allPosts = await getAllOfCollection("Posts");
+      this.setState({ userPosts: allPosts, copyPosts: allPosts });
+      console.log("This is the post", allPosts);
+    } else {
+      this.props.history.push("/login");
+    }
   }
 
   async updateThisPost(doc, field, val) {

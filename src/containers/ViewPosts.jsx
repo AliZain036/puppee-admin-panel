@@ -11,7 +11,7 @@ import {
   getAllOfCollection,
   getData,
 } from "../backend/utility";
-
+import firebase from "firebase";
 import HasRole from "../hoc/HasRole";
 
 export default class CoverBanner extends React.Component {
@@ -26,19 +26,54 @@ export default class CoverBanner extends React.Component {
       q: "",
       responseMessage: "Loading Colors...",
       eventDetail: {},
+      allUsers: [],
+      allComments: [],
+      allLikes: [],
     };
   }
+
+  getUserByID = (id) => {
+    // console.log("This is email", id);
+    // console.log("These arre al users", this.state.allUsers);
+    var myUser = "";
+    this.state.allUsers.map((user) => {
+      if (user.id === id) {
+        myUser = user;
+      }
+    });
+    return myUser;
+  };
+
   componentWillMount() {}
 
   async componentDidMount() {
+    if (firebase.auth().currentUser) {
+      let allPosts = await getAllOfCollection("Posts");
+      let allUsers = await getAllOfCollection("Users");
+      this.setState({ allUsers: allUsers });
+      var comments = [];
+      allPosts.map((post) => {
+        if (post.id === this.props.match.params.postId) {
+          this.setState({ detailedPost: post });
+          if (post.comments) {
+            this.setState({ allComments: post.comments });
+          }
+          if (post.likes) {
+            this.setState({ allLikes: post.likes });
+          }
+        }
+      });
+      console.log(
+        "these are all posts in view psot",
+        this.state.allComments,
+        this.state.detailedPost,
+        "tHis",
+        this.state.allLikes
+      );
+    } else {
+      this.props.history.push("/login");
+    }
     const { match, location, history } = this.props;
-    let allPosts = await getAllOfCollection("Posts");
-    allPosts.map((post) => {
-      if (post.id === this.props.match.params.postId) {
-        this.setState({ detailedPost: post });
-      }
-    });
-    console.log("these are all posts in view psot", allPosts);
   }
 
   fetchBanners = () => {
@@ -155,56 +190,110 @@ export default class CoverBanner extends React.Component {
               <h5 style={{ textAlign: "left" }}>
                 {this.state.detailedPost && this.state.detailedPost.caption}
               </h5>
-              {/* <div className="commentSection">
-                <div
-                  className="row align-items-end comment"
-                  style={{ padding: "20px", alignContent: "flex-end" }}
-                >
-                  <div className="col-sm-4 col-md-2">
-                    <Image
-                      src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                      style={{ height: "50px", width: "50px" }}
-                      roundedCircle
-                    />
-                  </div>
-                  <div className="col-sm-8 col-md-10">
-                    <p style={{ textAlign: "start" }}>Beauty at its finest</p>
-                  </div>
-                </div>
-                <div
-                  className="row align-items-end comment"
-                  style={{ padding: "20px", alignContent: "flex-end" }}
-                >
-                  <div className="col-sm-4 col-md-2">
-                    <Image
-                      src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                      style={{ height: "50px", width: "50px" }}
-                      roundedCircle
-                    />
-                  </div>
-                  <div className="col-sm-8 col-md-10">
-                    <p style={{ textAlign: "start" }}>Great House</p>
-                  </div>
-                </div>
-                <div
-                  className="row align-items-end comment"
-                  style={{ padding: "20px", alignContent: "flex-end" }}
-                >
-                  <div className="col-sm-4 col-md-2">
-                    <Image
-                      src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                      style={{ height: "50px", width: "50px" }}
-                      roundedCircle
-                    />
-                  </div>
-                  <div className="col-sm-8 col-md-10">
-                    <p style={{ textAlign: "start" }}>
-                      Hell Yeah! The beast itself
-                    </p>
-                  </div>
-                </div>
+              <h4>Comments</h4>
+              <div className="commentSection">
+                {this.state.allComments.map((comment) => {
+                  return (
+                    <div
+                      className="row  comment"
+                      style={{ padding: "20px", alignContent: "flex-end" }}
+                    >
+                      <div className="col-sm-4 col-md-2">
+                        <Image
+                          src={comment.photo}
+                          style={{
+                            height: "50px",
+                            width: "50px",
+                            borderRadius: "50%",
+                          }}
+                          roundedCircle
+                        />
+                      </div>
+                      <div className="col-sm-8 col-md-10">
+                        <p
+                          style={{
+                            textAlign: "start",
+                            marginBottom: 0,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {comment.userName}
+                        </p>
+                        <p style={{ textAlign: "start" }}>{comment.comment}</p>
+                      </div>{" "}
+                      {comment.replies &&
+                        comment.replies.map((rep) => {
+                          return (
+                            <div
+                              className="row"
+                              style={{
+                                padding: "10px",
+                                paddingLeft: 30,
+                                alignContent: "flex-end",
+                              }}
+                            >
+                              <div className="col-sm-4 col-md-3">
+                                <Image
+                                  src={rep.photo}
+                                  style={{
+                                    height: "50px",
+                                    width: "50px",
+                                    borderRadius: "50%",
+                                  }}
+                                  roundedCircle
+                                />
+                              </div>
+                              <div className="col-sm-8 col-md-9">
+                                <p
+                                  style={{
+                                    textAlign: "start",
+                                    marginBottom: 0,
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {rep.userName}
+                                </p>
+                                <p style={{ textAlign: "start" }}>
+                                  {rep.reply}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  );
+                })}
               </div>
-            */}
+              <h4>Liked By</h4>
+              <div className="commentSection">
+                {this.state.allLikes.map((item) => {
+                  var user = this.getUserByID(item);
+                  // console.log("this.isi", user);
+                  return (
+                    <div
+                      className="row align-items-end comment"
+                      style={{ padding: "20px", alignContent: "flex-end" }}
+                    >
+                      <div className="col-sm-4 col-md-2">
+                        <Image
+                          src={user.photo}
+                          style={{
+                            height: "50px",
+                            width: "50px",
+                            borderRadius: "50%",
+                          }}
+                          roundedCircle
+                        />
+                      </div>
+                      <div className="col-sm-8 col-md-10">
+                        <p style={{ textAlign: "start", fontWeight: "bold" }}>
+                          {user.firstname + " " + user.lastname}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
