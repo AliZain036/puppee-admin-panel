@@ -6,13 +6,15 @@ import "draft-js/dist/Draft.css";
 import RichTextEditor from "react-rte";
 // import {Pagination} from 'react-bootstrap';
 import "./style.css";
+import SwalAutoHide from "sweetalert2";
 import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import {
   connectFirebase,
   getAllOfCollection,
   getData,
-  saveData,
+  addToArray,
+  updateData,
 } from "../backend/utility";
 const token = Cookie.get("clobberswap_access_token");
 
@@ -22,7 +24,7 @@ export default class Posts extends React.Component {
 
     this.state = {
       // editorState: EditorState.createEmpty(),
-      description: RichTextEditor.createEmptyValue(),
+      description: "",
       posts: [],
       activePage: 1,
       pages: 1,
@@ -37,12 +39,9 @@ export default class Posts extends React.Component {
 
   async componentDidMount() {
     connectFirebase();
-    let Content = await getData("AboutUs", "Detail", "content");
-    // console.log("Content:");
-    // console.log("Content:", Content);
-    this.setState({
-      description: RichTextEditor.createValueFromString(Content, "html"),
-    });
+    let allAbout = await getAllOfCollection("about");
+    console.log("this is all about", allAbout[0].about);
+    this.setState({ description: allAbout[0].about });
   }
 
   onChange = (value) => {
@@ -50,6 +49,27 @@ export default class Posts extends React.Component {
     this.setState({ description: value.toString("html") });
     console.log(this.state.description);
   };
+
+  async updateAbout() {
+    let allUsers = await updateData(
+      "about",
+      "MfKvGUDJkgsXYzPnOGuj",
+      "about",
+      this.state.description
+    )
+      .then(() => {
+        SwalAutoHide.fire({
+          icon: "success",
+          timer: 2000,
+          title: "Success.",
+          showConfirmButton: false,
+          text: "About Information Updated Successfully",
+        });
+      })
+      .catch(() => {
+        alert("Something went wrong");
+      });
+  }
 
   // setDescription(description) {
   //   const { description } = this.state;
@@ -60,10 +80,10 @@ export default class Posts extends React.Component {
   //   });
   // }
 
-  componentWillMount() {
-    console.log("######", this.props);
-    this.fetchOrders();
-  }
+  // componentWillMount() {
+  //   console.log("######", this.props);
+  //   this.fetchOrders();
+  // }
 
   handleSave = async () => {
     this.setState({ loading: true });
@@ -74,129 +94,6 @@ export default class Posts extends React.Component {
     });
     this.setState({ loading: false });
     alert("Data saved successfully");
-  };
-
-  fetchOrders = () => {
-    axios.get(`${API_END_POINT}/api/show-all-posts`).then((response) => {
-      this.setState({
-        posts: response.data.posts,
-        responseMessage: "No Posts Found...",
-      });
-    });
-  };
-
-  fetchPastOrders = () => {
-    axios.get(`${API_END_POINT}/api/show-active-posts`).then((response) => {
-      this.setState({
-        posts: response.data.posts,
-        responseMessage: "No Posts Found...",
-      });
-    });
-  };
-
-  fetchRequestOrders = () => {
-    axios.get(`${API_END_POINT}/api/show-sold-posts`).then((response) => {
-      this.setState({
-        posts: response.data.posts,
-        responseMessage: "No Posts Found...",
-      });
-    });
-  };
-
-  fetchActiveOrders = () => {
-    axios.get(`${API_END_POINT}/api/show-block-posts`).then((response) => {
-      this.setState({
-        posts: response.data.posts,
-        responseMessage: "No Posts Found...",
-      });
-    });
-  };
-
-  getParams() {
-    const { activePage, pageSize } = this.state;
-    return {
-      params: {
-        pageNumber: activePage,
-        pageSize,
-      },
-    };
-  }
-
-  deleteOrders(dayId, index) {
-    var data = { post_id: dayId };
-    if (confirm("Are you sure you want to delete this post?")) {
-      axios
-        .post(`${API_END_POINT}/api/delete-post`, data)
-        .then((response) => {
-          if (response.status === 200 && response.data.status) {
-            window.alert("Post deleted succesfully  ");
-          }
-
-          const posts = this.state.posts.slice();
-          posts.splice(index, 1);
-          this.setState({ posts });
-        })
-        .catch((error) => {
-          window.alert("ERROR !");
-        });
-    }
-  }
-
-  handleSelect(page) {
-    this.setState({ activePage: page }, () => {
-      axios
-        .get(`${API_END_POINT}/api/fetch/locations-fetch`, this.getParams())
-        // axios.get(`https://api.saaditrips.com/api/fetch/locations-fetch`, this.getParams())
-        .then((response) => {
-          this.setState({
-            posts: response.data.items,
-            activePage: page,
-          });
-        });
-    });
-  }
-
-  handleSearch() {
-    const { q } = this.state;
-    var data = new FormData();
-    data.append("query", q);
-    if (q.length) {
-      this.setState({
-        loading: true,
-        posts: [],
-        responseMessage: "Loading Posts...",
-      });
-      // if(q === "") {
-      //   this.fetchOrders();
-      // } else {
-      axios.post(`${API_END_POINT}/api/search-post`, data).then((response) => {
-        this.setState({
-          posts: response.data.posts,
-          loading: false,
-          responseMessage: "No Posts Found...",
-        });
-      });
-    }
-  }
-
-  tabChangeHandler = (value) => {
-    if (this.state.status !== value) {
-      this.setState({
-        status: value,
-        loading: true,
-        posts: [],
-        responseMessage: "Loading Posts...",
-      });
-      if (value === "all") {
-        this.fetchOrders();
-      } else if (value === "approved") {
-        this.fetchPastOrders();
-      } else if (value === "unapproved") {
-        this.fetchRequestOrders();
-      } else if (value === "blocked") {
-        this.fetchActiveOrders();
-      }
-    }
   };
 
   blockPostHandler = (postId) => {
@@ -236,19 +133,19 @@ export default class Posts extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-12"></div>
-            <RichTextEditor
-              value={description}
+            <textarea
+              value={this.state.description}
               onChange={(e) => {
                 // this.setDescription(e);
                 // console.log(e);
                 this.setState({
-                  description: e,
+                  description: e.target.value,
                 });
               }}
-              style={{ width: "100%" }}
+              style={{ minHeight: 300, marginBottom: 20, width: "100%" }}
             />
             <button
-              onClick={() => this.handleSave()}
+              onClick={() => this.updateAbout()}
               className={`btn btn-sm btn-success`}
             >
               Save

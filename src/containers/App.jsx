@@ -25,14 +25,16 @@ import Menus from "./Menus";
 import MenuDetails from "./MenuDetails";
 import Posts from "./Posts";
 import ViewPosts from "./ViewPosts";
-import TermsAndConditions from "./Terms";
+import TermsAndConditions from "./TermsAndConditions";
 import About from "./About";
-import Earnings from "./Earnings";
-import Followers from "./Followers";
-import Following from "./Following";
+// import Earnings from "./Earnings";
+// import Followers from "./Followers";
+// import Following from "./Following";
 import Referal from "./Referal";
-import ViewEvent from "./ViewEvent";
+// import ViewEvent from "./ViewEvent";
 import ViewReferal from "./ViewReferals";
+import Languages from "./Languages";
+import Expertise from "./Expertise";
 
 import Rides from "./Rides";
 class App extends React.Component {
@@ -101,6 +103,10 @@ class App extends React.Component {
                   path="/terms"
                   component={TermsAndConditions}
                 />
+
+                <Route exact={true} path="/languages" component={Languages} />
+                <Route exact={true} path="/expertise" component={Expertise} />
+
                 <Route exact={true} path="/about" component={About} />
                 <Route exact={true} path="/customers" component={Customers} />
                 <Route exact={true} path="/posts" component={Posts} />
