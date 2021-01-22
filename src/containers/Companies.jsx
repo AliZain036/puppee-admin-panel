@@ -38,10 +38,10 @@ export default class CoverBanner extends React.Component {
       var posts = [];
       let Admin = await getAllOfCollection("Admin");
       // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      console.log("This is the admin", Admin[0].languages);
+      console.log("This is the admin", Admin[0].companies);
       this.setState({
-        languages: Admin[0].languages,
-        copyLanguages: Admin[0].languages,
+        languages: Admin[0].companies,
+        copyLanguages: Admin[0].companies,
       });
     } else {
       this.props.history.push("/login");
@@ -52,7 +52,7 @@ export default class CoverBanner extends React.Component {
     await addToArray(
       "Admin",
       "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "languages",
+      "companies",
       this.state.languages
     )
       .then(() => {
@@ -62,7 +62,7 @@ export default class CoverBanner extends React.Component {
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "Languages Updated Successfully",
+          text: "Companies Updated Successfully",
         });
       })
       .catch(() => {
@@ -75,7 +75,7 @@ export default class CoverBanner extends React.Component {
     await updateData(
       "Admin",
       "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "languages",
+      "companies",
       array
     )
       .then(() => {
@@ -85,7 +85,7 @@ export default class CoverBanner extends React.Component {
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "expertise Updated Successfully",
+          text: "Companies Updated Successfully",
         });
       })
       .catch((e) => {
@@ -167,7 +167,7 @@ export default class CoverBanner extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              <h3>List of Languages</h3>
+              <h3>List of Companies</h3>
             </div>
             <div className="col-sm-4">
               <div className="input-group">
@@ -202,10 +202,10 @@ export default class CoverBanner extends React.Component {
                 type="button"
                 className="btn btn-success"
                 onClick={() => {
-                  window.location.href = "/addLanguage";
+                  window.location.href = "/addCompany";
                 }}
               >
-                Add new Language
+                Add new Company
               </button>
             </div>
           </div>
@@ -255,12 +255,12 @@ export default class CoverBanner extends React.Component {
               </tbody>
             </table>
           </div>
-          <button
+          {/* <button
             onClick={() => this.updateLanguages()}
             className={`btn btn-sm btn-success`}
           >
             Save
-          </button>
+          </button> */}
         </div>
       </div>
     );

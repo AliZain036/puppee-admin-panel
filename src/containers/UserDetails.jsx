@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
+import moment from "moment";
 import axios from "axios";
 import { Pagination, Image } from "react-bootstrap";
 import {
@@ -131,7 +132,7 @@ export default class Posts extends React.Component {
         posts.push(post);
       }
     });
-    // console.log("these are users posts", posts);
+    console.log("these are users posts", posts);
     this.setState({ userPosts: posts });
     this.setState({ transactions: transactions });
   };
@@ -725,6 +726,7 @@ export default class Posts extends React.Component {
                   {this.state.transactions &&
                     this.state.transactions.map((trans, index) => {
                       var creator = this.getUserByID(trans.creator);
+                      var receiver = this.getUserByID(trans.receiver);
                       return (
                         <tr>
                           <td>{index}</td>
@@ -734,11 +736,28 @@ export default class Posts extends React.Component {
                             {creator &&
                               creator.firstname + " " + creator.lastname}
                           </td>
-                          <td>{trans.receiver}</td>
-                          <td>27-November-2020</td>
+                          <td>
+                            {receiver != "" ? (
+                              <Link
+                                style={{ color: "black" }}
+                                to={`/userdetails/${trans.receiver}`}
+                              >
+                                {receiver.firstname + " " + receiver.lastname}
+                              </Link>
+                            ) : (
+                              trans.receiver
+                            )}
+                          </td>
+                          <td>
+                            {moment(
+                              new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                                trans.createdAt.seconds
+                              )
+                            ).format("YYYY-MM-DD")}
+                          </td>
                           <td>{trans.status}</td>
                           <td>
-                            <Link to="/viewReferal">
+                            <Link to={`/referal/${trans.transaction_id}`}>
                               <button
                                 // onClick={() =>
                                 //   topic.status === "block"
@@ -784,8 +803,14 @@ export default class Posts extends React.Component {
                           </td>
                           <td>{post.caption}</td>
 
-                          <td>{post.creatorOffice}</td>
-                          <td>27-November-2020</td>
+                          <td>{post.address}</td>
+                          <td>
+                            {moment(
+                              new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                                post.createdAt.seconds
+                              )
+                            ).format("YYYY-MM-DD")}
+                          </td>
                           <td>
                             <button
                               // onClick={() =>

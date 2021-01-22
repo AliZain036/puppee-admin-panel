@@ -40,6 +40,18 @@ export default {
       url: "/expertise",
       icon: "icon-people",
     },
+
+    {
+      name: "Companies",
+      url: "/companies",
+      icon: "icon-people",
+    },
+
+    {
+      name: "Expertise Categories",
+      url: "/expertiseCategories",
+      icon: "icon-people",
+    },
     {
       name: "Logout",
       url: "/logout",

@@ -32,7 +32,7 @@ export default class CoverBanner extends React.Component {
     };
   }
   async componentDidMount() {
-    if (firebase.auth().currentUser) {
+    if (Cookie.get("token")) {
       console.log("This iscomponet did mount");
       let allUsers = await getAllOfCollection("Users");
       this.setState({ users: allUsers });

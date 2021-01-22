@@ -34,7 +34,13 @@ import Referal from "./Referal";
 // import ViewEvent from "./ViewEvent";
 import ViewReferal from "./ViewReferals";
 import Languages from "./Languages";
+import Companies from "./Companies";
 import Expertise from "./Expertise";
+import AddLanguage from "./AddLanguage";
+import AddCompany from "./AddCompany";
+import AddExpertise from "./AddExpertise";
+import ExpertiseCategories from "./ExpertiseCategories";
+import AddExpertiseCategory from "./AddExpertiseCategory";
 
 import Rides from "./Rides";
 class App extends React.Component {
@@ -104,8 +110,34 @@ class App extends React.Component {
                   component={TermsAndConditions}
                 />
 
+                <Route exact={true} path="/companies" component={Companies} />
+                <Route exact={true} path="/addCompany" component={AddCompany} />
+
+                <Route
+                  exact={true}
+                  path="/expertiseCategories"
+                  component={ExpertiseCategories}
+                />
+
+                <Route
+                  exact={true}
+                  path="/addExpertiseCategories"
+                  component={AddExpertiseCategory}
+                />
+
                 <Route exact={true} path="/languages" component={Languages} />
+                <Route
+                  exact={true}
+                  path="/addLanguage"
+                  component={AddLanguage}
+                />
+
                 <Route exact={true} path="/expertise" component={Expertise} />
+                <Route
+                  exact={true}
+                  path="/addExpertise/:name"
+                  component={AddExpertise}
+                />
 
                 <Route exact={true} path="/about" component={About} />
                 <Route exact={true} path="/customers" component={Customers} />
@@ -121,6 +153,7 @@ class App extends React.Component {
                   path="/referal/:refId"
                   component={ViewReferal}
                 />
+
                 <Route exact={true} path="/" component={Stats} />
               </Switch>
             </Container>

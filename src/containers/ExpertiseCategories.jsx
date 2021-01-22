@@ -11,7 +11,7 @@ import {
   getAllOfCollection,
   getData,
   addToArray,
-  updateData,
+  deleteData,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -28,20 +28,25 @@ export default class CoverBanner extends React.Component {
       pages: 1,
       q: "",
       responseMessage: "Loading Colors...",
-      languages: [],
-      copyLanguages: [],
+      categories: [],
+      copyCategories: [],
     };
   }
   async componentWillMount() {
     // console.log("This is token now", Cookie.get("token"));
     if (Cookie.get("token")) {
-      var posts = [];
+      var cats = [];
       let Admin = await getAllOfCollection("Admin");
       // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      console.log("This is the admin", Admin[0].languages);
+      console.log("This is the admin", Admin[0]);
+      for (let key in Admin[0]) {
+        if (key !== "languages" && key !== "companies") {
+          cats.push(key);
+        }
+      }
       this.setState({
-        languages: Admin[0].languages,
-        copyLanguages: Admin[0].languages,
+        categories: cats,
+        copyCategories: cats,
       });
     } else {
       this.props.history.push("/login");
@@ -56,13 +61,14 @@ export default class CoverBanner extends React.Component {
       this.state.languages
     )
       .then(() => {
-        this.componentWillMount();
         SwalAutoHide.fire({
           icon: "success",
-          timer: 2000,
+          timer: 3000,
           title: "Success.",
           showConfirmButton: false,
           text: "Languages Updated Successfully",
+        }).then(() => {
+          this.componentWillMount();
         });
       })
       .catch(() => {
@@ -70,27 +76,32 @@ export default class CoverBanner extends React.Component {
       });
   }
 
-  async updateLanguagesUsingArray(array) {
-    console.log("this is new data", array);
-    await updateData(
+  async deleteCategory(fieldName) {
+    let allUsers = await deleteData(
       "Admin",
       "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "languages",
-      array
+      fieldName,
+      []
     )
-      .then(() => {
-        this.componentWillMount();
+      .then((e) => {
+        console.log("This is delted", e);
         SwalAutoHide.fire({
           icon: "success",
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "expertise Updated Successfully",
+          text: "Terms and Conditions Updated Successfully",
         });
       })
       .catch((e) => {
-        console.log("This is error", e);
-        alert("Something went wrong");
+        console.log("this is", e);
+        SwalAutoHide.fire({
+          icon: "error",
+          timer: 2000,
+          title: "Failure",
+          showConfirmButton: false,
+          text: "Something went wrong!!",
+        });
       });
   }
 
@@ -136,19 +147,19 @@ export default class CoverBanner extends React.Component {
 
   async FilterFn(text) {
     if (text !== "") {
-      let newData = this.state.languages.filter(function (item) {
-        let itemData = item.title ? item.title.toUpperCase() : "".toUpperCase();
+      let newData = this.state.categories.filter(function (item) {
+        let itemData = item ? item.toUpperCase() : "".toUpperCase();
         let textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
 
       this.setState({
-        languages: newData,
+        categories: newData,
         isSearching: true,
       });
     } else {
       this.setState({
-        languages: this.state.copyLanguages,
+        categories: this.state.copyCategories,
         isSearching: false,
       });
     }
@@ -167,7 +178,7 @@ export default class CoverBanner extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              <h3>List of Languages</h3>
+              <h3>List of Expertise Catgories</h3>
             </div>
             <div className="col-sm-4">
               <div className="input-group">
@@ -202,10 +213,10 @@ export default class CoverBanner extends React.Component {
                 type="button"
                 className="btn btn-success"
                 onClick={() => {
-                  window.location.href = "/addLanguage";
+                  window.location.href = "/addExpertiseCategories";
                 }}
               >
-                Add new Language
+                Add new Category
               </button>
             </div>
           </div>
@@ -219,27 +230,27 @@ export default class CoverBanner extends React.Component {
               </thead>
 
               <tbody>
-                {this.state.languages &&
-                  this.state.languages.map((language, index) => {
+                {this.state.categories &&
+                  this.state.categories.map((cat, index) => {
                     return (
                       <tr>
                         <td>{index + 1}</td>
 
-                        <td>{language.title}</td>
-                        <td></td>
+                        <td>{cat}</td>
+                        <td>
+                          <button
+                            onClick={() =>
+                              (window.location.href = `/addExpertise/${cat}`)
+                            }
+                            className={`btn btn-sm btn-success`}
+                          >
+                            Add
+                          </button>
+                        </td>
                         <td>
                           <button
                             onClick={() => {
-                              let newData = this.state.languages.filter(
-                                function (item) {
-                                  let itemData = item.title
-                                    ? item.title.toUpperCase()
-                                    : "".toUpperCase();
-                                  let textData = language.title.toUpperCase();
-                                  return itemData.indexOf(textData) == -1;
-                                }
-                              );
-                              this.updateLanguagesUsingArray(newData);
+                              this.deleteCategory(cat);
                             }}
                             className={`btn btn-sm btn-danger`}
                           >
@@ -255,12 +266,12 @@ export default class CoverBanner extends React.Component {
               </tbody>
             </table>
           </div>
-          <button
+          {/* <button
             onClick={() => this.updateLanguages()}
             className={`btn btn-sm btn-success`}
           >
             Save
-          </button>
+          </button> */}
         </div>
       </div>
     );

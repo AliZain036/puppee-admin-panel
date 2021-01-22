@@ -30,17 +30,32 @@ export default class CoverBanner extends React.Component {
       responseMessage: "Loading Colors...",
       expertise: [],
       copyexpertise: [],
+      Admin: [],
     };
   }
   async componentWillMount() {
-    if (firebase.auth().currentUser) {
-      var posts = [];
+    // console.log("This is token now", Cookie.get("token"));
+    if (Cookie.get("token")) {
+      var data = [];
       let Admin = await getAllOfCollection("Admin");
+      this.setState({ Admin: Admin[0] });
+      for (let key in Admin[0]) {
+        if (key !== "languages" && key !== "companies") {
+          Admin[0][key].map((row) => {
+            data.push({
+              title: row.title,
+              seleted: false,
+              category: key,
+            });
+          });
+        }
+      }
+      console.log("This is ithe data", data);
       // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      console.log("This is the admin", Admin[0].expertise);
+      console.log("This is the admin", Admin);
       this.setState({
-        expertise: Admin[0].expertise,
-        copyexpertise: Admin[0].expertise,
+        expertise: data,
+        copyexpertise: data,
       });
     } else {
       this.props.history.push("/login");
@@ -69,14 +84,9 @@ export default class CoverBanner extends React.Component {
       });
   }
 
-  async updateexpertiseUsingArray(array) {
-    console.log("this is new data", array);
-    await updateData(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "expertise",
-      array
-    )
+  async updateexpertiseUsingArray(array, category) {
+    console.log("this is new data", array, category);
+    await updateData("Admin", "0qYmJUZhg0WLUATMjaohcgrsGs33", category, array)
       .then(() => {
         this.componentWillMount();
         SwalAutoHide.fire({
@@ -84,7 +94,7 @@ export default class CoverBanner extends React.Component {
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "expertise Updated Successfully",
+          text: "Expertise Updated Successfully",
         });
       })
       .catch((e) => {
@@ -197,9 +207,9 @@ export default class CoverBanner extends React.Component {
             </div>
 
             <div className="col-sm-4 pull-right mobile-space">
-              <button type="button" className="btn btn-success">
+              {/* <button type="button" className="btn btn-success">
                 Add new Language
-              </button>
+              </button> */}
             </div>
           </div>
           <div className="table-responsive">
@@ -222,16 +232,20 @@ export default class CoverBanner extends React.Component {
                         <td>
                           <button
                             onClick={() => {
-                              let newData = this.state.expertise.filter(
-                                function (item) {
-                                  let itemData = item.title
-                                    ? item.title.toUpperCase()
-                                    : "".toUpperCase();
-                                  let textData = language.title.toUpperCase();
-                                  return itemData.indexOf(textData) == -1;
-                                }
+                              let newData = this.state.Admin[
+                                language.category
+                              ].filter(function (item) {
+                                let itemData = item.title
+                                  ? item.title.toUpperCase()
+                                  : "".toUpperCase();
+                                let textData = language.title.toUpperCase();
+                                return itemData.indexOf(textData) == -1;
+                              });
+                              console.log("This greate", newData);
+                              this.updateexpertiseUsingArray(
+                                newData,
+                                language.category
                               );
-                              this.updateexpertiseUsingArray(newData);
                             }}
                             className={`btn btn-sm btn-danger`}
                           >
@@ -242,16 +256,14 @@ export default class CoverBanner extends React.Component {
                           </button>
                         </td>
                         <td>
-                          <button
-                            // onClick={() =>
-                            //   topic.status === "block"
-                            //     ? this.unblockPostHandler(topic.id)
-                            //     : this.blockPostHandler(topic.id)
-                            // }
+                          {/* <button
+                            onClick={() =>
+                              (window.location.href = `/addExpertise/${language.title}`)
+                            }
                             className={`btn btn-sm btn-success`}
                           >
-                            View
-                          </button>
+                            Add
+                          </button> */}
                         </td>
                       </tr>
                     );

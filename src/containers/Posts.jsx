@@ -33,7 +33,7 @@ export default class CoverBanner extends React.Component {
     };
   }
   async componentWillMount() {
-    if (firebase.auth().currentUser) {
+    if (Cookie.get("token")) {
       var posts = [];
       let allPosts = await getAllOfCollection("Posts");
       this.setState({ userPosts: allPosts, copyPosts: allPosts });
@@ -188,6 +188,19 @@ export default class CoverBanner extends React.Component {
               <tbody>
                 {this.state.userPosts &&
                   this.state.userPosts.map((post, index) => {
+                    console.log(
+                      moment(
+                        new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                          post.createdAt.seconds
+                        )
+                      ).format("YYYY-MM-DD")
+                      // moment(
+                      //   new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                      //     post.createdAt
+                      //   )
+                      // ).fromNow()
+                    );
+
                     return (
                       <tr>
                         <td>{index + 1}</td>
@@ -202,8 +215,14 @@ export default class CoverBanner extends React.Component {
                         <td>{post.creatorName}</td>
                         <td>{post.caption}</td>
 
-                        <td>{post.creatorOffice}</td>
-                        <td>27-November-2020</td>
+                        <td>{post.address}</td>
+                        <td>
+                          {moment(
+                            new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                              post.createdAt.seconds
+                            )
+                          ).format("YYYY-MM-DD")}
+                        </td>
                         <td>
                           <button
                             onClick={() => {

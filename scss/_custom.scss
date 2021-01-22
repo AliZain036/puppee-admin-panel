@@ -19,7 +19,7 @@
 }
 
 a {
-  color: $roomy-blue
+  color: $roomy-blue;
 }
 
 .sidebar {
@@ -121,5 +121,11 @@ select.form-control:not([size]):not([multiple]) {
 @media (max-width: 576px) {
   .mobile-space {
     padding-top: 8px;
+  }
+}
+
+.Select-input {
+  input {
+    width: 200px !important;
   }
 }

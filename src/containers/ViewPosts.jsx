@@ -47,7 +47,7 @@ export default class CoverBanner extends React.Component {
   componentWillMount() {}
 
   async componentDidMount() {
-    if (firebase.auth().currentUser) {
+    if (Cookie.get("token")) {
       let allPosts = await getAllOfCollection("Posts");
       let allUsers = await getAllOfCollection("Users");
       this.setState({ allUsers: allUsers });
@@ -188,11 +188,33 @@ export default class CoverBanner extends React.Component {
                   this.state.detailedPost.creatorOffice}
               </h5>
               <h5 style={{ textAlign: "left" }}>
+                Adress:{" "}
+                {this.state.detailedPost && this.state.detailedPost.address}
+              </h5>
+              <h5 style={{ textAlign: "left" }}>
+                Date:{" "}
+                {this.state.detailedPost &&
+                  moment(
+                    new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                      this.state.detailedPost.createdAt.seconds
+                    )
+                  ).format("YYYY-MM-DD")}
+              </h5>
+
+              <h5 style={{ textAlign: "left" }}>
                 {this.state.detailedPost && this.state.detailedPost.caption}
               </h5>
-              <h4>Comments</h4>
+              <h4>Comments {" (" + this.state.allComments.length + ") "}</h4>
               <div className="commentSection">
                 {this.state.allComments.map((comment) => {
+                  var tageName = "";
+                  var tagId = "";
+                  for (var i = 0; i < comment.comment.length; i++) {
+                    console.log("THis is the commnent", comment[i]);
+                  }
+                  // if (comment.indexO("@")) {
+                  //   console.log("This is comment thing", comment);
+                  // }
                   return (
                     <div
                       className="row  comment"
@@ -219,10 +241,23 @@ export default class CoverBanner extends React.Component {
                         >
                           {comment.userName}
                         </p>
+                        <span>
+                          Time:{" "}
+                          {moment(
+                            new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                              comment.time
+                            )
+                          ).fromNow()}
+                        </span>
                         <p style={{ textAlign: "start" }}>{comment.comment}</p>
+                        <p style={{ textAlign: "start" }}>
+                          Likes :{comment.likes ? comment.likes.length : 0}{" "}
+                        </p>
+                        <p style={{ textAlign: "start" }}></p>
                       </div>{" "}
                       {comment.replies &&
                         comment.replies.map((rep) => {
+                          console.log("THis is like", rep.reply.likes);
                           return (
                             <div
                               className="row"
@@ -253,8 +288,19 @@ export default class CoverBanner extends React.Component {
                                 >
                                   {rep.userName}
                                 </p>
+                                <span>
+                                  Time:{" "}
+                                  {moment(
+                                    new Date(
+                                      Date.UTC(1970, 0, 1)
+                                    ).setUTCSeconds(rep.time)
+                                  ).fromNow()}
+                                </span>
                                 <p style={{ textAlign: "start" }}>
                                   {rep.reply}
+                                </p>
+                                <p style={{ textAlign: "start" }}>
+                                  Likes :{rep.likes ? rep.likes.length : 0}
                                 </p>
                               </div>
                             </div>
@@ -264,7 +310,7 @@ export default class CoverBanner extends React.Component {
                   );
                 })}
               </div>
-              <h4>Liked By</h4>
+              <h4>Liked By {" (" + this.state.allComments.length + ") "}</h4>
               <div className="commentSection">
                 {this.state.allLikes.map((item) => {
                   var user = this.getUserByID(item);

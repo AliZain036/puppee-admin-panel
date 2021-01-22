@@ -59,7 +59,8 @@ class Login extends Component {
     if (!this.state.loading) {
       this.setState({ loading: true });
       await firebase.auth().signInWithEmailAndPassword(email, password);
-      if (firebase.auth().currentUser) {
+      if (firebase.auth().currentUser || Cookie.get("token")) {
+        Cookie.set("token", firebase.auth().currentUser);
         this.props.history.push("/");
       } else {
         alert("Email or Password wrong !");

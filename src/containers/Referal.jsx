@@ -32,7 +32,7 @@ export default class CoverBanner extends React.Component {
     };
   }
   async componentWillMount() {
-    if (firebase.auth().currentUser) {
+    if (Cookie.get("token")) {
       let allUsers = await getAllOfCollection("Users");
       this.setState({ allUsers: allUsers });
       let allTransactions = await getAllOfCollection("Transactions");
@@ -192,7 +192,13 @@ export default class CoverBanner extends React.Component {
                             trans.receiver
                           )}
                         </td>
-                        <td>27-November-2020</td>
+                        <td>
+                          {moment(
+                            new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                              trans.createdAt.seconds
+                            )
+                          ).format("YYYY-MM-DD")}
+                        </td>
                         <td>{trans.status}</td>
                         <td>
                           <Link to={`/referal/${trans.transaction_id}`}>

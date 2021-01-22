@@ -181,3 +181,13 @@ export async function updateData(collection, doc, array, value) {
       [array]: value,
     });
 }
+
+export async function deleteData(collection, doc, array, value) {
+  //alert(doc);
+
+  firebase
+    .firestore()
+    .collection(collection)
+    .doc(doc)
+    .update({ [array]: firebase.firestore.FieldValue.delete() });
+}

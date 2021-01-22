@@ -26,8 +26,19 @@ export default class CoverBanner extends React.Component {
       eventDetail: {},
       transactions: [],
       detailedReferal: null,
+      allUsers: [],
     };
   }
+
+  getUserByID = (id) => {
+    var myUser = "";
+    this.state.allUsers.map((user) => {
+      if (user.id === id) {
+        myUser = user;
+      }
+    });
+    return myUser;
+  };
   async componentWillMount() {}
 
   async componentDidMount() {
@@ -38,6 +49,8 @@ export default class CoverBanner extends React.Component {
         this.setState({ detailedReferal: trans });
       }
     });
+    let allUsers = await getAllOfCollection("Users");
+    this.setState({ allUsers: allUsers });
   }
 
   fetchBanners = () => {
@@ -116,7 +129,7 @@ export default class CoverBanner extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              <h3>Referal Details</h3>
+              <h3>Referral Details</h3>
             </div>
           </div>
           <div className="row content-sm-left content-md-left">
@@ -147,6 +160,27 @@ export default class CoverBanner extends React.Component {
                 <h5 style={{ textAlign: "left", marginTop: "25px" }}>
                   Property Type: {this.state.detailedReferal.propertyType}
                 </h5>
+
+                <h5 style={{ textAlign: "left", marginTop: "25px" }}>
+                  Sender :{" "}
+                  {this.getUserByID(this.state.detailedReferal.creator)
+                    .firstname +
+                    " " +
+                    this.getUserByID(this.state.detailedReferal.creator)
+                      .lastname}
+                </h5>
+
+                <h5 style={{ textAlign: "left", marginTop: "25px" }}>
+                  Receiver :{" "}
+                  {this.getUserByID(this.state.detailedReferal.receiver) != ""
+                    ? this.getUserByID(this.state.detailedReferal.receiver)
+                        .firstname +
+                      " " +
+                      this.getUserByID(this.state.detailedReferal.receiver)
+                        .lastname
+                    : this.state.detailedReferal.receiver}
+                </h5>
+
                 <h5 style={{ textAlign: "left" }}>
                   Property Location:{" "}
                   {this.state.detailedReferal.propertyLocation}
@@ -156,10 +190,10 @@ export default class CoverBanner extends React.Component {
                   K-${this.state.detailedReferal.priceRangeValues[1]}K
                 </h5>
                 <h5 style={{ textAlign: "left" }}>
-                  Referal Agreement: {this.state.detailedReferal.percentage}
+                  Referral Agreement: {this.state.detailedReferal.percentage}
                 </h5>
                 <h5 style={{ textAlign: "left" }}>
-                  Referal Status: {this.state.detailedReferal.status}
+                  Referral Status: {this.state.detailedReferal.status}
                 </h5>
                 <button
                   className={`btn btn-sm btn-primary`}

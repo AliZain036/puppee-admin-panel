@@ -31,7 +31,7 @@ export default class Area extends React.Component {
   }
 
   async componentDidMount() {
-    if (firebase.auth().currentUser) {
+    if (Cookie.get("token")) {
       let allUsers = await getAllOfCollection("Users");
       let allPosts = await getAllOfCollection("Posts");
       let allTransactions = await getAllOfCollection("Transactions");
