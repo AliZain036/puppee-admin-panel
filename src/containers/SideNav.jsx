@@ -21,10 +21,10 @@ export default class SideNav extends React.Component {
     if (process.env.NODE_ENV === 'production') {
       // Cookie.remove('clobberswap_access_token', {domain: `.${window.location.host}`})
       // Cookie.remove('clobberswap_access_token', { path: '', domain: '.saaditrips.com' }); this was the code previously
-      Cookie.remove('clobberswap_access_token');
+      Cookie.remove('token');
     }
     else {
-      Cookie.remove('clobberswap_access_token');
+      Cookie.remove('token');
       // Cookie.remove('clobberswap_access_token', { path: '', domain: '.saaditrips.com' });
     }
     this.props.history.push("/login");

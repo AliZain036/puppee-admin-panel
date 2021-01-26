@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import Cookie from 'js-cookie';
+import React, { Component } from "react";
+import axios from "axios";
+import Cookie from "js-cookie";
 
 class Logout extends Component {
   constructor(props) {
@@ -8,21 +8,18 @@ class Logout extends Component {
   }
 
   componentWillMount() {
-    axios.defaults.headers.common['Authorization'] = '';
-    if (process.env.NODE_ENV === 'production') {
-      Cookie.remove('clobberswap_access_token')
-    }
-    else {
-      Cookie.remove('clobberswap_access_token');
+    axios.defaults.headers.common["Authorization"] = "";
+    if (process.env.NODE_ENV === "production") {
+      Cookie.remove("token");
+    } else {
+      Cookie.remove("token");
     }
     //this.props.history.push("/login");
-    window.location.href = ("/login");
+    window.location.href = "/login";
   }
 
   render() {
-    return (
-      <div></div>
-    );
+    return <div></div>;
   }
 }
 
