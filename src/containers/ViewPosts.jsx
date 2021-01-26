@@ -209,12 +209,32 @@ export default class CoverBanner extends React.Component {
                 {this.state.allComments.map((comment) => {
                   var tageName = "";
                   var tagId = "";
-                  for (var i = 0; i < comment.comment.length; i++) {
-                    console.log("THis is the commnent", comment[i]);
+                  var commentText = comment.comment;
+                  var CleanComment = "";
+                  var foundTag = false;
+                  var ignoreZone1 = false;
+                  for (var i = 0; i < commentText.length; i++) {
+                    if (foundTag === false) {
+                      if (commentText[i] === "(") {
+                        ignoreZone1 = true;
+                      } else if (commentText[i] === ")") {
+                        ignoreZone1 = false;
+                      } else if (ignoreZone1 === false) {
+                        CleanComment = CleanComment + commentText[i];
+                      }
+                    } else {
+                      if (commentText[i] != "[" && commentText[i] != "]") {
+                        CleanComment = CleanComment + commentText[i];
+                      }
+                      if (commentText[i] === "]") {
+                        foundTag = false;
+                      }
+                    }
+                    if (commentText[i] === "@" && commentText[i + 1] === "[") {
+                      foundTag = true;
+                    }
                   }
-                  // if (comment.indexO("@")) {
-                  //   console.log("This is comment thing", comment);
-                  // }
+                  console.log("fount tag in comment", CleanComment);
                   return (
                     <div
                       className="row  comment"
@@ -249,7 +269,7 @@ export default class CoverBanner extends React.Component {
                             )
                           ).fromNow()}
                         </span>
-                        <p style={{ textAlign: "start" }}>{comment.comment}</p>
+                        <p style={{ textAlign: "start" }}>{CleanComment}</p>
                         <p style={{ textAlign: "start" }}>
                           Likes :{comment.likes ? comment.likes.length : 0}{" "}
                         </p>
@@ -257,7 +277,37 @@ export default class CoverBanner extends React.Component {
                       </div>{" "}
                       {comment.replies &&
                         comment.replies.map((rep) => {
-                          console.log("THis is like", rep.reply.likes);
+                          var tageName = "";
+                          var tagId = "";
+                          var replyText = rep.reply;
+                          var CleanReply = "";
+                          var foundReplyTag = false;
+                          var ignoreZone = false;
+                          for (var i = 0; i < replyText.length; i++) {
+                            if (foundReplyTag === false) {
+                              if (replyText[i] === "(") {
+                                ignoreZone = true;
+                              } else if (replyText[i] === ")") {
+                                ignoreZone = false;
+                              } else if (ignoreZone === false) {
+                                CleanReply = CleanReply + replyText[i];
+                              }
+                            } else {
+                              if (replyText[i] != "[" && replyText[i] != "]") {
+                                CleanReply = CleanReply + replyText[i];
+                              }
+                              if (replyText[i] === "]") {
+                                foundReplyTag = false;
+                              }
+                            }
+                            if (
+                              replyText[i] === "@" &&
+                              replyText[i + 1] === "["
+                            ) {
+                              foundReplyTag = true;
+                            }
+                          }
+                          console.log("this is comment reply", CleanReply);
                           return (
                             <div
                               className="row"
@@ -297,7 +347,7 @@ export default class CoverBanner extends React.Component {
                                   ).fromNow()}
                                 </span>
                                 <p style={{ textAlign: "start" }}>
-                                  {rep.reply}
+                                  {CleanReply}
                                 </p>
                                 <p style={{ textAlign: "start" }}>
                                   Likes :{rep.likes ? rep.likes.length : 0}
