@@ -67,7 +67,7 @@ export default class Posts extends React.Component {
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "Languages Updated Successfully",
+          text: "Companies Updated Successfully",
         }).then(() => {
           window.location.href = "/companies";
         });
@@ -78,7 +78,7 @@ export default class Posts extends React.Component {
           timer: 2000,
           title: "Failed.",
           showConfirmButton: false,
-          text: "Languages Updated Failed",
+          text: "Companies Update Failed",
         });
       });
   }

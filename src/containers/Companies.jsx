@@ -48,7 +48,7 @@ export default class CoverBanner extends React.Component {
     }
   }
 
-  async updateLanguages() {
+  async updateCompanies() {
     await addToArray(
       "Admin",
       "0qYmJUZhg0WLUATMjaohcgrsGs33",
@@ -70,7 +70,7 @@ export default class CoverBanner extends React.Component {
       });
   }
 
-  async updateLanguagesUsingArray(array) {
+  async updateCompaniesUsingArray(array) {
     console.log("this is new data", array);
     await updateData(
       "Admin",
@@ -93,21 +93,6 @@ export default class CoverBanner extends React.Component {
         alert("Something went wrong");
       });
   }
-
-  fetchBanners = () => {
-    axios
-      .get(`${API_END_POINT}/api/show-colors`, {
-        headers: { "auth-token": token },
-      })
-      .then((response) => {
-        console.log(response);
-        this.setState({
-          brands: response.data.colors,
-          pages: Math.ceil(response.data.colors.length / 10),
-          responseMessage: "No Colors Found...",
-        });
-      });
-  };
 
   // const requestParams = {
   //   "userId": userId,
@@ -239,7 +224,7 @@ export default class CoverBanner extends React.Component {
                                   return itemData.indexOf(textData) == -1;
                                 }
                               );
-                              this.updateLanguagesUsingArray(newData);
+                              this.updateCompaniesUsingArray(newData);
                             }}
                             className={`btn btn-sm btn-danger`}
                           >
@@ -256,7 +241,7 @@ export default class CoverBanner extends React.Component {
             </table>
           </div>
           {/* <button
-            onClick={() => this.updateLanguages()}
+            onClick={() => this.updateCompanies()}
             className={`btn btn-sm btn-success`}
           >
             Save

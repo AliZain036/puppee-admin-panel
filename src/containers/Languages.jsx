@@ -85,7 +85,7 @@ export default class CoverBanner extends React.Component {
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "expertise Updated Successfully",
+          text: "Languages Updated Successfully",
         });
       })
       .catch((e) => {
