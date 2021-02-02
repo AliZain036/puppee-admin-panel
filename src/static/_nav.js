@@ -16,7 +16,7 @@ export default {
       icon: "icon-user",
     },
     {
-      name: "Referals",
+      name: "Referrals",
       url: "/referal",
       icon: "icon-user",
     },
@@ -48,7 +48,7 @@ export default {
     },
 
     {
-      name: "Expertise Categories",
+      name: "User Categories",
       url: "/expertiseCategories",
       icon: "icon-people",
     },

@@ -91,6 +91,8 @@ export default class CoverBanner extends React.Component {
           title: "Success.",
           showConfirmButton: false,
           text: "Terms and Conditions Updated Successfully",
+        }).then(() => {
+          this.componentWillMount();
         });
       })
       .catch((e) => {
