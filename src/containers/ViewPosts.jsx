@@ -360,7 +360,7 @@ export default class CoverBanner extends React.Component {
                   );
                 })}
               </div>
-              <h4>Liked By {" (" + this.state.allComments.length + ") "}</h4>
+              <h4>Liked By {" (" + this.state.allLikes.length + ") "}</h4>
               <div className="commentSection">
                 {this.state.allLikes.map((item) => {
                   var user = this.getUserByID(item);

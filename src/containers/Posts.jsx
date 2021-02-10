@@ -126,6 +126,22 @@ export default class CoverBanner extends React.Component {
     this.setState({ q: event.target.value });
     this.FilterFn(event.target.value);
   };
+  sortPostsByDate = () => {
+    this.setState({
+      userPosts: this.state.userPosts.sort(function (x, y) {
+        return new Date(y.createdAt.seconds) - new Date(x.createdAt.seconds);
+      }),
+    });
+  };
+  sortPostsByName = () => {
+    this.setState({
+      userPosts: this.state.userPosts.sort(function (x, y) {
+        console.log("Thiss is the great", x, y);
+        console.log("THis is greater", y.creatorName < x.creatorName);
+        return y.creatorName < x.creatorName;
+      }),
+    });
+  };
 
   render() {
     const { events } = this.state;
@@ -164,13 +180,27 @@ export default class CoverBanner extends React.Component {
               </div>
             </div>
 
-            {/* <div className="col-sm-4 pull-right mobile-space">
-              <Link to="colors/colors-form">
-                <button type="button" className="btn btn-success">
-                  Add new Post
-                </button>
-              </Link>
-            </div> */}
+            <div className="col-sm-4 pull-right mobile-space">
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  this.sortPostsByName();
+                }}
+                style={{ marginRight: 10 }}
+              >
+                Sort By Name
+              </button>
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  this.sortPostsByDate();
+                }}
+              >
+                Sort By Date
+              </button>
+            </div>
           </div>
           <div className="table-responsive">
             <table className="table table-striped">
@@ -188,18 +218,18 @@ export default class CoverBanner extends React.Component {
               <tbody>
                 {this.state.userPosts &&
                   this.state.userPosts.map((post, index) => {
-                    console.log(
-                      moment(
-                        new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                          post.createdAt.seconds
-                        )
-                      ).format("YYYY-MM-DD")
-                      // moment(
-                      //   new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                      //     post.createdAt
-                      //   )
-                      // ).fromNow()
-                    );
+                    // console.log(
+                    //   moment(
+                    //     new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                    //       post.createdAt.seconds
+                    //     )
+                    //   ).format("YYYY-MM-DD")
+                    // moment(
+                    //   new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                    //     post.createdAt
+                    //   )
+                    // ).fromNow()
+                    // );
 
                     return (
                       <tr>

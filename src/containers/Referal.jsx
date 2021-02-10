@@ -94,6 +94,23 @@ export default class CoverBanner extends React.Component {
     this.FilterFn(event.target.value);
   };
 
+  sortPostsByDate = () => {
+    this.setState({
+      transactions: this.state.transactions.sort(function (x, y) {
+        return new Date(y.createdAt.seconds) - new Date(x.createdAt.seconds);
+      }),
+    });
+  };
+  sortPostsByName = () => {
+    this.setState({
+      transactions: this.state.transactions.sort(function (x, y) {
+        console.log("Thiss is the great", x, y);
+        console.log("THis is greater", y.clientName < x.clientName);
+        return y.clientName < x.clientName;
+      }),
+    });
+  };
+
   render() {
     const { events } = this.state;
     return (
@@ -138,13 +155,27 @@ export default class CoverBanner extends React.Component {
               </div>
             </div>
 
-            {/* <div className="col-sm-4 pull-right mobile-space">
-              <Link to="colors/colors-form">
-                <button type="button" className="btn btn-success">
-                  Add new Referral
-                </button>
-              </Link>
-            </div> */}
+            <div className="col-sm-4 pull-right mobile-space">
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  this.sortPostsByName();
+                }}
+                style={{ marginRight: 10 }}
+              >
+                Sort By Name
+              </button>
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  this.sortPostsByDate();
+                }}
+              >
+                Sort By Date
+              </button>
+            </div>
           </div>
           <div className="table-responsive">
             <table className="table table-striped">

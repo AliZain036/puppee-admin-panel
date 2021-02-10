@@ -26,6 +26,8 @@ import MenuDetails from "./MenuDetails";
 import Posts from "./Posts";
 import ViewPosts from "./ViewPosts";
 import TermsAndConditions from "./TermsAndConditions";
+import PrivacyPolicy from "./PrivacyPolicy";
+import CookiePolicy from "./CookiePolicy";
 import About from "./About";
 // import Earnings from "./Earnings";
 // import Followers from "./Followers";
@@ -109,6 +111,9 @@ class App extends React.Component {
                   path="/terms"
                   component={TermsAndConditions}
                 />
+                <Route exact={true} path="/cookie" component={CookiePolicy} />
+
+                <Route exact={true} path="/privacy" component={PrivacyPolicy} />
 
                 <Route exact={true} path="/companies" component={Companies} />
                 <Route exact={true} path="/addCompany" component={AddCompany} />

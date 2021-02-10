@@ -53,6 +53,16 @@ export default {
       icon: "icon-people",
     },
     {
+      name: "Privacy Policy",
+      url: "/privacy",
+      icon: "icon-people",
+    },
+    {
+      name: "Cookie Policy",
+      url: "/cookie",
+      icon: "icon-people",
+    },
+    {
       name: "Logout",
       url: "/logout",
       icon: "icon-logout",

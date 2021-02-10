@@ -511,7 +511,7 @@ export default class Posts extends React.Component {
                                     className="form-control"
                                     value={
                                       this.state.detailedUser.firstname +
-                                      "" +
+                                      " " +
                                       this.state.detailedUser.lastname
                                     }
                                     // onChange={this.handleInputChange}
