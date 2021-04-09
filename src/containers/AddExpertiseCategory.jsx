@@ -55,7 +55,7 @@ export default class Posts extends React.Component {
   };
 
   async addNewCategory() {
-    console.log("does i");
+    console.log("does i", this.state.newLanguage);
     let allUsers = await updateData(
       "Admin",
       "0qYmJUZhg0WLUATMjaohcgrsGs33",
@@ -73,7 +73,8 @@ export default class Posts extends React.Component {
           window.location.href = "/expertiseCategories";
         });
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log("This is error", e);
         SwalAutoHide.fire({
           icon: "error",
           timer: 2000,
@@ -133,9 +134,9 @@ export default class Posts extends React.Component {
   async componentWillMount() {
     let Admin = await getAllOfCollection("Admin");
     // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-    console.log("This is the admin", Admin[0].languages);
+    console.log("This is the admin", Admin[0]);
     this.setState({
-      languages: Admin[0].languages,
+      languages: Admin[0],
     });
   }
 
@@ -356,23 +357,6 @@ export default class Posts extends React.Component {
                         className="form-horizontal form-label-left"
                         onSubmit={(e) => {
                           e.preventDefault();
-                          console.log(
-                            "this is new Language",
-                            this.state.newLanguage
-                          );
-                          console.log(
-                            "this all languages",
-                            this.state.languages
-                          );
-                          var newArray = this.state.languages.push({
-                            selected: false,
-                            title: this.state.newLanguage,
-                          });
-                          console.log(
-                            "this all languages after",
-                            this.state.languages
-                          );
-                          console.log("THis is new array", newArray);
                           this.addNewCategory();
                         }}
                       >

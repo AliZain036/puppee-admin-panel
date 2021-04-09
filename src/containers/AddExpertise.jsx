@@ -57,11 +57,114 @@ export default class Posts extends React.Component {
   };
 
   async updateDataUsingArray(array) {
+    var realEstateAgent = [
+      {
+        title: "Residential",
+      },
+      {
+        title: "Commercial",
+      },
+      {
+        title: "Agricultural",
+      },
+      {
+        title: "Rural Properties",
+      },
+      {
+        title: "Investment",
+      },
+      {
+        title: "Strata",
+      },
+      {
+        title: "Property Management",
+      },
+    ];
+
+    var mortgageLenders = [
+      {
+        title: "Residential",
+      },
+      {
+        title: "Commercial",
+      },
+      {
+        title: "Agricultural",
+      },
+      {
+        title: "Rural Properties",
+      },
+      {
+        title: "Investment Properties",
+      },
+      {
+        title: "Strata Properties",
+      },
+      {
+        title: "New Immigrants",
+      },
+      {
+        title: "Foreign Buyers",
+      },
+      {
+        title: "New Construction",
+      },
+      {
+        title: "First Time Home Buyers",
+      },
+      {
+        title: "Unconventional Lending",
+      },
+    ];
+    var realEstateLawyers = [
+      {
+        title: "Residential",
+      },
+      {
+        title: "Commercial",
+      },
+      {
+        title: "Estate Planning and Probate",
+      },
+      {
+        title: "Corporate Services",
+      },
+      {
+        title: "Land Use Planning",
+      },
+      {
+        title: "Family Law",
+      },
+      {
+        title: "Litigation",
+      },
+      {
+        title: "Tax Compliance",
+      },
+    ];
+    var notaryPublic = [
+      {
+        title: "Real Estate Transfers",
+      },
+      {
+        title: "Estate Planning",
+      },
+      {
+        title: "Power of Attorney",
+      },
+      {
+        title: "Notarization",
+      },
+    ];
     console.log("this is new data", array);
     await updateData(
       "Admin",
       "0qYmJUZhg0WLUATMjaohcgrsGs33",
       this.props.match.params.name,
+      // "Mortgage Lenders",
+      // "Notary Public",
+      // "Real Estate Lawyer",
+      // "Real Estate Agent",
       array
     )
       .then(() => {

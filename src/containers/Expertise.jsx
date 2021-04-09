@@ -218,6 +218,7 @@ export default class CoverBanner extends React.Component {
                 <tr>
                   <th>Sr. #</th>
                   <th>Name </th>
+                  <th>Category </th>
                 </tr>
               </thead>
 
@@ -229,6 +230,8 @@ export default class CoverBanner extends React.Component {
                         <td>{index + 1}</td>
 
                         <td>{language.title}</td>
+                        <td>{language.category}</td>
+
                         <td>
                           <button
                             onClick={() => {
