@@ -21,6 +21,7 @@ import { withRouter } from "react-router-dom";
 import { API_END_POINT } from "../config";
 import firebase from "firebase";
 import { connectFirebase, getAllOfCollection } from "../backend/utility";
+import { FormatListNumberedOutlined } from "@material-ui/icons";
 
 const style = {
   logoWrapper: {
@@ -58,13 +59,21 @@ class Login extends Component {
     };
     if (!this.state.loading) {
       this.setState({ loading: true });
-      await firebase.auth().signInWithEmailAndPassword(email, password);
-      if (firebase.auth().currentUser || Cookie.get("token")) {
-        Cookie.set("token", firebase.auth().currentUser);
-        this.props.history.push("/");
+      if (email === "admin@netdesk.com" && password === "123456") {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+
+        if (firebase.auth().currentUser || Cookie.get("token")) {
+          Cookie.set("token", firebase.auth().currentUser);
+          this.props.history.push("/");
+        } else {
+          this.setState({ loading: false });
+          alert("Email or Password wrong !");
+        }
       } else {
-        alert("Email or Password wrong !");
+        this.setState({ loading: false });
+        alert("Please use an admin user to login!");
       }
+
       // let data = await getAllOfCollection("admin");
       // console.log("My data = ", data);
       // let success = false;
