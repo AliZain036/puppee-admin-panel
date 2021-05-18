@@ -57,6 +57,92 @@ export default class Posts extends React.Component {
   };
 
   async updateDataUsingArray(array) {
+    var Professions = [
+      {
+        name: "Real Estate Agent",
+        id: 1,
+        active: true,
+      },
+      {
+        name: "Mortgage Specialist",
+        id: 2,
+        active: true,
+      },
+      {
+        name: "Notary Public",
+        id: 3,
+        active: true,
+      },
+      {
+        name: "Real Estate Lawyer",
+        id: 4,
+        active: true,
+      },
+      {
+        name: "Property Inspector",
+        id: 5,
+        active: true,
+      },
+      {
+        name: "Property Appraiser",
+        id: 6,
+        active: true,
+      },
+      {
+        name: "Property Insurance Specialist",
+        id: 7,
+        active: true,
+      },
+      {
+        name: "Organizer or Administrator",
+        id: 8,
+        active: true,
+      },
+    ];
+    var AreaOfExpertise = [
+      {
+        profession: "Real Estate Agent",
+        id: 1,
+        active: true,
+        name: "Residential",
+      },
+      {
+        profession: "Real Estate Agent",
+        id: 1,
+        active: true,
+        name: "Commercial",
+      },
+      {
+        profession: "Real Estate Agent",
+        id: 1,
+        active: true,
+        name: "Agricultural",
+      },
+      {
+        profession: "Real Estate Agent",
+        id: 1,
+        active: true,
+        name: "Rural Properties",
+      },
+      {
+        profession: "Real Estate Agent",
+        id: 1,
+        active: true,
+        name: "Investment",
+      },
+      {
+        profession: "Real Estate Agent",
+        id: 1,
+        active: true,
+        name: "Strata",
+      },
+      {
+        profession: "Real Estate Agent",
+        id: 1,
+        active: true,
+        name: "Property Management",
+      },
+    ];
     var realEstateAgent = [
       {
         title: "Residential",
@@ -157,14 +243,49 @@ export default class Posts extends React.Component {
       },
     ];
     console.log("this is new data", array);
+
+    //this funtion is dangerouse
+    // await updateData(
+    //   "Admin",
+    //   //this docuent is to add professions
+    //   // "lW16IC5TtfA58gxARBOW",
+
+    //   "0qYmJUZhg0WLUATMjaohcgrsGs33",
+    //   this.props.match.params.name,
+    //   // "Mortgage Lenders",
+    //   // "Notary Public",
+    //   // "Real Estate Lawyer",
+    //   // "Real Estate Agent",
+    //   // "Professions",
+    //   // Professions
+    //   array
+    // )
+    //   .then(() => {
+    //     this.componentWillMount();
+    //     SwalAutoHide.fire({
+    //       icon: "success",
+    //       timer: 2000,
+    //       title: "Success.",
+    //       showConfirmButton: false,
+    //       text: "Expertise Updated Successfully",
+    //     }).then(() => {
+    //       window.location.href = "/expertise";
+    //     });
+    //   })
+    //   .catch((e) => {
+    //     SwalAutoHide.fire({
+    //       icon: "error",
+    //       timer: 2000,
+    //       title: "Failed.",
+    //       showConfirmButton: false,
+    //       text: "Languages Updated Failed",
+    //     });
+    //   });
+
     await updateData(
       "Admin",
       "0qYmJUZhg0WLUATMjaohcgrsGs33",
       this.props.match.params.name,
-      // "Mortgage Lenders",
-      // "Notary Public",
-      // "Real Estate Lawyer",
-      // "Real Estate Agent",
       array
     )
       .then(() => {
@@ -174,7 +295,7 @@ export default class Posts extends React.Component {
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "Languages Updated Successfully",
+          text: "Expertise Updated Successfully",
         }).then(() => {
           window.location.href = "/expertise";
         });

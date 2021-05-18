@@ -41,6 +41,7 @@ export default class Posts extends React.Component {
       transactions: [],
       newLanguage: "",
       languages: [],
+      active: true,
     };
   }
 
@@ -56,12 +57,11 @@ export default class Posts extends React.Component {
 
   async addNewCategory() {
     console.log("does i", this.state.newLanguage);
-    let allUsers = await updateData(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      this.state.newLanguage,
-      []
-    )
+    const data = {
+      name: this.state.newLanguage,
+      id: 8,
+    };
+    let allUsers = await updateData("Admin", "lW16IC5TtfA58gxARBOW ", data, [])
       .then(() => {
         SwalAutoHide.fire({
           icon: "success",
@@ -70,7 +70,7 @@ export default class Posts extends React.Component {
           showConfirmButton: false,
           text: "Categories Updated Successfully",
         }).then(() => {
-          window.location.href = "/expertiseCategories";
+          // window.location.href = "/expertiseCategories";
         });
       })
       .catch((e) => {
@@ -85,23 +85,16 @@ export default class Posts extends React.Component {
       });
   }
 
-  fetchOrders = () => {
-    axios.get(`${API_END_POINT}/api/show-all-posts`).then((response) => {
-      this.setState({
-        posts: response.data.posts,
-        responseMessage: "No Posts Found...",
-      });
-    });
-  };
-
-  async updateLanguagesUsingArray(array) {
-    console.log("this is new data", array);
-    await updateData(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "languages",
-      array
-    )
+  async updateExpertiseUsingArray() {
+    var temp = this.state.languages;
+    const data = {
+      name: this.state.newLanguage,
+      id: this.state.languages.length + 1,
+      active: this.state.active,
+    };
+    temp.push(data);
+    console.log("This is temp", temp);
+    await updateData("Admin", "lW16IC5TtfA58gxARBOW", "Professions", temp)
       .then(() => {
         this.componentWillMount();
         SwalAutoHide.fire({
@@ -109,9 +102,9 @@ export default class Posts extends React.Component {
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "Languages Updated Successfully",
+          text: "Professions Updated Successfully",
         }).then(() => {
-          window.location.href = "/languages";
+          window.location.href = "/expertiseCategories";
         });
       })
       .catch((e) => {
@@ -120,7 +113,7 @@ export default class Posts extends React.Component {
           timer: 2000,
           title: "Failed.",
           showConfirmButton: false,
-          text: "Languages Updated Failed",
+          text: "Professions Updated Failed",
         });
       });
   }
@@ -134,9 +127,9 @@ export default class Posts extends React.Component {
   async componentWillMount() {
     let Admin = await getAllOfCollection("Admin");
     // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-    console.log("This is the admin", Admin[0]);
+    console.log("This is the admin", Admin[1].Professions);
     this.setState({
-      languages: Admin[0],
+      languages: Admin[1].Professions,
     });
   }
 
@@ -357,7 +350,8 @@ export default class Posts extends React.Component {
                         className="form-horizontal form-label-left"
                         onSubmit={(e) => {
                           e.preventDefault();
-                          this.addNewCategory();
+                          // this.addNewCategory();
+                          this.updateExpertiseUsingArray();
                         }}
                       >
                         <div className="form-group row">
@@ -372,6 +366,7 @@ export default class Posts extends React.Component {
                                 name="name"
                                 placeholder="Add New Category"
                                 className="form-control"
+                                style={{ width: "95%" }}
                                 value={this.state.newLanguage}
                                 onChange={(e) => {
                                   this.setState({
@@ -379,6 +374,20 @@ export default class Posts extends React.Component {
                                   });
                                 }}
                               />
+                            </div>
+                          </div>
+                          <label className="control-label col-md-3 col-sm-3">
+                            Active
+                          </label>
+                          <div className="col-md-8 col-sm-8">
+                            <div className="col-md-8 col-sm-8">
+                              <input
+                                type="checkbox"
+                                onChange={() => {
+                                  this.setState({ active: !this.state.active });
+                                }}
+                                checked={this.state.active}
+                              ></input>
                             </div>
                           </div>
                           <div className="col-md-1 col-sm-1">

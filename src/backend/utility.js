@@ -37,6 +37,12 @@ export async function getAllOfCollection(collection) {
   return data;
 }
 
+export async function getDataWithDoc(collection, doc) {
+  let data = [];
+  let user = await firebase.firestore().collection(collection).doc(doc).get();
+  return user;
+}
+
 export async function getDataWithoutDoc(collection, objectKey) {
   let data = [];
   let user = await firebase

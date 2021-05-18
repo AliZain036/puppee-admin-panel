@@ -9,6 +9,7 @@ import SwalAutoHide from "sweetalert2";
 import {
   connectFirebase,
   getAllOfCollection,
+  getDataWithDoc,
   getData,
   addToArray,
   deleteData,
@@ -37,16 +38,17 @@ export default class CoverBanner extends React.Component {
     if (Cookie.get("token")) {
       var cats = [];
       let Admin = await getAllOfCollection("Admin");
+      // let TestAdmin = await getDataWithDoc("Admin","")
       // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      console.log("This is the admin", Admin[0]);
-      for (let key in Admin[0]) {
-        if (key !== "languages" && key !== "companies") {
-          cats.push(key);
-        }
-      }
+      console.log("This is the admin", Admin[1]);
+      // for (let key in Admin[0]) {
+      //   if (key !== "languages" && key !== "companies") {
+      //     cats.push(key);
+      //   }
+      // }
       this.setState({
-        categories: cats,
-        copyCategories: cats,
+        categories: Admin[1].Professions,
+        copyCategories: Admin[1].Professions,
       });
     } else {
       this.props.history.push("/login");
@@ -150,7 +152,7 @@ export default class CoverBanner extends React.Component {
   async FilterFn(text) {
     if (text !== "") {
       let newData = this.state.categories.filter(function (item) {
-        let itemData = item ? item.toUpperCase() : "".toUpperCase();
+        let itemData = item ? item.name.toUpperCase() : "".toUpperCase();
         let textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
@@ -238,11 +240,11 @@ export default class CoverBanner extends React.Component {
                       <tr>
                         <td>{index + 1}</td>
 
-                        <td>{cat}</td>
+                        <td>{cat.name}</td>
                         <td>
                           <button
                             onClick={() =>
-                              (window.location.href = `/addExpertise/${cat}`)
+                              (window.location.href = `/addExpertise/${cat.name}`)
                             }
                             className={`btn btn-sm btn-success`}
                           >
