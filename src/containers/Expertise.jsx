@@ -38,24 +38,23 @@ export default class CoverBanner extends React.Component {
     if (Cookie.get("token")) {
       var data = [];
       let Admin = await getAllOfCollection("Admin");
-      this.setState({ Admin: Admin[0] });
-      for (let key in Admin[0]) {
-        if (key !== "languages" && key !== "companies") {
-          Admin[0][key].map((row) => {
-            data.push({
-              title: row.title,
-              seleted: false,
-              category: key,
-            });
-          });
-        }
-      }
-      console.log("This is ithe data", data);
-      // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      console.log("This is the admin", Admin);
+      // this.setState({ Admin: Admin[0] });
+      // for (let key in Admin[0]) {
+      //   if (key !== "languages" && key !== "companies") {
+      //     Admin[0][key].map((row) => {
+      //       data.push({
+      //         title: row.title,
+      //         seleted: false,
+      //         category: key,
+      //       });
+      //     });
+      //   }
+      // }
+      console.log("This is ithe data", Admin[1]);
+
       this.setState({
-        expertise: data,
-        copyexpertise: data,
+        expertise: Admin[1].AreaOfExpertise,
+        copyexpertise: Admin[1].AreaOfExpertise,
       });
     } else {
       this.props.history.push("/login");
@@ -146,7 +145,7 @@ export default class CoverBanner extends React.Component {
   async FilterFn(text) {
     if (text !== "") {
       let newData = this.state.expertise.filter(function (item) {
-        let itemData = item.title ? item.title.toUpperCase() : "".toUpperCase();
+        let itemData = item.name ? item.name.toUpperCase() : "".toUpperCase();
         let textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
@@ -229,8 +228,8 @@ export default class CoverBanner extends React.Component {
                       <tr>
                         <td>{index + 1}</td>
 
-                        <td>{language.title}</td>
-                        <td>{language.category}</td>
+                        <td>{language.name}</td>
+                        <td>{language.profession}</td>
 
                         <td>
                           <button
@@ -274,12 +273,12 @@ export default class CoverBanner extends React.Component {
               </tbody>
             </table>
           </div>
-          <button
+          {/* <button
             onClick={() => this.updateexpertise()}
             className={`btn btn-sm btn-success`}
           >
             Save
-          </button>
+          </button> */}
         </div>
       </div>
     );

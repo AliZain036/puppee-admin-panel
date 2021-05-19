@@ -108,39 +108,181 @@ export default class Posts extends React.Component {
       },
       {
         profession: "Real Estate Agent",
-        id: 1,
+        id: 2,
         active: true,
         name: "Commercial",
       },
       {
         profession: "Real Estate Agent",
-        id: 1,
+        id: 3,
         active: true,
         name: "Agricultural",
       },
       {
         profession: "Real Estate Agent",
-        id: 1,
+        id: 4,
         active: true,
         name: "Rural Properties",
       },
       {
         profession: "Real Estate Agent",
-        id: 1,
+        id: 5,
         active: true,
         name: "Investment",
       },
       {
         profession: "Real Estate Agent",
-        id: 1,
+        id: 6,
         active: true,
         name: "Strata",
       },
       {
         profession: "Real Estate Agent",
-        id: 1,
+        id: 7,
         active: true,
         name: "Property Management",
+      },
+
+      {
+        profession: "Mortgage Specialist",
+        id: 1,
+        active: true,
+        name: "Residential",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 2,
+        active: true,
+        name: "Commercial",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 3,
+        active: true,
+        name: "Agricultural",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 4,
+        active: true,
+        name: "Rural Properties",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 5,
+        active: true,
+        name: "Investment Properties",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 6,
+        active: true,
+        name: "Strata Properties",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 7,
+        active: true,
+        name: "New Immigrants",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 8,
+        active: true,
+        name: "Foreign Buyers",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 9,
+        active: true,
+        name: "New Construction",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 10,
+        active: true,
+        name: "First Time Home Buyers",
+      },
+      {
+        profession: "Mortgage Specialist",
+        id: 11,
+        active: true,
+        name: "Unconventional Lending",
+      },
+      //Real Estate Lawyer
+      {
+        profession: "Real Estate Lawyer",
+        id: 1,
+        active: true,
+        name: "Residential",
+      },
+      {
+        profession: "Real Estate Lawyer",
+        id: 1,
+        active: true,
+        name: "Commercial",
+      },
+      {
+        profession: "Real Estate Lawyer",
+        id: 1,
+        active: true,
+        name: "Estate Planning and Probate",
+      },
+      {
+        profession: "Real Estate Lawyer",
+        id: 1,
+        active: true,
+        name: "Corporate Services",
+      },
+      {
+        profession: "Real Estate Lawyer",
+        id: 1,
+        active: true,
+        name: "Land Use Planning",
+      },
+      {
+        profession: "Real Estate Lawyer",
+        id: 1,
+        active: true,
+        name: "Family Law",
+      },
+      {
+        profession: "Real Estate Lawyer",
+        id: 1,
+        active: true,
+        name: "Litigation",
+      },
+      {
+        profession: "Real Estate Lawyer",
+        id: 1,
+        active: true,
+        name: "Tax Compliance",
+      },
+
+      //Notary Public
+      {
+        profession: "Notary Public",
+        id: 1,
+        active: true,
+        name: "Real Estate Transfers",
+      },
+      {
+        profession: "Notary Public",
+        id: 1,
+        active: true,
+        name: "Estate Planning",
+      },
+      {
+        profession: "Notary Public",
+        id: 1,
+        active: true,
+        name: "Power of Attorney",
+      },
+      {
+        profession: "Notary Public",
+        id: 1,
+        active: true,
+        name: "Notarization",
       },
     ];
     var realEstateAgent = [
@@ -244,21 +386,21 @@ export default class Posts extends React.Component {
     ];
     console.log("this is new data", array);
 
-    //this funtion is dangerouse
+    // this funtion is dangerouse
+
     // await updateData(
     //   "Admin",
     //   //this docuent is to add professions
-    //   // "lW16IC5TtfA58gxARBOW",
+    //   "lW16IC5TtfA58gxARBOW",
 
-    //   "0qYmJUZhg0WLUATMjaohcgrsGs33",
-    //   this.props.match.params.name,
     //   // "Mortgage Lenders",
     //   // "Notary Public",
     //   // "Real Estate Lawyer",
     //   // "Real Estate Agent",
     //   // "Professions",
+    //   "AreaOfExpertise",
     //   // Professions
-    //   array
+    //   AreaOfExpertise
     // )
     //   .then(() => {
     //     this.componentWillMount();
@@ -311,6 +453,45 @@ export default class Posts extends React.Component {
       });
   }
 
+  async addProfessionUsingArray() {
+    console.log("This is state.", this.state.expertise);
+    var tempCat = this.state.expertise;
+    tempCat.push({
+      name: this.state.newLanguage,
+      active: true,
+      profession: this.props.match.params.name,
+      id: this.state.expertise.length,
+    });
+    console.log("This is new Category", tempCat);
+    await updateData(
+      "Admin",
+      "lW16IC5TtfA58gxARBOW",
+      "AreaOfExpertise",
+      tempCat
+    )
+      .then(() => {
+        this.componentWillMount();
+        SwalAutoHide.fire({
+          icon: "success",
+          timer: 2000,
+          title: "Success.",
+          showConfirmButton: false,
+          text: "Profession Added Successfully",
+        }).then(() => {
+          window.location.href = "/expertise";
+        });
+      })
+      .catch((e) => {
+        SwalAutoHide.fire({
+          icon: "error",
+          timer: 2000,
+          title: "Failed.",
+          showConfirmButton: false,
+          text: "Professions Add Failed",
+        });
+      });
+  }
+
   getAllUserRelatedData = async () => {
     console.log("userId = ", this.props.match.params.userId);
     let allUsers = await getAllOfCollection("Users");
@@ -320,24 +501,10 @@ export default class Posts extends React.Component {
   async componentWillMount() {
     var cats = [];
     let Admin = await getAllOfCollection("Admin");
-    console.log("THis is it", Admin[0][this.props.match.params.name]);
-    // this.setState({
-    //   expertise: Admin[0].expertise,
-    //   copyexpertise: Admin[0].expertise,
-    // });
-    for (let key in Admin[0]) {
-      if (key !== "languages" && key !== "companies") {
-        var Option = { value: key, label: key };
-        cats.push(Option);
-        // if (key === this.props.match.params.name) {
-        //   this.setState({
-        //     expertise: A,
-        //   });
-        // }
-      }
-    }
+    console.log("THis is it", Admin);
+
     this.setState({
-      expertise: Admin[0][this.props.match.params.name],
+      expertise: Admin[1].AreaOfExpertise,
     });
   }
 
@@ -444,19 +611,20 @@ export default class Posts extends React.Component {
                         className="form-horizontal form-label-left"
                         onSubmit={(e) => {
                           e.preventDefault();
-                          console.log(
-                            "this is new Language",
-                            this.state.newLanguage
-                          );
-                          console.log(
-                            "this all languages",
-                            this.state.languages
-                          );
-                          this.state.expertise.push({
-                            selected: false,
-                            title: this.state.newLanguage,
-                          });
-                          this.updateDataUsingArray(this.state.expertise);
+                          // console.log(
+                          //   "this is new Language",
+                          //   this.state.newLanguage
+                          // );
+                          // console.log(
+                          //   "this all languages",
+                          //   this.state.languages
+                          // );
+                          // this.state.expertise.push({
+                          //   selected: false,
+                          //   title: this.state.newLanguage,
+                          // });
+                          // this.updateDataUsingArray(this.state.expertise);
+                          this.addProfessionUsingArray();
                         }}
                       >
                         <div className="form-group row">

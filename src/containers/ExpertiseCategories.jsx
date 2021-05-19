@@ -10,7 +10,7 @@ import {
   connectFirebase,
   getAllOfCollection,
   getDataWithDoc,
-  getData,
+  updateData,
   addToArray,
   deleteData,
 } from "../backend/utility";
@@ -53,6 +53,39 @@ export default class CoverBanner extends React.Component {
     } else {
       this.props.history.push("/login");
     }
+  }
+
+  async deleteExpertiseUsingArray(category) {
+    console.log("This is category", category);
+    var tempCat = [];
+    this.state.categories.map((cat) => {
+      if (cat.name != category.name) {
+        tempCat.push(cat);
+      }
+    });
+    console.log("This is new Category", tempCat);
+    await updateData("Admin", "lW16IC5TtfA58gxARBOW", "Professions", tempCat)
+      .then(() => {
+        this.componentWillMount();
+        SwalAutoHide.fire({
+          icon: "success",
+          timer: 2000,
+          title: "Success.",
+          showConfirmButton: false,
+          text: "Profession Deleted Successfully",
+        }).then(() => {
+          // window.location.reload();
+        });
+      })
+      .catch((e) => {
+        SwalAutoHide.fire({
+          icon: "error",
+          timer: 2000,
+          title: "Failed.",
+          showConfirmButton: false,
+          text: "Professions Delete Failed",
+        });
+      });
   }
 
   async updateLanguages() {
@@ -254,7 +287,7 @@ export default class CoverBanner extends React.Component {
                         <td>
                           <button
                             onClick={() => {
-                              this.deleteCategory(cat);
+                              this.deleteExpertiseUsingArray(cat);
                             }}
                             className={`btn btn-sm btn-danger`}
                           >
