@@ -286,6 +286,16 @@ export default class CoverBanner extends React.Component {
                         </td>
                         <td>
                           <button
+                            onClick={() =>
+                              (window.location.href = `/associateCompany/${cat.name}`)
+                            }
+                            className={`btn btn-sm btn-success`}
+                          >
+                            Associate Company
+                          </button>
+                        </td>
+                        <td>
+                          <button
                             onClick={() => {
                               this.deleteExpertiseUsingArray(cat);
                             }}

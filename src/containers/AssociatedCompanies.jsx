@@ -9,9 +9,10 @@ import SwalAutoHide from "sweetalert2";
 import {
   connectFirebase,
   getAllOfCollection,
-  getData,
-  addToArray,
+  getDataWithDoc,
   updateData,
+  addToArray,
+  deleteData,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -28,65 +29,36 @@ export default class CoverBanner extends React.Component {
       pages: 1,
       q: "",
       responseMessage: "Loading Colors...",
-      expertise: [],
-      copyexpertise: [],
-      Admin: [],
+      categories: [],
+      copyCategories: [],
     };
   }
   async componentWillMount() {
     // console.log("This is token now", Cookie.get("token"));
     if (Cookie.get("token")) {
-      var data = [];
+      var cats = [];
       let Admin = await getAllOfCollection("Admin");
-      // this.setState({ Admin: Admin[0] });
+      // let TestAdmin = await getDataWithDoc("Admin","")
+      // this.setState({ userPosts: allPosts, copyPosts: allPosts });
+      console.log("This is the admin", Admin[1]);
       // for (let key in Admin[0]) {
       //   if (key !== "languages" && key !== "companies") {
-      //     Admin[0][key].map((row) => {
-      //       data.push({
-      //         title: row.title,
-      //         seleted: false,
-      //         category: key,
-      //       });
-      //     });
+      //     cats.push(key);
       //   }
       // }
-      console.log("This is ithe data", Admin[1]);
-
       this.setState({
-        expertise: Admin[1].AreaOfExpertise,
-        copyexpertise: Admin[1].AreaOfExpertise,
+        categories: Admin[1].AssociatedCompanies,
+        copyCategories: Admin[1].AssociatedCompanies,
       });
     } else {
       this.props.history.push("/login");
     }
   }
 
-  async updateexpertise() {
-    await addToArray(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "expertise",
-      this.state.expertise
-    )
-      .then(() => {
-        this.componentWillMount();
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "expertise Updated Successfully",
-        });
-      })
-      .catch(() => {
-        alert("Something went wrong");
-      });
-  }
-
   async deleteExpertiseUsingArray(category) {
     console.log("This is category", category);
     var tempCat = [];
-    this.state.expertise.map((cat) => {
+    this.state.categories.map((cat) => {
       if (cat.name != category.name) {
         tempCat.push(cat);
       }
@@ -95,7 +67,7 @@ export default class CoverBanner extends React.Component {
     await updateData(
       "Admin",
       "lW16IC5TtfA58gxARBOW",
-      "AreaOfExpertise",
+      "AssociatedCompanies",
       tempCat
     )
       .then(() => {
@@ -121,22 +93,57 @@ export default class CoverBanner extends React.Component {
       });
   }
 
-  async updateexpertiseUsingArray(array, category) {
-    console.log("this is new data", array, category);
-    await updateData("Admin", "0qYmJUZhg0WLUATMjaohcgrsGs33", category, array)
+  async updateLanguages() {
+    await addToArray(
+      "Admin",
+      "0qYmJUZhg0WLUATMjaohcgrsGs33",
+      "languages",
+      this.state.languages
+    )
       .then(() => {
-        this.componentWillMount();
+        SwalAutoHide.fire({
+          icon: "success",
+          timer: 3000,
+          title: "Success.",
+          showConfirmButton: false,
+          text: "Languages Updated Successfully",
+        }).then(() => {
+          this.componentWillMount();
+        });
+      })
+      .catch(() => {
+        alert("Something went wrong");
+      });
+  }
+
+  async deleteCategory(fieldName) {
+    let allUsers = await deleteData(
+      "Admin",
+      "0qYmJUZhg0WLUATMjaohcgrsGs33",
+      fieldName,
+      []
+    )
+      .then((e) => {
+        console.log("This is delted", e);
         SwalAutoHide.fire({
           icon: "success",
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "Expertise Updated Successfully",
+          text: "Terms and Conditions Updated Successfully",
+        }).then(() => {
+          this.componentWillMount();
         });
       })
       .catch((e) => {
-        console.log("This is error", e);
-        alert("Something went wrong");
+        console.log("this is", e);
+        SwalAutoHide.fire({
+          icon: "error",
+          timer: 2000,
+          title: "Failure",
+          showConfirmButton: false,
+          text: "Something went wrong!!",
+        });
       });
   }
 
@@ -182,19 +189,19 @@ export default class CoverBanner extends React.Component {
 
   async FilterFn(text) {
     if (text !== "") {
-      let newData = this.state.expertise.filter(function (item) {
-        let itemData = item.name ? item.name.toUpperCase() : "".toUpperCase();
+      let newData = this.state.categories.filter(function (item) {
+        let itemData = item ? item.name.toUpperCase() : "".toUpperCase();
         let textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
 
       this.setState({
-        expertise: newData,
+        categories: newData,
         isSearching: true,
       });
     } else {
       this.setState({
-        expertise: this.state.copyexpertise,
+        categories: this.state.copyCategories,
         isSearching: false,
       });
     }
@@ -213,7 +220,7 @@ export default class CoverBanner extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              <h3>List of expertise</h3>
+              <h3>List of Associated Companies</h3>
             </div>
             <div className="col-sm-4">
               <div className="input-group">
@@ -244,9 +251,15 @@ export default class CoverBanner extends React.Component {
             </div>
 
             <div className="col-sm-4 pull-right mobile-space">
-              {/* <button type="button" className="btn btn-success">
-                Add new Language
-              </button> */}
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  window.location.href = "/addExpertiseCategories";
+                }}
+              >
+                Add new Category
+              </button>
             </div>
           </div>
           <div className="table-responsive">
@@ -255,24 +268,24 @@ export default class CoverBanner extends React.Component {
                 <tr>
                   <th>Sr. #</th>
                   <th>Name </th>
-                  <th>Category </th>
+                  <th>Associated To </th>
                 </tr>
               </thead>
 
               <tbody>
-                {this.state.expertise &&
-                  this.state.expertise.map((language, index) => {
+                {this.state.categories &&
+                  this.state.categories.map((cat, index) => {
                     return (
                       <tr>
                         <td>{index + 1}</td>
 
-                        <td>{language.name}</td>
-                        <td>{language.profession}</td>
+                        <td>{cat.name}</td>
+                        <td>{cat.profession}</td>
 
                         <td>
                           <button
                             onClick={() => {
-                              this.deleteExpertiseUsingArray(language);
+                              this.deleteExpertiseUsingArray(cat);
                             }}
                             className={`btn btn-sm btn-danger`}
                           >
@@ -282,16 +295,6 @@ export default class CoverBanner extends React.Component {
                               : "Block"} */}
                           </button>
                         </td>
-                        <td>
-                          {/* <button
-                            onClick={() =>
-                              (window.location.href = `/addExpertise/${language.title}`)
-                            }
-                            className={`btn btn-sm btn-success`}
-                          >
-                            Add
-                          </button> */}
-                        </td>
                       </tr>
                     );
                   })}
@@ -299,7 +302,7 @@ export default class CoverBanner extends React.Component {
             </table>
           </div>
           {/* <button
-            onClick={() => this.updateexpertise()}
+            onClick={() => this.updateLanguages()}
             className={`btn btn-sm btn-success`}
           >
             Save

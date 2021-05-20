@@ -46,6 +46,11 @@ export default {
       url: "/companies",
       icon: "icon-people",
     },
+    {
+      name: "Associated Companies",
+      url: "/associatedCompanies",
+      icon: "icon-people",
+    },
 
     {
       name: "User Categories",

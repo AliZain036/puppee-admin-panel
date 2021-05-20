@@ -43,6 +43,8 @@ import AddCompany from "./AddCompany";
 import AddExpertise from "./AddExpertise";
 import ExpertiseCategories from "./ExpertiseCategories";
 import AddExpertiseCategory from "./AddExpertiseCategory";
+import AssociateCompany from "./AssociateCompany";
+import AssociatedCompanies from "./AssociatedCompanies";
 
 import Rides from "./Rides";
 class App extends React.Component {
@@ -112,38 +114,41 @@ class App extends React.Component {
                   component={TermsAndConditions}
                 />
                 <Route exact={true} path="/cookie" component={CookiePolicy} />
-
                 <Route exact={true} path="/privacy" component={PrivacyPolicy} />
-
                 <Route exact={true} path="/companies" component={Companies} />
                 <Route exact={true} path="/addCompany" component={AddCompany} />
-
                 <Route
                   exact={true}
                   path="/expertiseCategories"
                   component={ExpertiseCategories}
                 />
-
                 <Route
                   exact={true}
                   path="/addExpertiseCategories"
                   component={AddExpertiseCategory}
                 />
-
                 <Route exact={true} path="/languages" component={Languages} />
                 <Route
                   exact={true}
                   path="/addLanguage"
                   component={AddLanguage}
                 />
-
                 <Route exact={true} path="/expertise" component={Expertise} />
                 <Route
                   exact={true}
                   path="/addExpertise/:name"
                   component={AddExpertise}
                 />
-
+                <Route
+                  exact={true}
+                  path="/associateCompany/:name"
+                  component={AssociateCompany}
+                />{" "}
+                <Route
+                  exact={true}
+                  path="/associatedCompanies"
+                  component={AssociatedCompanies}
+                />
                 <Route exact={true} path="/about" component={About} />
                 <Route exact={true} path="/customers" component={Customers} />
                 <Route exact={true} path="/posts" component={Posts} />
@@ -158,7 +163,6 @@ class App extends React.Component {
                   path="/referal/:refId"
                   component={ViewReferal}
                 />
-
                 <Route exact={true} path="/" component={Stats} />
               </Switch>
             </Container>
