@@ -11,7 +11,7 @@ console.log('__dirname', __dirname)
 
 // send the user to index html page inspite of the url
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname + '/build/index.html'));
+  res.sendFile(path.resolve(__dirname + '/public/index.html'));
 });
 
 // app.listen(port);

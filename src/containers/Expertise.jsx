@@ -12,6 +12,7 @@ import {
   getData,
   addToArray,
   updateData,
+  getAllData,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -36,8 +37,8 @@ export default class CoverBanner extends React.Component {
   async componentWillMount() {
     // console.log("This is token now", Cookie.get("token"));
     if (Cookie.get("token")) {
-      var data = [];
-      let Admin = await getAllOfCollection("Admin");
+      // let Admin = await getAllOfCollection("Admin");
+      let { data } = await getAllData("show-expertise");
       // this.setState({ Admin: Admin[0] });
       // for (let key in Admin[0]) {
       //   if (key !== "languages" && key !== "companies") {
@@ -50,11 +51,11 @@ export default class CoverBanner extends React.Component {
       //     });
       //   }
       // }
-      console.log("This is ithe data", Admin[1]);
+      // console.log("This is ithe data", Admin[1]);
 
       this.setState({
-        expertise: Admin[1].AreaOfExpertise,
-        copyexpertise: Admin[1].AreaOfExpertise,
+        expertise: data,
+        // copyexpertise: Admin[1].AreaOfExpertise,
       });
     } else {
       this.props.history.push("/login");
@@ -91,6 +92,7 @@ export default class CoverBanner extends React.Component {
         tempCat.push(cat);
       }
     });
+    
     console.log("This is new Category", tempCat);
     await updateData(
       "Admin",
@@ -267,7 +269,7 @@ export default class CoverBanner extends React.Component {
                         <td>{index + 1}</td>
 
                         <td>{language.name}</td>
-                        <td>{language.profession}</td>
+                        <td>{language.category.name}</td>
 
                         <td>
                           <button

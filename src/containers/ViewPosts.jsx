@@ -13,6 +13,7 @@ import {
 } from "../backend/utility";
 import firebase from "firebase";
 import HasRole from "../hoc/HasRole";
+import { getPost } from "../api/services/Post";
 
 export default class CoverBanner extends React.Component {
   constructor(props) {
@@ -70,10 +71,20 @@ export default class CoverBanner extends React.Component {
         "tHis",
         this.state.allLikes
       );
+      await this.getPostDetail()
     } else {
       this.props.history.push("/login");
     }
     const { match, location, history } = this.props;
+  }
+
+  async getPostDetail() {
+    const {postId} = this.props.match.params;
+    const reqBody = {
+      post_id: +postId,
+    };
+    let postDetail = await getPost("show-post", reqBody);
+    debugger
   }
 
   fetchBanners = () => {

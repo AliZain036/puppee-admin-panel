@@ -1,5 +1,7 @@
 import firebase from "firebase";
 // import firestore from "firebase/firestore";
+const apiUrl = "https://network-desk-backend.herokuapp.com/api/";
+
 var firebaseConfig = {
   apiKey: "AIzaSyCQYSdtrJWnPWm0q068qUuLVIi1Duk7VH8",
   authDomain: "network-desk.firebaseapp.com",
@@ -33,6 +35,16 @@ export async function getAllOfCollection(collection) {
     } else {
       alert("No document found!");
     }
+  });
+  return data;
+}
+
+export async function getAllData(endpoint) {
+  let data = [];
+  data = await fetch(`${apiUrl}${endpoint}`).then(response => {
+    return response.json();
+  }).catch(error => {
+    console.log(error);
   });
   return data;
 }
@@ -196,4 +208,15 @@ export async function deleteData(collection, doc, array, value) {
     .collection(collection)
     .doc(doc)
     .update({ [array]: firebase.firestore.FieldValue.delete() });
+}
+
+export async function deleteRecord(endpoint, id) {
+  try {
+    // let body = 
+    let result = await fetch(`${apiUrl}${endpoint}`, { headers: {
+      'Content-Type': 'application/json'
+    }, body: {} })
+  } catch (error) {
+    
+  }
 }

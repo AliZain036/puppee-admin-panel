@@ -7,6 +7,7 @@ const token = Cookie.get("clobberswap_access_token");
 import firebase from "firebase";
 import {
   connectFirebase,
+  getAllData,
   getAllOfCollection,
   getData,
 } from "../backend/utility";
@@ -16,6 +17,7 @@ import {
 import PieChart from "../components/PieChart";
 // import BarChart from '../components/BarChart'
 import Doughnut from "../components/Doughnut";
+import { getAllUsers } from "../api/services/User";
 
 export default class Area extends React.Component {
   constructor(props) {
@@ -32,13 +34,17 @@ export default class Area extends React.Component {
 
   async componentDidMount() {
     if (Cookie.get("token")) {
-      let allUsers = await getAllOfCollection("Users");
-      let allPosts = await getAllOfCollection("Posts");
+      // let allUsers = await getAllOfCollection("Users");
+      let allUsers = await getAllData("show-users");
+      // debugger;
+      // let users = await getAllUsers();
+      // console.log(users);
+      let allPosts = await getAllData("show-all-posts");
       let allTransactions = await getAllOfCollection("Transactions");
 
       this.setState({
-        userCount: allUsers.length,
-        postCount: allPosts.length,
+        userCount: allUsers.data.length,
+        postCount: allPosts.data.data.length,
         refCount: allTransactions.length,
       });
     } else {

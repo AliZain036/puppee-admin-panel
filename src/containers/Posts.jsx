@@ -7,6 +7,7 @@ import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import {
   connectFirebase,
+  getAllData,
   getAllOfCollection,
   getData,
   updateData,
@@ -35,8 +36,10 @@ export default class CoverBanner extends React.Component {
   async componentWillMount() {
     if (Cookie.get("token")) {
       var posts = [];
-      let allPosts = await getAllOfCollection("Posts");
-      this.setState({ userPosts: allPosts, copyPosts: allPosts });
+      // let allPosts = await getAllOfCollection("Posts");
+      let allPosts = await getAllData("show-all-posts");
+      debugger;
+      this.setState({ userPosts: allPosts.data.data, copyPosts: allPosts });
       console.log("This is the post", allPosts);
     } else {
       this.props.history.push("/login");
@@ -232,26 +235,30 @@ export default class CoverBanner extends React.Component {
                     // );
 
                     return (
-                      <tr>
+                      <tr key={post.id}>
                         <td>{index + 1}</td>
                         <td>
                           {" "}
                           <img
-                            src={post.photos[0]}
+                            src={post.images && post.images[0]}
                             style={{ width: "50px", height: "50px" }}
                           />
                         </td>
-
-                        <td>{post.creatorName}</td>
-                        <td>{post.caption}</td>
-
-                        <td>{post.address}</td>
                         <td>
-                          {moment(
+                          {post.user.first_name + " " + post.user.last_name}
+                        </td>
+                        <td>
+                          {post.description.split(" ").slice(0, 4).join(" ")}
+                        </td>
+
+                        <td>{post.location}</td>
+                        <td>
+                          {/* {moment(
                             new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                              post.createdAt.seconds
+                              post.created_at.seconds
                             )
-                          ).format("YYYY-MM-DD")}
+                          ).format("YYYY-MM-DD")} */}
+                          {moment(new Date(post.created_at)).format("YYYY-MM-DD")}
                         </td>
                         <td>
                           <button

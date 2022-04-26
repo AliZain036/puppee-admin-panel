@@ -13,6 +13,7 @@ import {
   updateData,
   addToArray,
   deleteData,
+  getAllData,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -37,18 +38,20 @@ export default class CoverBanner extends React.Component {
     // console.log("This is token now", Cookie.get("token"));
     if (Cookie.get("token")) {
       var cats = [];
-      let Admin = await getAllOfCollection("Admin");
+      // let Admin = await getAllOfCollection("Admin");
+      let categories = await getAllData("show-categories");
+      debugger;
       // let TestAdmin = await getDataWithDoc("Admin","")
       // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      console.log("This is the admin", Admin[1]);
+      // console.log("This is the admin", Admin[1]);
       // for (let key in Admin[0]) {
       //   if (key !== "languages" && key !== "companies") {
       //     cats.push(key);
       //   }
       // }
       this.setState({
-        categories: Admin[1].Professions,
-        copyCategories: Admin[1].Professions,
+        categories: categories.data,
+        // copyCategories: Admin[1].Professions,
       });
     } else {
       this.props.history.push("/login");

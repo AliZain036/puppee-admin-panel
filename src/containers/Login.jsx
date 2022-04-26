@@ -22,6 +22,7 @@ import { API_END_POINT } from "../config";
 import firebase from "firebase";
 import { connectFirebase, getAllOfCollection } from "../backend/utility";
 import { FormatListNumberedOutlined } from "@material-ui/icons";
+import { login } from "../api/services/User";
 
 const style = {
   logoWrapper: {
@@ -59,15 +60,21 @@ class Login extends Component {
     };
     if (!this.state.loading) {
       this.setState({ loading: true });
-      if (email === "admin@netdesk.com" && password === "123456") {
-        await firebase.auth().signInWithEmailAndPassword(email, password);
-
-        if (firebase.auth().currentUser || Cookie.get("token")) {
-          Cookie.set("token", firebase.auth().currentUser);
+      // if (email === "admin@netdesk.com" && password === "123456") {
+      if (email && password) {
+        // if (email && password) {
+        // const user = await login(reqBody);
+        // if(user) {
+        //   this.props.history.push('/')
+        // }
+        // debugger
+        let res = await login(reqBody);
+        if (res.data) {
+          let user = res.data;
+          localStorage.setItem('user', JSON.stringify(user));
+          console.log(localStorage.getItem("user"));
+          Cookie.set("token", user);
           this.props.history.push("/");
-        } else {
-          this.setState({ loading: false });
-          alert("Email or Password wrong !");
         }
       } else {
         this.setState({ loading: false });
@@ -200,12 +207,12 @@ class Login extends Component {
                       <div
                         style={style.logoWrapper}
                         className={`svg-logo`}
-                        style={{ borderRadius: 4 }}
+                        // style={{ borderRadius: 4 }}
                       >
-                        <img
+                        {/* <img
                           className={`companyLogo`}
                           src={`${require("panzer.png")}`}
-                        />
+                        /> */}
                       </div>
                       <div
                         className={`text-center`}
@@ -229,8 +236,16 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
+// Login.propTypes = {
+//   dispatch: PropTypes.func.isRequired,
+// };
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setUser: (user) => {
+//       dispatch({ payload: user });
+//     },
+//   };
+// };
 
 export default withRouter(connect()(Login));
