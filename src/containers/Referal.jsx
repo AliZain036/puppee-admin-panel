@@ -9,6 +9,7 @@ import {
   connectFirebase,
   getAllOfCollection,
   getData,
+  getDataById,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -29,22 +30,37 @@ export default class CoverBanner extends React.Component {
       copyEvents: [],
       transactions: [],
       copyTransactions: [],
+      user: {}
     };
   }
-  async componentWillMount() {
-    if (Cookie.get("token")) {
-      let allUsers = await getAllOfCollection("Users");
-      this.setState({ allUsers: allUsers });
-      let allTransactions = await getAllOfCollection("Transactions");
-      console.log("THis is", allTransactions);
-      this.setState({
-        transactions: allTransactions,
-        copyTransactions: allTransactions,
-      });
-    } else {
-      this.props.history.push("/login");
+
+  async componentDidMount() {
+    let user = JSON.parse(localStorage.getItem('user'))
+    if (user) {
+      this.setState({user})
     }
+    let reqBody = {
+      user_id: user.id
+    }
+    let referrals = await getDataById('show-referrals', reqBody);
+    debugger
+    this.setState({ transactions: referrals.data });
   }
+
+  // async componentWillMount() {
+  //   if (Cookie.get("token")) {
+  //     let allUsers = await getAllOfCollection("Users");
+  //     this.setState({ allUsers: allUsers });
+  //     let allTransactions = await getAllOfCollection("Transactions");
+  //     console.log("THis is", allTransactions);
+  //     this.setState({
+  //       transactions: allTransactions,
+  //       copyTransactions: allTransactions,
+  //     });
+  //   } else {
+  //     this.props.history.push("/login");
+  //   }
+  // }
 
   getUserByID = (id) => {
     // console.log("This is email", id);
@@ -194,11 +210,11 @@ export default class CoverBanner extends React.Component {
               <tbody>
                 {this.state.transactions &&
                   this.state.transactions.map((trans, index) => {
-                    var creator = this.getUserByID(trans.creator);
-                    var receiver = this.getUserByID(trans.receiver);
+                    // var creator = this.getUserByID(trans.creator);
+                    // var receiver = this.getUserByID(trans.receiver);
                     return (
-                      <tr>
-                        <td>{index}</td>
+                      <tr key={trans.id}>
+                        <td>{index + 1}</td>
                         <td>{trans.clientName}</td>
                         <td>{trans.propertyType}</td>
 
