@@ -10,6 +10,7 @@ import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 const token = Cookie.get("clobberswap_access_token");
 import {
+  addUpdateData,
   connectFirebase,
   getAllOfCollection,
   getData,
@@ -121,33 +122,32 @@ export default class Posts extends React.Component {
   };
 
   async updateTerms() {
-    let allUsers = await updateData(
-      "cookies",
-      "9pTZWj0FNVP3s9gJlPq1",
-      "cookies",
-      this.state.description
-    )
-      .then(() => {
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Cookies policy Updated Successfully",
-        });
-      })
-      .catch(() => {
-        SwalAutoHide.fire({
-          icon: "error",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Something went wrong!!",
-        });
+    let reqBody = {
+      description: this.state.description
+    };
+    let result = await addUpdateData("add-cookie-policy", reqBody);
+    if(result) {
+      this.setState({ description: result.data.description });
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Cookies policy Updated Successfully",
       });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Something went wrong!",
+      });
+    }
   }
 
   render() {
+    console.log("Component re-render");
     const { status } = this.state;
     return (
       <div className="row animated fadeIn">

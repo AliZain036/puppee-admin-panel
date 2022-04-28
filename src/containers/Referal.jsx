@@ -219,13 +219,13 @@ export default class CoverBanner extends React.Component {
                         <td>{trans.propertyType}</td>
 
                         <td style={{ cursor: "pointer", color: "black" }}>
-                          <Link
+                          {/* <Link
                             style={{ color: "black" }}
                             to={`/userdetails/${trans.creator}`}
                           >
                             {creator &&
                               creator.firstname + " " + creator.lastname}
-                          </Link>
+                          </Link> */}
                         </td>
                         <td style={{ cursor: "pointer", color: "black" }}>
                           {receiver != "" ? (

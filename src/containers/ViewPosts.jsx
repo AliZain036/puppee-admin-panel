@@ -14,6 +14,7 @@ import {
 import firebase from "firebase";
 import HasRole from "../hoc/HasRole";
 import { getPost } from "../api/services/Post";
+import { getComments } from "../api/services/Comments";
 
 export default class CoverBanner extends React.Component {
   constructor(props) {
@@ -30,8 +31,18 @@ export default class CoverBanner extends React.Component {
       allUsers: [],
       allComments: [],
       allLikes: [],
+      postDetails: {},
     };
   }
+
+  async getPostComments(id) {
+    let reqBody = {
+      // post_id: this.state.postDetails.id
+      post_id: 2
+    }
+    const {data} = await getComments("show-comments", reqBody);
+    return data
+  };
 
   getUserByID = (id) => {
     // console.log("This is email", id);
@@ -71,7 +82,8 @@ export default class CoverBanner extends React.Component {
         "tHis",
         this.state.allLikes
       );
-      await this.getPostDetail()
+      await this.getPostDetail();
+      // await this.getPostComments();
     } else {
       this.props.history.push("/login");
     }
@@ -79,12 +91,17 @@ export default class CoverBanner extends React.Component {
   }
 
   async getPostDetail() {
-    const {postId} = this.props.match.params;
+    const { postId } = this.props.match.params;
     const reqBody = {
       post_id: +postId,
     };
     let postDetail = await getPost("show-post", reqBody);
-    debugger
+    let postComments = []
+    if (postDetail) {
+      this.setState({ postDetails: postDetail.data });
+      postComments = await this.getPostComments(postDetail.id);
+    }
+    this.setState({ allComments: postComments });
   }
 
   fetchBanners = () => {
@@ -186,7 +203,11 @@ export default class CoverBanner extends React.Component {
               </div>
               <h5 style={{ textAlign: "left", marginTop: "25px" }}>
                 Creator Name :
-                {this.state.detailedPost && this.state.detailedPost.creatorName}
+                {this.state.postDetails &&
+                  this.state.postDetails.user &&
+                  this.state.postDetails.user.first_name +
+                    " " +
+                    this.state.postDetails.user.last_name}
               </h5>
               <h5 style={{ textAlign: "left" }}>
                 Creator Profession:{" "}
@@ -207,13 +228,20 @@ export default class CoverBanner extends React.Component {
                 {this.state.detailedPost &&
                   moment(
                     new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                      this.state.detailedPost.createdAt.seconds
+                      this.state.postDetails.created_at.seconds
                     )
                   ).format("YYYY-MM-DD")}
               </h5>
-
               <h5 style={{ textAlign: "left" }}>
-                {this.state.detailedPost && this.state.detailedPost.caption}
+                Caption:{" "}
+                {this.state.postDetails &&
+                this.state.postDetails.description 
+                // &&
+                //   this.state.postDetails.description
+                //     .split(" ")
+                //     .slice(0, 4)
+                //     .join(" ")
+              }
               </h5>
               <h4>Comments {" (" + this.state.allComments.length + ") "}</h4>
               <div className="commentSection">
@@ -274,11 +302,9 @@ export default class CoverBanner extends React.Component {
                         </p>
                         <span>
                           Time:{" "}
-                          {moment(
-                            new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                              comment.time
-                            )
-                          ).fromNow()}
+                          {moment(new Date(comment.created_at)).format(
+                            "YYYY-MM-DD"
+                          )}
                         </span>
                         <p style={{ textAlign: "start" }}>{CleanComment}</p>
                         <p style={{ textAlign: "start" }}>

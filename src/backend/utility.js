@@ -41,12 +41,47 @@ export async function getAllOfCollection(collection) {
 
 export async function getAllData(endpoint) {
   let data = [];
-  data = await fetch(`${apiUrl}${endpoint}`).then(response => {
-    return response.json();
-  }).catch(error => {
-    console.log(error);
-  });
+  data = await fetch(`${apiUrl}${endpoint}`)
+    .then((response) => {
+      return response.json();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   return data;
+}
+
+export async function getDataById(url, reqBody) {
+  try {
+    let data = [];
+    data = await fetch(`${apiUrl}${url}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(reqBody),
+    })
+      .then((res) => res.json())
+      .then((res) => res);
+    debugger;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function addUpdateData(url, reqBody) {
+  try {
+    let result = {};
+    result = await fetch(`${apiUrl}${url}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(reqBody),
+    })
+      .then((res) => res.json())
+      .then((res) => res);
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function getDataWithDoc(collection, doc) {
@@ -210,13 +245,18 @@ export async function deleteData(collection, doc, array, value) {
     .update({ [array]: firebase.firestore.FieldValue.delete() });
 }
 
-export async function deleteRecord(endpoint, id) {
+export async function deleteRecord(endpoint, reqBody) {
   try {
-    // let body = 
-    let result = await fetch(`${apiUrl}${endpoint}`, { headers: {
-      'Content-Type': 'application/json'
-    }, body: {} })
+    // let body =
+    let result = await fetch(`${apiUrl}${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reqBody),
+    }).then(res => res.json()).then(res => res);
+    return result
   } catch (error) {
-    
+    console.log(error);
   }
 }

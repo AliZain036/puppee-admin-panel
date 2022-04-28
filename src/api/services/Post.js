@@ -19,4 +19,23 @@ async function getPost(url, reqBody) {
   }
 }
 
-export { getPost };
+async function getUserPosts(url, reqBody) {
+  try {
+    let posts = {};
+    posts = await fetch(`${apiUrl}${url}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(reqBody),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        debugger;
+        return data;
+      });
+    return posts;
+  } catch (error) {
+    
+  }
+}
+
+export { getPost, getUserPosts };

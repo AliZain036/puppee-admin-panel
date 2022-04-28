@@ -15,6 +15,7 @@ import {
   getData,
   addToArray,
   updateData,
+  addUpdateData,
 } from "../backend/utility";
 const token = Cookie.get("clobberswap_access_token");
 
@@ -51,24 +52,29 @@ export default class Posts extends React.Component {
   };
 
   async updateAbout() {
-    let allUsers = await updateData(
-      "about",
-      "MfKvGUDJkgsXYzPnOGuj",
-      "about",
-      this.state.description
-    )
-      .then(() => {
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "About Information Updated Successfully",
-        });
-      })
-      .catch(() => {
-        alert("Something went wrong");
+    let reqBody = {
+      description: this.state.description
+    }
+    let result = await addUpdateData("add-aboutus", reqBody);
+    debugger;
+    if (result) {
+      this.setState({ description: result.data.description });
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Terms and Conditions Updated Successfully",
       });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Something went wrong!!",
+      });
+    }
   }
 
   // setDescription(description) {

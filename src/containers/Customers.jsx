@@ -197,6 +197,7 @@ class CoverBanner extends React.Component {
       showConfirmButton: false,
       text: status,
     });
+    
     this.setState({ blockStatus: !blockStatus });
   }
 
@@ -237,6 +238,7 @@ class CoverBanner extends React.Component {
   };
 
   render() {
+    console.log("component has been re-rendered");
     const { users } = this.state;
     return (
       <div className="row animated fadeIn">

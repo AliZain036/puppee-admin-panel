@@ -14,6 +14,7 @@ import {
   addToArray,
   deleteData,
   getAllData,
+  deleteRecord,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -34,26 +35,20 @@ export default class CoverBanner extends React.Component {
       copyCategories: [],
     };
   }
-  async componentWillMount() {
-    // console.log("This is token now", Cookie.get("token"));
-    if (Cookie.get("token")) {
-      var cats = [];
-      // let Admin = await getAllOfCollection("Admin");
-      let categories = await getAllData("show-categories");
-      debugger;
-      // let TestAdmin = await getDataWithDoc("Admin","")
-      // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      // console.log("This is the admin", Admin[1]);
-      // for (let key in Admin[0]) {
-      //   if (key !== "languages" && key !== "companies") {
-      //     cats.push(key);
-      //   }
-      // }
-      this.setState({
-        categories: categories.data,
-        // copyCategories: Admin[1].Professions,
-      });
-    } else {
+
+  async componentDidMount() {
+    this.getAllCategories()
+  }
+
+  async getAllCategories() {
+    let result = await getAllData("show-categories");
+    if (result) {
+      this.setState({ categories: result.data });
+    }
+  }
+
+  componentWillMount() {
+    if (!Cookie.get("token")) {
       this.props.history.push("/login");
     }
   }
@@ -211,6 +206,32 @@ export default class CoverBanner extends React.Component {
     this.FilterFn(event.target.value);
   };
 
+  async deleteExpertise(category) {
+    let reqBody = {
+      category_id: category.id,
+    };
+    let result = await deleteRecord("delete-category", reqBody);
+    debugger
+    if (result) {
+      this.getAllCategories();
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Expertise Category Deleted Successfully",
+      });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Something went wrong!!",
+      });
+    }
+  };
+
   render() {
     const { events } = this.state;
     return (
@@ -275,7 +296,6 @@ export default class CoverBanner extends React.Component {
                     return (
                       <tr>
                         <td>{index + 1}</td>
-
                         <td>{cat.name}</td>
                         <td>
                           <button
@@ -300,7 +320,7 @@ export default class CoverBanner extends React.Component {
                         <td>
                           <button
                             onClick={() => {
-                              this.deleteExpertiseUsingArray(cat);
+                              this.deleteExpertise(cat);
                             }}
                             className={`btn btn-sm btn-danger`}
                           >

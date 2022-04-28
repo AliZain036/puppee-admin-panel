@@ -38,7 +38,7 @@ export default class CoverBanner extends React.Component {
       var posts = [];
       // let allPosts = await getAllOfCollection("Posts");
       let allPosts = await getAllData("show-all-posts");
-      debugger;
+      debugger
       this.setState({ userPosts: allPosts.data.data, copyPosts: allPosts });
       console.log("This is the post", allPosts);
     } else {

@@ -10,6 +10,7 @@ import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 const token = Cookie.get("clobberswap_access_token");
 import {
+  addUpdateData,
   connectFirebase,
   getAllOfCollection,
   getData,
@@ -207,30 +208,29 @@ export default class Posts extends React.Component {
   };
 
   async updateTerms() {
-    let allUsers = await updateData(
-      "privacy",
-      "9pTZWj0FNVP3s9gJlPq1",
-      "privacy",
-      this.state.description
-    )
-      .then(() => {
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Privacy Policy Updated Successfully",
-        });
-      })
-      .catch(() => {
-        SwalAutoHide.fire({
-          icon: "error",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Something went wrong!!",
-        });
+    let reqBody = {
+      description: this.state.description
+    }
+    let result = await addUpdateData("add-privacy-policy", reqBody);
+    debugger
+    if(result) {
+      this.setState({description: result.data.description})
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Privacy Policy Updated Successfully",
       });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Something went wrong!!",
+      });
+    }
   }
 
   render() {

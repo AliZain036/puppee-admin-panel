@@ -16,6 +16,7 @@ import {
 
 import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
+import { getUserPosts } from "../api/services/Post";
 const token = Cookie.get("clobberswap_access_token");
 
 export default class Posts extends React.Component {
@@ -152,15 +153,14 @@ export default class Posts extends React.Component {
   }
 
   async getAllUsers() {
-    let users = await getAllData('show-users');
-    const {userId} = this.props.match.params
-    let user = users.data.find(user => user.id === +userId)
-    debugger
-    this.setState({ allUsers: users.data, user })
+    let users = await getAllData("show-users");
+    const { userId } = this.props.match.params;
+    let user = users.data.find((user) => user.id === +userId);
+    this.setState({ allUsers: users.data, user });
   }
-  
+
   componentDidMount() {
-    this.getAllUsers()
+    this.getAllUsers();
   }
 
   async fetchUserDetail(id) {
@@ -299,9 +299,16 @@ export default class Posts extends React.Component {
     }
   }
 
+  async getUserPosts(userId) {
+    let reqBody = {
+      user_id: +userId
+    }
+    let posts = await getUserPosts("show-user-posts", reqBody);
+    this.setState({ userPosts: posts.data });
+  };
+
   tabChangeHandler = (value) => {
     const { match } = this.props;
-
     if (this.state.status !== value) {
       this.setState({
         status: value,
@@ -313,7 +320,7 @@ export default class Posts extends React.Component {
       } else if (value === "Referals") {
         this.fetchPastOrders(match.params.userId);
       } else if (value === "Posts") {
-        this.fetchRequestOrders(match.params.userId);
+        this.getUserPosts(this.props.match.params.userId);
       } else if (value === "active") {
         this.fetchActiveOrders();
       }
@@ -349,6 +356,11 @@ export default class Posts extends React.Component {
         alert("Some error occured...");
       });
   };
+
+  arrToStr(value) {
+    let val = JSON.parse(value).join(",");
+    return val;
+  }
 
   render() {
     const { status, name, email, phoneNumber, chats, posts, user } = this.state;
@@ -579,7 +591,11 @@ export default class Posts extends React.Component {
                                   type="text"
                                   name="name"
                                   className="form-control"
-                                  value={user.profile && user.profile.company_name || ""}
+                                  value={
+                                    (user.profile &&
+                                      user.profile.company_name) ||
+                                    ""
+                                  }
                                   onChange={this.handleInputChange}
                                 />
                               </div>
@@ -595,8 +611,9 @@ export default class Posts extends React.Component {
                                   name="name"
                                   className="form-control"
                                   value={
-                                    (user.profile && user.profile.expertise) ||
-                                    ""
+                                    this.arrToStr(
+                                      user.profile && user.profile.expertise
+                                    ) || ""
                                   }
                                   onChange={this.handleInputChange}
                                 />
@@ -613,8 +630,9 @@ export default class Posts extends React.Component {
                                   name="name"
                                   className="form-control"
                                   value={
-                                    (user.profile && user.profile.language) ||
-                                    ""
+                                    this.arrToStr(
+                                      user.profile && user.profile.language
+                                    ) || ""
                                   }
                                   onChange={this.handleInputChange}
                                 />
@@ -819,27 +837,27 @@ export default class Posts extends React.Component {
                     <th>Date Posted</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {this.state.userPosts &&
                     this.state.userPosts.map((post, index) => {
                       return (
-                        <tr>
+                        <tr key={post.id}>
                           <td>{index + 1}</td>
                           <td>
                             {" "}
                             <img
-                              src={post.photos[0]}
+                              src={post.images && post.images[0]}
                               style={{ width: "50px", height: "50px" }}
                             />
                           </td>
-                          <td>{post.caption}</td>
-
-                          <td>{post.address}</td>
+                          <td>
+                            {post.description.split(" ").slice(0, 4).join(" ")}
+                          </td>
+                          <td>{post.location}</td>
                           <td>
                             {moment(
                               new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                                post.createdAt.seconds
+                                post.created_at.seconds
                               )
                             ).format("YYYY-MM-DD")}
                           </td>
