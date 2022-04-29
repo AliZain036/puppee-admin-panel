@@ -12,6 +12,7 @@ const token = Cookie.get("clobberswap_access_token");
 import {
   addUpdateData,
   connectFirebase,
+  getAllData,
   getAllOfCollection,
   getData,
   updateData,
@@ -36,9 +37,14 @@ export default class Posts extends React.Component {
   }
 
   async componentDidMount() {
-    let allTerms = await getAllOfCollection("cookies");
-    console.log("this is all about", allTerms[0].cookies);
-    this.setState({ description: allTerms[0].cookies });
+    this.getCookiePolicy()
+  }
+
+  async getCookiePolicy() {
+    let result = await getAllData("show-cookie-policy");
+    if(result) {
+      this.setState({description: result.data.description})
+    }
   }
 
   onChange = (value) => {

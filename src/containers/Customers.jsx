@@ -10,6 +10,7 @@ import SwalAutoHide from "sweetalert2";
 import firebase from "firebase";
 import {
   connectFirebase,
+  deleteRecord,
   getAllData,
   getAllOfCollection,
   saveData,
@@ -18,7 +19,7 @@ import {
 } from "../backend/utility";
 import HasRole from "../hoc/HasRole";
 import { connect } from "react-redux";
-import {setUserBlockStatus} from '../api/services/User'
+import { setUserBlockStatus } from "../api/services/User";
 
 class CoverBanner extends React.Component {
   constructor(props) {
@@ -38,7 +39,6 @@ class CoverBanner extends React.Component {
   }
   async componentDidMount() {
     if (Cookie.get("token")) {
-      console.log("This iscomponet did mount");
       let allUsers = await getAllData("show-users");
       this.setState({ users: allUsers.data });
       this.setState({ copyUsers: allUsers });
@@ -48,6 +48,11 @@ class CoverBanner extends React.Component {
     } else {
       this.props.history.push("/login");
     }
+  }
+
+  async getAllUsers() {
+    let allUsers = await getAllData("show-users");
+    this.setState({ users: allUsers.data });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -85,32 +90,39 @@ class CoverBanner extends React.Component {
       });
   }
 
-  async deleteThisUser(doc, field, val) {
-    console.log("This iscomponet did mount");
-    let allUsers = await updateData("Users", doc, field, val)
-      .then(() => {
-        this.componentDidMount();
-        if (val) {
-          SwalAutoHide.fire({
-            icon: "success",
-            timer: 2000,
-            title: "Success.",
-            showConfirmButton: false,
-            text: "User deleted successfully",
-          });
-        } else {
-          SwalAutoHide.fire({
-            icon: "success",
-            timer: 2000,
-            title: "Success.",
-            showConfirmButton: false,
-            text: "User restored successfully",
-          });
-        }
-      })
-      .catch(() => {
-        alert("Something went wrong");
+  async deleteThisUser(user) {
+    let reqBody = {
+      user_id: user.id,
+    };
+    let result = await deleteRecord("delete-user", reqBody);
+    if (result) {
+      this.getAllUsers();
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "User deleted successfully",
       });
+    } else {
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "User restored successfully",
+      });
+    }
+    // let allUsers = await updateData("Users", doc, field, val)
+    //   .then(() => {
+    //     this.componentDidMount();
+    //     if (val) {
+    //     } else {
+    //     }
+    //   })
+    //   .catch(() => {
+    //     alert("Something went wrong");
+    //   });
   }
 
   handleSearch() {
@@ -197,7 +209,7 @@ class CoverBanner extends React.Component {
       showConfirmButton: false,
       text: status,
     });
-    
+
     this.setState({ blockStatus: !blockStatus });
   }
 
@@ -348,34 +360,35 @@ class CoverBanner extends React.Component {
                             </button>
                           </Link>
                         </td>
-                        {user.isDeleted === true && (
+                        {/* {user.isDeleted === true && (
                           <td>
                             <span
                               className="fa fa-recycle"
                               aria-hidden="true"
                               style={{ cursor: "pointer" }}
-                              onClick={() => {
-                                swal({
-                                  title: "Undo Delete?",
-                                  text: "Are you sure, the user will be able to use app again!",
-                                  icon: "warning",
-                                  buttons: true,
-                                  dangerMode: true,
-                                }).then(async (willDelete) => {
-                                  if (willDelete) {
-                                    this.deleteThisUser(
-                                      user.id,
-                                      "isDeleted",
-                                      false
-                                    );
-                                  } else {
-                                    return;
-                                  }
-                                });
-                              }}
+                              onClick={() => this.deleteThisUser(user)}
+                              // onClick={() => {
+                              //   swal({
+                              //     title: "Undo Delete?",
+                              //     text: "Are you sure, the user will be able to use app again!",
+                              //     icon: "warning",
+                              //     buttons: true,
+                              //     dangerMode: true,
+                              //   }).then(async (willDelete) => {
+                              //     if (willDelete) {
+                              //       this.deleteThisUser(
+                              //         user.id,
+                              //         "isDeleted",
+                              //         false
+                              //       );
+                              //     } else {
+                              //       return;
+                              //     }
+                              //   });
+                              // }}
                             ></span>
                           </td>
-                        )}
+                        )} */}
 
                         {user.isDeleted !== true && (
                           <td>
@@ -392,11 +405,7 @@ class CoverBanner extends React.Component {
                                   dangerMode: true,
                                 }).then(async (willDelete) => {
                                   if (willDelete) {
-                                    this.deleteThisUser(
-                                      user.id,
-                                      "isDeleted",
-                                      true
-                                    );
+                                    this.deleteThisUser(user);
                                   } else {
                                     return;
                                   }
@@ -421,7 +430,7 @@ const mapStateToProps = (state) => {
   const user = state.user.user || {};
   return {
     currentUserId: user.id,
-    currentUser: user
+    currentUser: user,
   };
 };
 

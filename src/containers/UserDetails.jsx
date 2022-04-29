@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Button } from "reactstrap";
 import moment from "moment";
-import { useParams } from 'react-router';
+import { useParams } from "react-router";
 import axios from "axios";
 import { Pagination, Image } from "react-bootstrap";
 import {
@@ -11,6 +11,7 @@ import {
   getAllData,
   getAllOfCollection,
   getData,
+  getDataById,
 } from "../backend/utility";
 // import {Pagination} from 'react-bootstrap';
 
@@ -301,11 +302,11 @@ export default class Posts extends React.Component {
 
   async getUserPosts(userId) {
     let reqBody = {
-      user_id: +userId
-    }
+      user_id: userId,
+    };
     let posts = await getUserPosts("show-user-posts", reqBody);
     this.setState({ userPosts: posts.data });
-  };
+  }
 
   tabChangeHandler = (value) => {
     const { match } = this.props;
@@ -317,15 +318,39 @@ export default class Posts extends React.Component {
       });
       if (value === "Details") {
         this.fetchOrders();
-      } else if (value === "Referals") {
-        this.fetchPastOrders(match.params.userId);
-      } else if (value === "Posts") {
+      } else if (value === "Referrals") {
+        // this.fetchPastOrders(match.params.userId);
+        this.getUserReferrals();
+      } else if(value === "Blocked") {
+        this.getBlockedUsers()
+      } 
+      else if (value === "Posts") {
         this.getUserPosts(this.props.match.params.userId);
       } else if (value === "active") {
         this.fetchActiveOrders();
       }
     }
   };
+
+  async getUserReferrals() {
+    let reqBody = {
+      user_id: this.props.match.params.userId,
+    };
+    let result = await getDataById("show-referrals", reqBody);
+    if (result) {
+      this.setState({ transactions: result.data });
+    }
+}
+
+  async getBlockedUsers() {
+    let reqBody = {
+      user_id: this.props.match.params.userId
+    }
+    let result = await getDataById("show-block-users", reqBody);
+    if(result) {
+      this.setState({ blocked: result.data.blocked_users });
+    }
+  }
 
   blockPostHandler = (postId) => {
     this.setState({ loading: true });
@@ -358,8 +383,10 @@ export default class Posts extends React.Component {
   };
 
   arrToStr(value) {
-    let val = JSON.parse(value).join(",");
-    return val;
+    if (value) {
+      let val = JSON.parse(value).join(",");
+      return val;
+    }
   }
 
   render() {
@@ -775,39 +802,44 @@ export default class Posts extends React.Component {
                 <tbody>
                   {this.state.transactions &&
                     this.state.transactions.map((trans, index) => {
-                      var creator = this.getUserByID(trans.creator);
-                      var receiver = this.getUserByID(trans.receiver);
+                      // var creator = this.getUserByID(trans.creator);
+                      // var receiver = this.getUserByID(trans.receiver);
                       return (
-                        <tr>
-                          <td>{index}</td>
-                          <td>{trans.clientName}</td>
-                          <td>{trans.propertyType}</td>
+                        <tr key={trans.id}>
+                          <td>{index + 1}</td>
+                          <td>{trans.name}</td>
+                          <td>{trans.property_type}</td>
                           <td>
-                            {creator &&
-                              creator.firstname + " " + creator.lastname}
+                            {trans.user &&
+                              trans.user.first_name +
+                                " " +
+                                trans.user.last_name}
                           </td>
                           <td>
-                            {receiver != "" ? (
+                            {trans.receiver && (
                               <Link
                                 style={{ color: "black" }}
                                 to={`/userdetails/${trans.receiver}`}
                               >
-                                {receiver.firstname + " " + receiver.lastname}
+                                {trans.receiver.first_name +
+                                  " " +
+                                  trans.receiver.last_name}
                               </Link>
-                            ) : (
-                              trans.receiver
                             )}
                           </td>
                           <td>
-                            {moment(
+                            {/* {moment(
                               new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                                trans.createdAt.seconds
+                                trans.created_at.seconds
                               )
-                            ).format("YYYY-MM-DD")}
+                            ).format("YYYY-MM-DD")} */}
+                            {moment(new Date(trans.created_at)).format(
+                              "YYYY-MM-DD"
+                            )}
                           </td>
                           <td>{trans.status}</td>
                           <td>
-                            <Link to={`/referal/${trans.transaction_id}`}>
+                            <Link to={`/referal/${trans.id}`}>
                               <button
                                 // onClick={() =>
                                 //   topic.status === "block"
@@ -855,11 +887,14 @@ export default class Posts extends React.Component {
                           </td>
                           <td>{post.location}</td>
                           <td>
-                            {moment(
+                            {/* {moment(
                               new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
                                 post.created_at.seconds
                               )
-                            ).format("YYYY-MM-DD")}
+                            ).format("YYYY-MM-DD")} */}
+                            {moment(new Date(post.created_at)).format(
+                              "YYYY-MM-DD"
+                            )}
                           </td>
                           <td>
                             <button

@@ -12,6 +12,8 @@ import {
   getData,
   addToArray,
   updateData,
+  getAllData,
+  deleteRecord,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -35,16 +37,16 @@ export default class CoverBanner extends React.Component {
   async componentWillMount() {
     // console.log("This is token now", Cookie.get("token"));
     if (Cookie.get("token")) {
-      var posts = [];
-      let Admin = await getAllOfCollection("Admin");
-      // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      console.log("This is the admin", Admin[0].languages);
-      this.setState({
-        languages: Admin[0].languages,
-        copyLanguages: Admin[0].languages,
-      });
+      this.getLanguages()
     } else {
       this.props.history.push("/login");
+    }
+  }
+
+  async getLanguages() {
+    let result = await getAllData("show-languages");
+    if(result) {
+      this.setState({ languages: result.data })
     }
   }
 
@@ -154,6 +156,31 @@ export default class CoverBanner extends React.Component {
     }
   }
 
+  async deleteLanguage(lang) {
+    let reqBody = {
+      language_id: lang.id,
+    };
+    let result = await deleteRecord("delete-language", reqBody);
+    if (result) {
+      this.getLanguages()
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Language deleted successfully",
+      });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something went wrong!!",
+      });
+    }
+  }
+
   handleInputChange = (event) => {
     const { value, name } = event.target;
     this.setState({ q: event.target.value });
@@ -222,31 +249,17 @@ export default class CoverBanner extends React.Component {
                 {this.state.languages &&
                   this.state.languages.map((language, index) => {
                     return (
-                      <tr>
+                      <tr key={language.id}>
                         <td>{index + 1}</td>
 
-                        <td>{language.title}</td>
+                        <td>{language.name}</td>
                         <td></td>
                         <td>
                           <button
-                            onClick={() => {
-                              let newData = this.state.languages.filter(
-                                function (item) {
-                                  let itemData = item.title
-                                    ? item.title.toUpperCase()
-                                    : "".toUpperCase();
-                                  let textData = language.title.toUpperCase();
-                                  return itemData.indexOf(textData) == -1;
-                                }
-                              );
-                              this.updateLanguagesUsingArray(newData);
-                            }}
+                            onClick={() => this.deleteLanguage(language)}
                             className={`btn btn-sm btn-danger`}
                           >
                             Delete
-                            {/* {post.statusAdmin && post.statusAdmin === "Block"
-                              ? "Unblock"
-                              : "Block"} */}
                           </button>
                         </td>
                       </tr>

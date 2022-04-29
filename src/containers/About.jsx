@@ -16,6 +16,7 @@ import {
   addToArray,
   updateData,
   addUpdateData,
+  getAllData,
 } from "../backend/utility";
 const token = Cookie.get("clobberswap_access_token");
 
@@ -38,11 +39,15 @@ export default class Posts extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  async componentDidMount() {
-    connectFirebase();
-    let allAbout = await getAllOfCollection("about");
-    console.log("this is all about", allAbout[0].about);
-    this.setState({ description: allAbout[0].about });
+  componentDidMount() {
+    this.getAboutUsDescription()  
+  }
+
+  async getAboutUsDescription() {
+    let result = await getAllData("show-aboutus");
+    if(result) {
+      this.setState({ description: result.data.description });
+    }
   }
 
   onChange = (value) => {
@@ -70,7 +75,7 @@ export default class Posts extends React.Component {
       SwalAutoHide.fire({
         icon: "error",
         timer: 2000,
-        title: "Success.",
+        title: "Failed.",
         showConfirmButton: false,
         text: "Something went wrong!!",
       });

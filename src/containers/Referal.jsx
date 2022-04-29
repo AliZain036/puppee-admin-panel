@@ -215,40 +215,37 @@ export default class CoverBanner extends React.Component {
                     return (
                       <tr key={trans.id}>
                         <td>{index + 1}</td>
-                        <td>{trans.clientName}</td>
-                        <td>{trans.propertyType}</td>
-
-                        <td style={{ cursor: "pointer", color: "black" }}>
-                          {/* <Link
-                            style={{ color: "black" }}
-                            to={`/userdetails/${trans.creator}`}
-                          >
-                            {creator &&
-                              creator.firstname + " " + creator.lastname}
-                          </Link> */}
+                        <td>{trans.name}</td>
+                        <td>{trans.property_type}</td>
+                        <td>
+                          {trans.user &&
+                            trans.user.first_name + " " + trans.user.last_name}
                         </td>
-                        <td style={{ cursor: "pointer", color: "black" }}>
-                          {receiver != "" ? (
+                        <td>
+                          {trans.receiver && (
                             <Link
                               style={{ color: "black" }}
                               to={`/userdetails/${trans.receiver}`}
                             >
-                              {receiver.firstname + " " + receiver.lastname}
+                              {trans.receiver.first_name +
+                                " " +
+                                trans.receiver.last_name}
                             </Link>
-                          ) : (
-                            trans.receiver
                           )}
                         </td>
                         <td>
-                          {moment(
-                            new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                              trans.createdAt.seconds
-                            )
-                          ).format("YYYY-MM-DD")}
+                          {/* {moment(
+                              new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
+                                trans.created_at.seconds
+                              )
+                            ).format("YYYY-MM-DD")} */}
+                          {moment(new Date(trans.created_at)).format(
+                            "YYYY-MM-DD"
+                          )}
                         </td>
                         <td>{trans.status}</td>
                         <td>
-                          <Link to={`/referal/${trans.transaction_id}`}>
+                          <Link to={`/referal/${trans.id}`}>
                             <button
                               // onClick={() =>
                               //   topic.status === "block"

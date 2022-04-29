@@ -246,8 +246,8 @@ export async function deleteData(collection, doc, array, value) {
 }
 
 export async function deleteRecord(endpoint, reqBody) {
+  debugger;
   try {
-    // let body =
     let result = await fetch(`${apiUrl}${endpoint}`, {
       method: "POST",
       headers: {

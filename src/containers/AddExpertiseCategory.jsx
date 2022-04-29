@@ -78,7 +78,7 @@ export default class Posts extends React.Component {
         SwalAutoHide.fire({
           icon: "error",
           timer: 2000,
-          title: "Success.",
+          title: "Failed.",
           showConfirmButton: false,
           text: "Something went wrong!!",
         });

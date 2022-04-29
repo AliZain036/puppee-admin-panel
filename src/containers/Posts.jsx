@@ -6,6 +6,7 @@ import moment from "moment";
 import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import {
+  addUpdateData,
   connectFirebase,
   getAllData,
   getAllOfCollection,
@@ -14,8 +15,8 @@ import {
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
-
 import HasRole from "../hoc/HasRole";
+import SwalAutoHide from "sweetalert2";
 
 export default class CoverBanner extends React.Component {
   constructor(props) {
@@ -100,6 +101,32 @@ export default class CoverBanner extends React.Component {
         activePage: page,
       });
     });
+  }
+
+  async setPostBlockStatus(post) {
+    let reqBody = {
+      post_id: post.id
+    }
+    let url = post.status === "active" ? "block-post" : "unblock-post";
+    let result = await addUpdateData(url, reqBody);
+    if(result && result.success === true) {
+      this.componentWillMount()
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: result.message,
+      });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something went wrong!!",
+      });
+    }
   }
 
   async FilterFn(text) {
@@ -262,20 +289,12 @@ export default class CoverBanner extends React.Component {
                         </td>
                         <td>
                           <button
-                            onClick={() => {
-                              this.updateThisPost(
-                                post.id,
-                                "statusAdmin",
-                                post.statusAdmin && post.statusAdmin === "Block"
-                                  ? "Unblock"
-                                  : "Block"
-                              );
-                            }}
+                            onClick={() => this.setPostBlockStatus(post)}
                             className={`btn btn-sm btn-danger`}
                           >
-                            {post.statusAdmin && post.statusAdmin === "Block"
-                              ? "Unblock"
-                              : "Block"}
+                            {post.status && post.status === "active"
+                              ? "Block"
+                              : "Unblock"}
                           </button>
                         </td>
                         <td>
