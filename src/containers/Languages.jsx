@@ -20,7 +20,7 @@ const token = Cookie.get("clobberswap_access_token");
 
 import HasRole from "../hoc/HasRole";
 
-export default class CoverBanner extends React.Component {
+export default class Languages extends React.Component {
   constructor(props) {
     super(props);
 
@@ -225,15 +225,13 @@ export default class CoverBanner extends React.Component {
             </div>
 
             <div className="col-sm-4 pull-right mobile-space">
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={() => {
-                  window.location.href = "/addLanguage";
-                }}
-              >
-                Add new Language
-              </button>
+              <Link to={"/addLanguage"}>
+                <button
+                  className="btn btn-success"
+                >
+                  Add New Language
+                </button>
+              </Link>
             </div>
           </div>
           <div className="table-responsive">

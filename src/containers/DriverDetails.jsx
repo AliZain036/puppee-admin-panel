@@ -8,7 +8,7 @@ import Cookie from "js-cookie";
 import { Heading } from "react-bootstrap/lib/Media";
 const token = Cookie.get("clobberswap_access_token");
 
-export default class Posts extends React.Component {
+export default class DriverDetails extends React.Component {
   constructor(props) {
     super(props);
 

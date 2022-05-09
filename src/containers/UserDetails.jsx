@@ -9,6 +9,7 @@ import { Pagination, Image } from "react-bootstrap";
 import {
   addUpdateData,
   connectFirebase,
+  deleteRecord,
   getAllData,
   getAllOfCollection,
   getData,
@@ -21,7 +22,7 @@ import Cookie from "js-cookie";
 import { getUserPosts } from "../api/services/Post";
 const token = Cookie.get("clobberswap_access_token");
 
-export default class Posts extends React.Component {
+export default class UserDetails extends React.Component {
   constructor(props) {
     super(props);
 
@@ -305,7 +306,7 @@ export default class Posts extends React.Component {
     let reqBody = {
       user_id: userId,
     };
-    let posts = await getUserPosts("show-user-posts", reqBody);
+    let posts = await getDataById("show-user-posts", reqBody);
     this.setState({ userPosts: posts.data });
   }
 
@@ -412,6 +413,31 @@ export default class Posts extends React.Component {
         alert("Some error occured...");
       });
   };
+
+  async deleteBlockedUser(user) {
+    let reqBody = {
+      user_id: user.id,
+    };
+    let result = await deleteRecord("delete-user", reqBody)
+    if(result) {
+      this.getBlockedUsers();
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: result.message,
+      });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something went wrong!",
+      });
+    }
+  }
 
   async toggleUserBlockStatus(user, type) {
     let requestBody = {
@@ -1244,7 +1270,7 @@ export default class Posts extends React.Component {
                                 className="fa fa-trash"
                                 aria-hidden="true"
                                 style={{ cursor: "pointer" }}
-                                // onClick={() => this.handleDeleteUser(index)}
+                                onClick={() => this.deleteBlockedUser(blockedUser)}
                               ></span>
                             </td>
                           </tr>

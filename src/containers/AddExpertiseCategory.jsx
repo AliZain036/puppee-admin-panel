@@ -17,7 +17,7 @@ import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 const token = Cookie.get("clobberswap_access_token");
 
-export default class Posts extends React.Component {
+export default class AddExpertiseCategory extends React.Component {
   constructor(props) {
     super(props);
 

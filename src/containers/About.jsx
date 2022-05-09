@@ -20,7 +20,7 @@ import {
 } from "../backend/utility";
 const token = Cookie.get("clobberswap_access_token");
 
-export default class Posts extends React.Component {
+export default class About extends React.Component {
   constructor(props) {
     super(props);
 

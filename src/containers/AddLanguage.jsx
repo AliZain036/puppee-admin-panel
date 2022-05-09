@@ -4,6 +4,7 @@ import { Button } from "reactstrap";
 import axios from "axios";
 import SwalAutoHide from "sweetalert2";
 import {
+  addUpdateData,
   connectFirebase,
   getAllOfCollection,
   getData,
@@ -15,7 +16,7 @@ import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 const token = Cookie.get("clobberswap_access_token");
 
-export default class Posts extends React.Component {
+export default class AddLanguage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -285,8 +286,33 @@ export default class Posts extends React.Component {
       });
   };
 
+  async handleSubmit(e) {
+    e.preventDefault()
+    let reqBody = {
+      name: this.state.newLanguage
+    }
+    let result = await addUpdateData("add-language", reqBody);
+    if(result) {
+      this.setState({ newLanguage: "" })
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Language Added Successfully",
+      });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something Went Wrong!",
+      });
+    }
+  }
+
   render() {
-    const { status, name, email, phoneNumber, chats, posts } = this.state;
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
@@ -307,27 +333,7 @@ export default class Posts extends React.Component {
                         id="demo-form2"
                         data-parsley-validate
                         className="form-horizontal form-label-left"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          console.log(
-                            "this is new Language",
-                            this.state.newLanguage
-                          );
-                          console.log(
-                            "this all languages",
-                            this.state.languages
-                          );
-                          var newArray = this.state.languages.push({
-                            selected: false,
-                            title: this.state.newLanguage,
-                          });
-                          console.log(
-                            "this all languages after",
-                            this.state.languages
-                          );
-                          console.log("THis is new array", newArray);
-                          this.updateLanguagesUsingArray(this.state.languages);
-                        }}
+                        onSubmit={e => this.handleSubmit(e)}
                       >
                         <div className="form-group row">
                           <label className="control-label col-md-3 col-sm-3">
@@ -352,7 +358,6 @@ export default class Posts extends React.Component {
                           </div>
                           <div className="col-md-1 col-sm-1">
                             <Button className="btn btn-success btn-md">
-                              {" "}
                               Submit
                             </Button>
                           </div>

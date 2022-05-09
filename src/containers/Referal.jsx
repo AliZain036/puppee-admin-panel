@@ -16,7 +16,7 @@ const token = Cookie.get("clobberswap_access_token");
 
 import HasRole from "../hoc/HasRole";
 
-export default class CoverBanner extends React.Component {
+export default class Referrals extends React.Component {
   constructor(props) {
     super(props);
 
@@ -43,7 +43,6 @@ export default class CoverBanner extends React.Component {
       user_id: user.id
     }
     let referrals = await getDataById('show-referrals', reqBody);
-    debugger
     this.setState({ transactions: referrals.data });
   }
 
@@ -247,11 +246,6 @@ export default class CoverBanner extends React.Component {
                         <td>
                           <Link to={`/referal/${trans.id}`}>
                             <button
-                              // onClick={() =>
-                              //   topic.status === "block"
-                              //     ? this.unblockPostHandler(topic.id)
-                              //     : this.blockPostHandler(topic.id)
-                              // }
                               className={`btn btn-sm btn-success`}
                             >
                               View

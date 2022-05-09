@@ -20,9 +20,8 @@ import {
 } from "../backend/utility";
 import HasRole from "../hoc/HasRole";
 import { connect } from "react-redux";
-import { setUserBlockStatus } from "../api/services/User";
 
-class CoverBanner extends React.Component {
+class Customers extends React.Component {
   constructor(props) {
     super(props);
 
@@ -429,4 +428,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(CoverBanner);
+export default connect(mapStateToProps)(Customers);

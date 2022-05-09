@@ -9,10 +9,11 @@ import {
   connectFirebase,
   getAllOfCollection,
   getData,
+  getDataById,
 } from "../backend/utility";
 import ReactToPdf from "react-to-pdf";
 import HasRole from "../hoc/HasRole";
-export default class CoverBanner extends React.Component {
+export default class ViewReferals extends React.Component {
   constructor(props) {
     super(props);
 
@@ -39,18 +40,19 @@ export default class CoverBanner extends React.Component {
     // console.log("This is user", myUser);
     return myUser;
   };
-  async componentWillMount() {}
 
   async componentDidMount() {
-    let allTransactions = await getAllOfCollection("Transactions");
-    console.log("THis is", allTransactions);
-    allTransactions.map((trans) => {
-      if (trans.transaction_id === this.props.match.params.refId) {
-        this.setState({ detailedReferal: trans });
-      }
-    });
-    let allUsers = await getAllOfCollection("Users");
-    this.setState({ allUsers: allUsers });
+    this.getReferralDetails();
+  }
+
+  async getReferralDetails() {
+    let reqBody = {
+      referral_id: this.props.match.params.refId,
+    };
+    let result = await getDataById("referral-details", reqBody);
+    if (result) {
+      this.setState({ detailedReferal: result.data });
+    }
   }
 
   fetchBanners = () => {
@@ -67,10 +69,6 @@ export default class CoverBanner extends React.Component {
         });
       });
   };
-
-  // const requestParams = {
-  //   "userId": userId,
-  // }
 
   deleteBrand(brandId, index) {
     if (confirm("Are you sure you want to delete this item?")) {
@@ -123,7 +121,7 @@ export default class CoverBanner extends React.Component {
   }
 
   render() {
-    const { eventDetail } = this.state;
+    const { detailedReferal } = this.state;
     const headingStyles = {
       fontWeight: 16,
       fontWeight: "bold",
@@ -159,9 +157,9 @@ export default class CoverBanner extends React.Component {
             className="row content-sm-left content-md-left"
             ref={ref}
             id="pdf"
-            style={{ width: 800 }}
+            // style={{ width: 800 }}
           >
-            {this.state.detailedReferal && (
+            {detailedReferal && (
               <Grid
                 container
                 direction="row"
@@ -170,7 +168,8 @@ export default class CoverBanner extends React.Component {
                 <Grid item md={8} xs={8}>
                   <img
                     src={
-                      "https://firebasestorage.googleapis.com/v0/b/network-desk.appspot.com/o/logo.PNG?alt=media&token=9b67edca-6a26-4dd8-a31d-8564f30a5edb"
+                      detailedReferal.user.profile &&
+                      detailedReferal.user.profile.profile_image
                     }
                   ></img>
                 </Grid>
@@ -185,9 +184,9 @@ export default class CoverBanner extends React.Component {
                     Date
                     {moment(
                       new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                        this.state.detailedReferal.createdAt.seconds
+                        detailedReferal.created_at.seconds
                       )
-                    ).format("MMMM Do YYYY")}
+                    ).format("MMMM DD YYYY")}
                   </p>
                 </Grid>
                 <div
@@ -211,55 +210,54 @@ export default class CoverBanner extends React.Component {
                     To: Receiving Office
                   </p>
                 </Grid>
-                <Grid item md={6} xs={6}>
-                  <p style={headingStyles}>Name</p>
-                  <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.receiver)
-                      .firstname +
-                      " " +
-                      this.getUserByID(this.state.detailedReferal.receiver)
-                        .lastname}
-                  </p>
-                </Grid>
-                <Grid item md={4} xs={4}>
-                  <p style={headingStyles}>Mobile</p>
-                  <p style={subHeadingStyles}>
-                    {
-                      this.getUserByID(this.state.detailedReferal.receiver)
-                        .phone
-                    }
-                  </p>
-                </Grid>
-                <Grid item md={6} xs={6}>
-                  <p style={headingStyles}>Email</p>
-                  <p style={subHeadingStyles}>
-                    {
-                      this.getUserByID(this.state.detailedReferal.receiver)
-                        .email
-                    }
-                  </p>
-                </Grid>
-                <Grid item md={4} xs={4}>
-                  <p style={headingStyles}>Website</p>
-                  <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.receiver)
-                      .website || "N/A"}
-                  </p>
-                </Grid>
-                <Grid item md={6} xs={6}>
-                  <p style={headingStyles}>Office Name</p>
-                  <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.receiver)
-                      .officeName || "N/A"}
-                  </p>
-                </Grid>
-                <Grid item md={4} xs={4}>
-                  <p style={headingStyles}>Office Address</p>
-                  <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.receiver)
-                      .address || "N/A"}
-                  </p>
-                </Grid>
+                {detailedReferal.receiver && (
+                  <div>
+                    <Grid item md={6} xs={6}>
+                      <p style={headingStyles}>Name</p>
+                      <p style={subHeadingStyles}>
+                        {detailedReferal.receiver.first_name +
+                          " " +
+                          detailedReferal.receiver.last_name}
+                      </p>
+                    </Grid>
+                    <Grid item md={4} xs={4}>
+                      <p style={headingStyles}>Mobile</p>
+                      <p style={subHeadingStyles}>
+                        {detailedReferal.receiver.phone_number}
+                      </p>
+                    </Grid>
+                    <Grid item md={6} xs={6}>
+                      <p style={headingStyles}>Email</p>
+                      <p style={subHeadingStyles}>
+                        {detailedReferal.receiver.email}
+                      </p>
+                    </Grid>
+                    <Grid item md={4} xs={4}>
+                      <p style={headingStyles}>Website</p>
+                      <p style={subHeadingStyles}>
+                        {(detailedReferal.receiver.profile &&
+                          detailedReferal.receiver.profile.website) ||
+                          "N/A"}
+                      </p>
+                    </Grid>
+                    <Grid item md={6} xs={6}>
+                      <p style={headingStyles}>Office Name</p>
+                      <p style={subHeadingStyles}>
+                        {(detailedReferal.receiver.profile &&
+                          detailedReferal.receiver.profile.company_name) ||
+                          "N/A"}
+                      </p>
+                    </Grid>
+                    <Grid item md={4} xs={4}>
+                      <p style={headingStyles}>Office Address</p>
+                      <p style={subHeadingStyles}>
+                        {(detailedReferal.receiver.profile &&
+                          detailedReferal.receiver.profile.brokerage_address) ||
+                          "N/A"}
+                      </p>
+                    </Grid>
+                  </div>
+                )}
 
                 <Grid item md={12} xs={12}>
                   <p
@@ -277,44 +275,44 @@ export default class CoverBanner extends React.Component {
                 <Grid item md={6} xs={6}>
                   <p style={headingStyles}>Name</p>
                   <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.creator)
-                      .firstname +
+                    {detailedReferal.user.first_name +
                       " " +
-                      this.getUserByID(this.state.detailedReferal.creator)
-                        .lastname}
+                      detailedReferal.user.last_name}
                   </p>
                 </Grid>
                 <Grid item md={4} xs={4}>
                   <p style={headingStyles}>Mobile</p>
                   <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.creator).phone}
+                    {detailedReferal.user.profile &&
+                      detailedReferal.user.profile.phone_number}
                   </p>
                 </Grid>
                 <Grid item md={6} xs={6}>
                   <p style={headingStyles}>Email</p>
-                  <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.creator).email}
-                  </p>
+                  <p style={subHeadingStyles}>{detailedReferal.user.email}</p>
                 </Grid>
                 <Grid item md={4} xs={4}>
                   <p style={headingStyles}>Website</p>
                   <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.creator)
-                      .website || "N/A"}
+                    {(detailedReferal.user.profile &&
+                      detailedReferal.user.profile.website) ||
+                      "N/A"}
                   </p>
                 </Grid>
                 <Grid item md={6} xs={6}>
                   <p style={headingStyles}>Office Name</p>
                   <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.creator)
-                      .officeName || "N/A"}
+                    {(detailedReferal.user.profile &&
+                      detailedReferal.user.profile.company_name) ||
+                      "N/A"}
                   </p>
                 </Grid>
                 <Grid item md={4} xs={4}>
                   <p style={headingStyles}>Office Address</p>
                   <p style={subHeadingStyles}>
-                    {this.getUserByID(this.state.detailedReferal.creator)
-                      .address || "N/A"}
+                    {(detailedReferal.user.profile &&
+                      detailedReferal.user.profile.brokerage_address) ||
+                      "N/A"}
                   </p>
                 </Grid>
 
@@ -333,38 +331,36 @@ export default class CoverBanner extends React.Component {
                 </Grid>
                 <Grid item md={6} xs={6}>
                   <p style={headingStyles}>Name</p>
-                  <p style={subHeadingStyles}>
-                    {this.state.detailedReferal.clientName}
-                  </p>
+                  <p style={subHeadingStyles}>{detailedReferal.name}</p>
                 </Grid>
                 <Grid item md={4} xs={4}>
                   <p style={headingStyles}>Mobile</p>
-                  <p style={subHeadingStyles}>
-                    {this.state.detailedReferal.clientPhone}
-                  </p>
+                  <p style={subHeadingStyles}>{detailedReferal.phone}</p>
                 </Grid>
                 <Grid item md={6} xs={6}>
                   <p style={headingStyles}>Email</p>
                   <p style={subHeadingStyles}>
-                    {this.state.detailedReferal.clientEmail || "N/A"}
+                    {detailedReferal.email || "N/A"}
                   </p>
                 </Grid>
                 <Grid item md={4} xs={4}>
                   <p style={headingStyles}>Property Type</p>
                   <p style={subHeadingStyles}>
-                    {this.state.detailedReferal.propertyType}
+                    {detailedReferal.property_type}
                   </p>
                 </Grid>
                 <Grid item md={6} xs={6}>
                   <p style={headingStyles}>Property Address</p>
                   <p style={subHeadingStyles}>
-                    {this.state.detailedReferal.propertyLocation}
+                    {detailedReferal.property_address}
                   </p>
                 </Grid>
                 <Grid item md={4} xs={4}>
                   <p style={headingStyles}>Desired Price Range</p>
                   <p style={subHeadingStyles}>
-                    {this.state.detailedReferal.priceRangeValues}
+                    {detailedReferal.min_price +
+                      " - " +
+                      detailedReferal.max_price}
                   </p>
                 </Grid>
                 <Grid item md={12} xs={12}>
@@ -377,15 +373,14 @@ export default class CoverBanner extends React.Component {
                       marginLeft: 10,
                     }}
                   >
-                    Refferal Acceptance and Acknowledgments
+                    Referral Acceptance and Acknowledgments
                   </p>
                   <p style={agreementStyles}>
-                    i {this.state.detailedReferal.clientName}, do hereby accept
-                    this refferal and agree to bound the following terms and
-                    conditions.
+                    I {detailedReferal.name}, do hereby accept this refferal and
+                    agree to bound the following terms and conditions.
                   </p>
                   <p style={subHeadingStyles}>
-                    {this.state.detailedReferal.referralData.agreement}
+                    {detailedReferal.referral_agreement}
                   </p>
                 </Grid>
                 <Grid item md={12} xs={12}>
@@ -422,56 +417,56 @@ export default class CoverBanner extends React.Component {
               //         Client Information:
               //       </h4>
               //       <h5 style={{ textAlign: "left" }}>
-              //         {this.state.detailedReferal.clientName}
+              //         {detailedReferal.clientName}
               //       </h5>
               //       <h5 style={{ textAlign: "left" }}>
-              //         {this.state.detailedReferal.clientPhone}
+              //         {detailedReferal.clientPhone}
               //       </h5>
               //       <h5 style={{ textAlign: "left" }}>
-              //         {this.state.detailedReferal.clientEmail}
+              //         {detailedReferal.clientEmail}
               //       </h5>
               //       <h5 style={{ textAlign: "left" }}>
-              //         {this.state.detailedReferal.additionalInfo}
+              //         {detailedReferal.additionalInfo}
               //       </h5>
               //     </div>
               //   </div>
               //   <h5 style={{ textAlign: "left", marginTop: "25px" }}>
-              //     Property Type: {this.state.detailedReferal.propertyType}
+              //     Property Type: {detailedReferal.propertyType}
               //   </h5>
 
               //   <h5 style={{ textAlign: "left", marginTop: "25px" }}>
               //     Sender :{" "}
-              //     {this.getUserByID(this.state.detailedReferal.creator)
+              //     {detailedReferal.user.profile && detailedReferal.user.profile
               //       .firstname +
               //       " " +
-              //       this.getUserByID(this.state.detailedReferal.creator)
+              //       this.getUserByID(detailedReferal.creator)
               //         .lastname}
               //   </h5>
 
               //   <h5 style={{ textAlign: "left", marginTop: "25px" }}>
               //     Receiver :{" "}
-              //     {this.getUserByID(this.state.detailedReferal.receiver) != ""
-              //       ? this.getUserByID(this.state.detailedReferal.receiver)
+              //     {this.getUserByID(detailedReferal.receiver) != ""
+              //       ? this.getUserByID(detailedReferal.receiver)
               //           .firstname +
               //         " " +
-              //         this.getUserByID(this.state.detailedReferal.receiver)
+              //         this.getUserByID(detailedReferal.receiver)
               //           .lastname
-              //       : this.state.detailedReferal.receiver}
+              //       : detailedReferal.receiver}
               //   </h5>
 
               //   <h5 style={{ textAlign: "left" }}>
               //     Property Location:{" "}
-              //     {this.state.detailedReferal.propertyLocation}
+              //     {detailedReferal.propertyLocation}
               //   </h5>
               //   <h5 style={{ textAlign: "left" }}>
-              //     Price Range: ${this.state.detailedReferal.priceRangeValues[0]}
-              //     K-${this.state.detailedReferal.priceRangeValues[1]}K
+              //     Price Range: ${detailedReferal.priceRangeValues[0]}
+              //     K-${detailedReferal.priceRangeValues[1]}K
               //   </h5>
               //   <h5 style={{ textAlign: "left" }}>
-              //     Referral Agreement: {this.state.detailedReferal.percentage}
+              //     Referral Agreement: {detailedReferal.percentage}
               //   </h5>
               //   <h5 style={{ textAlign: "left" }}>
-              //     Referral Status: {this.state.detailedReferal.status}
+              //     Referral Status: {detailedReferal.status}
               //   </h5>
               //   <button
               //     className={`btn btn-sm btn-primary`}
@@ -482,7 +477,7 @@ export default class CoverBanner extends React.Component {
               // </div>
             )}
           </div>
-          {this.state.detailedReferal && (
+          {detailedReferal && (
             <ReactToPdf
               targetRef={document.getElementById("pdf")}
               filename="Refferal.pdf"

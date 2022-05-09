@@ -18,7 +18,7 @@ const token = Cookie.get("clobberswap_access_token");
 import HasRole from "../hoc/HasRole";
 import SwalAutoHide from "sweetalert2";
 
-export default class CoverBanner extends React.Component {
+export default class Posts extends React.Component {
   constructor(props) {
     super(props);
 
@@ -39,7 +39,6 @@ export default class CoverBanner extends React.Component {
       var posts = [];
       // let allPosts = await getAllOfCollection("Posts");
       let allPosts = await getAllData("show-all-posts");
-      debugger
       this.setState({ userPosts: allPosts.data.data, copyPosts: allPosts });
       console.log("This is the post", allPosts);
     } else {

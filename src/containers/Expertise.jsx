@@ -13,13 +13,14 @@ import {
   addToArray,
   updateData,
   getAllData,
+  deleteRecord,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
 
 import HasRole from "../hoc/HasRole";
 
-export default class CoverBanner extends React.Component {
+export default class Expertise extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,31 +36,18 @@ export default class CoverBanner extends React.Component {
     };
   }
   async componentWillMount() {
-    // console.log("This is token now", Cookie.get("token"));
     if (Cookie.get("token")) {
-      // let Admin = await getAllOfCollection("Admin");
-      let { data } = await getAllData("show-expertise");
-      // this.setState({ Admin: Admin[0] });
-      // for (let key in Admin[0]) {
-      //   if (key !== "languages" && key !== "companies") {
-      //     Admin[0][key].map((row) => {
-      //       data.push({
-      //         title: row.title,
-      //         seleted: false,
-      //         category: key,
-      //       });
-      //     });
-      //   }
-      // }
-      // console.log("This is ithe data", Admin[1]);
-
-      this.setState({
-        expertise: data,
-        // copyexpertise: Admin[1].AreaOfExpertise,
-      });
+      this.getAllExpertise()
     } else {
       this.props.history.push("/login");
     }
+  }
+
+  async getAllExpertise() {
+    let { data } = await getAllData("show-expertise");
+    this.setState({
+      expertise: data,
+    });
   }
 
   async updateexpertise() {
@@ -76,7 +64,7 @@ export default class CoverBanner extends React.Component {
           timer: 2000,
           title: "Success.",
           showConfirmButton: false,
-          text: "expertise Updated Successfully",
+          text: "Expertise Updated Successfully",
         });
       })
       .catch(() => {
@@ -157,9 +145,32 @@ export default class CoverBanner extends React.Component {
       });
   };
 
-  // const requestParams = {
-  //   "userId": userId,
-  // }
+  async deleteExpertise(expertise) {
+    let reqBody = {
+      expertise_id: expertise.id,
+    };
+    let result = await deleteRecord("delete-expertise", reqBody);
+    let message = '';
+    result ? message = 'Expertise Deleted Successfully': 'Something went wrong!'
+    if(result) {
+      this.getAllExpertise()
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: message,
+      });
+    } else {
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: message,
+      });
+    }
+  }
 
   deleteBrand(brandId, index) {
     if (confirm("Are you sure you want to delete this item?")) {
@@ -263,18 +274,18 @@ export default class CoverBanner extends React.Component {
 
               <tbody>
                 {this.state.expertise &&
-                  this.state.expertise.map((language, index) => {
+                  this.state.expertise.map((experti, index) => {
                     return (
                       <tr>
                         <td>{index + 1}</td>
 
-                        <td>{language.name}</td>
-                        <td>{language.category.name}</td>
+                        <td>{experti.name}</td>
+                        <td>{experti.category && experti.category.name}</td>
 
                         <td>
                           <button
                             onClick={() => {
-                              this.deleteExpertiseUsingArray(language);
+                              this.deleteExpertise(experti);
                             }}
                             className={`btn btn-sm btn-danger`}
                           >

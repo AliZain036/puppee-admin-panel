@@ -10,7 +10,7 @@ const token = Cookie.get("clobberswap_access_token");
 import HasRole from "../hoc/HasRole";
 import { getData, saveData } from "../backend/utility";
 
-export default class CoverBanner extends React.Component {
+export default class Chats extends React.Component {
   constructor(props) {
     super(props);
 

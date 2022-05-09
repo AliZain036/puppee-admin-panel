@@ -12,13 +12,15 @@ import {
   getData,
   addToArray,
   updateData,
+  getAllData,
+  deleteRecord,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
 
 import HasRole from "../hoc/HasRole";
 
-export default class CoverBanner extends React.Component {
+export default class Companies extends React.Component {
   constructor(props) {
     super(props);
 
@@ -30,12 +32,14 @@ export default class CoverBanner extends React.Component {
       responseMessage: "Loading Colors...",
       languages: [],
       copyLanguages: [],
+      companies: [],
     };
   }
   async componentWillMount() {
     // console.log("This is token now", Cookie.get("token"));
     if (Cookie.get("token")) {
       var posts = [];
+
       let Admin = await getAllOfCollection("Admin");
       // this.setState({ userPosts: allPosts, copyPosts: allPosts });
       console.log("This is the admin", Admin[0].companies);
@@ -68,6 +72,17 @@ export default class CoverBanner extends React.Component {
       .catch(() => {
         alert("Something went wrong");
       });
+  }
+
+  componentDidMount() {
+    this.getCompanies();
+  }
+
+  async getCompanies() {
+    let result = await getAllData("show-companies");
+    if (result) {
+      this.setState({ companies: result.data });
+    }
   }
 
   async updateCompaniesUsingArray(array) {
@@ -107,6 +122,31 @@ export default class CoverBanner extends React.Component {
           brands.splice(index, 1);
           this.setState({ brands });
         });
+    }
+  }
+
+  async handleDeleteCompany(company) {
+    let reqBody = {
+      company_id: company.id,
+    };
+    let result = await deleteRecord("delete-company", reqBody);
+    if (result) {
+      this.getCompanies();
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Company Deleted Successfully!",
+      });
+    } else {
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Something went wrong!!",
+      });
     }
   }
 
@@ -204,34 +244,18 @@ export default class CoverBanner extends React.Component {
               </thead>
 
               <tbody>
-                {this.state.languages &&
-                  this.state.languages.map((language, index) => {
+                {this.state.companies &&
+                  this.state.companies.map((company, index) => {
                     return (
                       <tr>
                         <td>{index + 1}</td>
-
-                        <td>{language.title}</td>
-                        <td></td>
+                        <td>{company.name}</td>
                         <td>
                           <button
-                            onClick={() => {
-                              let newData = this.state.languages.filter(
-                                function (item) {
-                                  let itemData = item.title
-                                    ? item.title.toUpperCase()
-                                    : "".toUpperCase();
-                                  let textData = language.title.toUpperCase();
-                                  return itemData.indexOf(textData) == -1;
-                                }
-                              );
-                              this.updateCompaniesUsingArray(newData);
-                            }}
+                            onClick={() => this.handleDeleteCompany(company)}
                             className={`btn btn-sm btn-danger`}
                           >
                             Delete
-                            {/* {post.statusAdmin && post.statusAdmin === "Block"
-                              ? "Unblock"
-                              : "Block"} */}
                           </button>
                         </td>
                       </tr>

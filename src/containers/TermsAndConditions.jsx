@@ -19,7 +19,7 @@ import {
 } from "../backend/utility";
 import SwalAutoHide from "sweetalert2";
 
-export default class Posts extends React.Component {
+export default class TermsAndConditions extends React.Component {
   constructor(props) {
     super(props);
 

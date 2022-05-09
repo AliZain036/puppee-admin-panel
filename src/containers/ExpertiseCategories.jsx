@@ -21,7 +21,7 @@ const token = Cookie.get("clobberswap_access_token");
 
 import HasRole from "../hoc/HasRole";
 
-export default class CoverBanner extends React.Component {
+export default class ExpertiseCategories extends React.Component {
   constructor(props) {
     super(props);
 

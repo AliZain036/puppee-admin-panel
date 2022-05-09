@@ -61,7 +61,7 @@ export async function getDataById(url, reqBody) {
     })
       .then((res) => res.json())
       .then((res) => res);
-    debugger;
+    
     return data;
   } catch (error) {
     console.log(error);
@@ -246,7 +246,7 @@ export async function deleteData(collection, doc, array, value) {
 }
 
 export async function deleteRecord(endpoint, reqBody) {
-  debugger;
+  
   try {
     let result = await fetch(`${apiUrl}${endpoint}`, {
       method: "POST",
