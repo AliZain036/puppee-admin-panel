@@ -37,7 +37,7 @@ export default class ExpertiseCategories extends React.Component {
   }
 
   async componentDidMount() {
-    this.getAllCategories()
+    this.getAllCategories();
   }
 
   async getAllCategories() {
@@ -211,7 +211,6 @@ export default class ExpertiseCategories extends React.Component {
       category_id: category.id,
     };
     let result = await deleteRecord("delete-category", reqBody);
-    debugger
     if (result) {
       this.getAllCategories();
       SwalAutoHide.fire({
@@ -230,7 +229,7 @@ export default class ExpertiseCategories extends React.Component {
         text: "Something went wrong!!",
       });
     }
-  };
+  }
 
   render() {
     const { events } = this.state;
@@ -270,15 +269,11 @@ export default class ExpertiseCategories extends React.Component {
             </div>
 
             <div className="col-sm-4 pull-right mobile-space">
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={() => {
-                  window.location.href = "/addExpertiseCategories";
-                }}
-              >
-                Add new Category
-              </button>
+              <Link to={"/addExpertiseCategories"}>
+                <button type="button" className="btn btn-success">
+                  Add New Category
+                </button>
+              </Link>
             </div>
           </div>
           <div className="table-responsive">
@@ -294,7 +289,7 @@ export default class ExpertiseCategories extends React.Component {
                 {this.state.categories &&
                   this.state.categories.map((cat, index) => {
                     return (
-                      <tr>
+                      <tr key={cat.id}>
                         <td>{index + 1}</td>
                         <td>{cat.name}</td>
                         <td>

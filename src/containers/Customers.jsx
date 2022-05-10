@@ -197,7 +197,6 @@ class Customers extends React.Component {
       userBlockStatus = await addUpdateData("admin-unblock-user", requestBody);
     }
     if(userBlockStatus) {
-      this.componentDidMount()
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
@@ -205,6 +204,7 @@ class Customers extends React.Component {
         showConfirmButton: false,
         text: userBlockStatus.message,
       });
+      this.componentDidMount()
     }
   }
 

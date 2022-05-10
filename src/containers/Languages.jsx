@@ -266,12 +266,6 @@ export default class Languages extends React.Component {
               </tbody>
             </table>
           </div>
-          <button
-            onClick={() => this.updateLanguages()}
-            className={`btn btn-sm btn-success`}
-          >
-            Save
-          </button>
         </div>
       </div>
     );

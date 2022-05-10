@@ -131,7 +131,6 @@ export default class Companies extends React.Component {
     };
     let result = await deleteRecord("delete-company", reqBody);
     if (result) {
-      this.getCompanies();
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
@@ -139,6 +138,7 @@ export default class Companies extends React.Component {
         showConfirmButton: false,
         text: "Company Deleted Successfully!",
       });
+      this.getCompanies();
     } else {
       SwalAutoHide.fire({
         icon: "success",
@@ -221,17 +221,12 @@ export default class Companies extends React.Component {
                 </span>
               </div>
             </div>
-
             <div className="col-sm-4 pull-right mobile-space">
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={() => {
-                  window.location.href = "/addCompany";
-                }}
-              >
-                Add new Company
-              </button>
+              <Link to={"/addCompany"}>
+                <button type="button" className="btn btn-success">
+                  Add new Company
+                </button>
+              </Link>
             </div>
           </div>
           <div className="table-responsive">

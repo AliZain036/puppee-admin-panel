@@ -4,6 +4,7 @@ import { Button } from "reactstrap";
 import axios from "axios";
 import SwalAutoHide from "sweetalert2";
 import {
+  addUpdateData,
   getAllOfCollection,
   getData,
   updateData,
@@ -284,6 +285,31 @@ export default class AddCompany extends React.Component {
       });
   };
 
+  async handleSubmit(e) {
+    e.preventDefault()
+    let reqBody = {
+      name: this.state.newLanguage
+    }
+    let result = await addUpdateData("add-company", reqBody);
+    if(result.data) {
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "New Company Added Successfully",
+      });
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something Went Wrong!",
+      });
+    }
+  }
+
   render() {
     const { status, name, email, phoneNumber, chats, posts } = this.state;
     return (
@@ -306,27 +332,7 @@ export default class AddCompany extends React.Component {
                         id="demo-form2"
                         data-parsley-validate
                         className="form-horizontal form-label-left"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          console.log(
-                            "this is new Language",
-                            this.state.newLanguage
-                          );
-                          console.log(
-                            "this all languages",
-                            this.state.languages
-                          );
-                          var newArray = this.state.languages.push({
-                            selected: false,
-                            title: this.state.newLanguage,
-                          });
-                          console.log(
-                            "this all languages after",
-                            this.state.languages
-                          );
-                          console.log("THis is new array", newArray);
-                          this.updateLanguagesUsingArray(this.state.languages);
-                        }}
+                        onSubmit={(e) => this.handleSubmit(e)}
                       >
                         <div className="form-group row">
                           <label className="control-label col-md-3 col-sm-3">

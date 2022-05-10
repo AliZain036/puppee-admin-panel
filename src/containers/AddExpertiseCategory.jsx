@@ -10,6 +10,7 @@ import {
   updateData,
   deleteData,
   saveData,
+  addUpdateData,
 } from "../backend/utility";
 // import {Pagination} from 'react-bootstrap';
 
@@ -39,7 +40,7 @@ export default class AddExpertiseCategory extends React.Component {
       followings: [],
       blocked: [],
       transactions: [],
-      newLanguage: "",
+      newExpertiseCategory: "",
       languages: [],
       active: true,
     };
@@ -96,7 +97,6 @@ export default class AddExpertiseCategory extends React.Component {
     console.log("This is temp", temp);
     await updateData("Admin", "lW16IC5TtfA58gxARBOW", "Professions", temp)
       .then(() => {
-        this.componentWillMount();
         SwalAutoHide.fire({
           icon: "success",
           timer: 2000,
@@ -123,15 +123,6 @@ export default class AddExpertiseCategory extends React.Component {
     let allUsers = await getAllOfCollection("Users");
     console.log("THis is user", allUsers);
   };
-
-  async componentWillMount() {
-    let Admin = await getAllOfCollection("Admin");
-    // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-    console.log("This is the admin", Admin[1].Professions);
-    this.setState({
-      languages: Admin[1].Professions,
-    });
-  }
 
   async fetchUserDetail(id) {
     this.setState({
@@ -320,6 +311,34 @@ export default class AddExpertiseCategory extends React.Component {
       });
   };
 
+  async handleSubmit(e) {
+    e.preventDefault();
+    let reqBody = {
+      name: this.state.newExpertiseCategory,
+      status: this.state.active,
+    };
+    console.log(this.state);
+    let result = await addUpdateData("add-category", reqBody);
+    if (result && result.data) {
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "New Category Added Sucessfully!",
+      });
+      // this.props.history.push("/expertiseCategories");
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something Went Wrong!",
+      });
+    }
+  }
+
   render() {
     const { status, name, email, phoneNumber, chats, posts } = this.state;
     return (
@@ -327,13 +346,7 @@ export default class AddExpertiseCategory extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              {/* <h3
-                onClick={() => {
-                  window.location.href = "/";
-                }}
-              >
-                Add New Expertise Category
-              </h3> */}
+              <h3>Add New Expertise Category</h3>
             </div>
           </div>
 
@@ -348,11 +361,7 @@ export default class AddExpertiseCategory extends React.Component {
                         id="demo-form2"
                         data-parsley-validate
                         className="form-horizontal form-label-left"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          // this.addNewCategory();
-                          this.updateExpertiseUsingArray();
-                        }}
+                        onSubmit={(e) => this.handleSubmit(e)}
                       >
                         <div className="form-group row">
                           <label className="control-label col-md-3 col-sm-3">
@@ -370,7 +379,7 @@ export default class AddExpertiseCategory extends React.Component {
                                 value={this.state.newLanguage}
                                 onChange={(e) => {
                                   this.setState({
-                                    newLanguage: e.target.value,
+                                    newExpertiseCategory: e.target.value,
                                   });
                                 }}
                               />
@@ -391,7 +400,10 @@ export default class AddExpertiseCategory extends React.Component {
                             </div>
                           </div>
                           <div className="col-md-1 col-sm-1">
-                            <Button className="btn btn-success btn-md">
+                            <Button
+                              className="btn btn-success btn-md"
+                              type="submit"
+                            >
                               {" "}
                               Submit
                             </Button>
