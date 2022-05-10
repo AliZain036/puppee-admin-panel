@@ -14,6 +14,7 @@ import {
   updateData,
   getAllData,
   deleteRecord,
+  searchData,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -33,9 +34,10 @@ export default class Expertise extends React.Component {
       expertise: [],
       copyexpertise: [],
       Admin: [],
+      searchQuery: ""
     };
   }
-  async componentWillMount() {
+  async componentDidMount() {
     if (Cookie.get("token")) {
       this.getAllExpertise()
     } else {
@@ -58,7 +60,7 @@ export default class Expertise extends React.Component {
       this.state.expertise
     )
       .then(() => {
-        this.componentWillMount();
+        this.componentDidMount();
         SwalAutoHide.fire({
           icon: "success",
           timer: 2000,
@@ -89,7 +91,7 @@ export default class Expertise extends React.Component {
       tempCat
     )
       .then(() => {
-        this.componentWillMount();
+        this.componentDidMount();
         SwalAutoHide.fire({
           icon: "success",
           timer: 2000,
@@ -115,7 +117,7 @@ export default class Expertise extends React.Component {
     console.log("this is new data", array, category);
     await updateData("Admin", "0qYmJUZhg0WLUATMjaohcgrsGs33", category, array)
       .then(() => {
-        this.componentWillMount();
+        this.componentDidMount();
         SwalAutoHide.fire({
           icon: "success",
           timer: 2000,
@@ -213,6 +215,25 @@ export default class Expertise extends React.Component {
     }
   }
 
+  async handleSearch() {
+    let { searchQuery } = this.state;
+    searchQuery = searchQuery.trim();
+    let searchResults;
+    if (searchQuery.length > 0) {
+      let reqBody = {
+        query: searchQuery,
+      };
+      searchResults = await searchData("search-expertise", reqBody);
+      if (searchResults.data && searchResults.data.length > 0) {
+        this.setState({ expertise: searchResults.data, searchQuery: "" });
+      } else {
+        this.setState({ expertise: [], searchQuery: "" });
+      }
+    } else {
+      this.getAllExpertise();
+    }
+  }
+
   handleInputChange = (event) => {
     const { value, name } = event.target;
     this.setState({ q: event.target.value });
@@ -235,9 +256,10 @@ export default class Expertise extends React.Component {
                   type="text"
                   name="search"
                   placeholder="Enter keyword"
-                  value={this.state.q}
-                  // onChange={(event) => this.setState({q: event.target.value})}
-                  onChange={this.handleInputChange}
+                  value={this.state.searchQuery}
+                  onChange={(event) =>
+                    this.setState({ searchQuery: event.target.value })
+                  }
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
                       this.handleSearch();
@@ -276,7 +298,7 @@ export default class Expertise extends React.Component {
                 {this.state.expertise &&
                   this.state.expertise.map((experti, index) => {
                     return (
-                      <tr>
+                      <tr key={experti.id}>
                         <td>{index + 1}</td>
 
                         <td>{experti.name}</td>

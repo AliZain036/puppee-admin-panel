@@ -15,6 +15,7 @@ import {
   deleteData,
   getAllData,
   deleteRecord,
+  searchData,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -33,6 +34,7 @@ export default class ExpertiseCategories extends React.Component {
       responseMessage: "Loading Colors...",
       categories: [],
       copyCategories: [],
+      searchQuery: ""
     };
   }
 
@@ -231,6 +233,25 @@ export default class ExpertiseCategories extends React.Component {
     }
   }
 
+  async handleSearch() {
+    let { searchQuery } = this.state;
+    searchQuery = searchQuery.trim();
+    let searchResults;
+    if (searchQuery.length > 0) {
+      let reqBody = {
+        query: searchQuery,
+      };
+      searchResults = await searchData("search-categories", reqBody);
+      if (searchResults.data && searchResults.data.length > 0) {
+        this.setState({ categories: searchResults.data, searchQuery: "" });
+      } else {
+        this.setState({ categories: [], searchQuery: "" });
+      }
+    } else {
+      this.getAllCategories()
+    }
+  }
+
   render() {
     const { events } = this.state;
     return (
@@ -247,9 +268,10 @@ export default class ExpertiseCategories extends React.Component {
                   type="text"
                   name="search"
                   placeholder="Enter keyword"
-                  value={this.state.q}
-                  // onChange={(event) => this.setState({q: event.target.value})}
-                  onChange={this.handleInputChange}
+                  value={this.state.searchQuery}
+                  onChange={(event) =>
+                    this.setState({ searchQuery: event.target.value })
+                  }
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
                       this.handleSearch();

@@ -10,6 +10,7 @@ import {
   getAllOfCollection,
   getData,
   getDataById,
+  searchData,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -30,40 +31,24 @@ export default class Referrals extends React.Component {
       copyEvents: [],
       transactions: [],
       copyTransactions: [],
-      user: {}
+      user: {},
+      searchQuery: "",
     };
   }
 
   async componentDidMount() {
-    let user = JSON.parse(localStorage.getItem('user'))
+    let user = JSON.parse(localStorage.getItem("user"));
     if (user) {
-      this.setState({user})
+      this.setState({ user });
     }
     let reqBody = {
-      user_id: user.id
-    }
-    let referrals = await getDataById('show-referrals', reqBody);
+      user_id: user.id,
+    };
+    let referrals = await getDataById("show-referrals", reqBody);
     this.setState({ transactions: referrals.data });
   }
 
-  // async componentWillMount() {
-  //   if (Cookie.get("token")) {
-  //     let allUsers = await getAllOfCollection("Users");
-  //     this.setState({ allUsers: allUsers });
-  //     let allTransactions = await getAllOfCollection("Transactions");
-  //     console.log("THis is", allTransactions);
-  //     this.setState({
-  //       transactions: allTransactions,
-  //       copyTransactions: allTransactions,
-  //     });
-  //   } else {
-  //     this.props.history.push("/login");
-  //   }
-  // }
-
   getUserByID = (id) => {
-    // console.log("This is email", id);
-    // console.log("These arre al users", this.state.allUsers);
     var myUser = "";
     this.state.allUsers.map((user) => {
       if (user.id === id) {
@@ -116,7 +101,27 @@ export default class Referrals extends React.Component {
       }),
     });
   };
-  sortPostsByName = () => {
+
+  async handleSearch() {
+    let { searchQuery } = this.state;
+    searchQuery = searchQuery.trim();
+    let searchResults;
+    if (searchQuery.length > 0) {
+      let reqBody = {
+        query: searchQuery,
+      };
+      searchResults = await searchData("search-referrals", reqBody);
+      if (searchResults.data && searchResults.data.length > 0) {
+        this.setState({ transactions: searchResults.data, searchQuery: "" });
+      } else {
+        this.setState({ transactions: [], searchQuery: "" });
+      }
+    } else {
+      this.componentDidMount()
+    }
+  }
+
+  sortReferralsByName = () => {
     this.setState({
       transactions: this.state.transactions.sort(function (x, y) {
         console.log("Thiss is the great", x, y);
@@ -142,21 +147,10 @@ export default class Referrals extends React.Component {
                   type="text"
                   name="search"
                   placeholder="Enter keyword"
-                  value={this.state.q}
-                  onChange={this.handleInputChange}
-                  // onChange={(event) => this.setState({q: event.target.value})}
-                  // onChange={(event) =>
-                  //   this.setState({ q: event.target.value }, () => {
-                  //     if (this.state.q === "") {
-                  //       this.fetchBanners();
-                  //     }
-                  //   })
-                  // }
-                  // onKeyPress={(event) => {
-                  //   if (event.key === "Enter") {
-                  //     this.handleSearch();
-                  //   }
-                  // }}
+                  value={this.state.searchQuery}
+                  onChange={(e) =>
+                    this.setState({ searchQuery: e.target.value })
+                  }
                 />
                 <span className="input-group-btn">
                   <button
@@ -175,7 +169,7 @@ export default class Referrals extends React.Component {
                 type="button"
                 className="btn btn-success"
                 onClick={() => {
-                  this.sortPostsByName();
+                  this.sortReferralsByName();
                 }}
                 style={{ marginRight: 10 }}
               >
@@ -209,8 +203,6 @@ export default class Referrals extends React.Component {
               <tbody>
                 {this.state.transactions &&
                   this.state.transactions.map((trans, index) => {
-                    // var creator = this.getUserByID(trans.creator);
-                    // var receiver = this.getUserByID(trans.receiver);
                     return (
                       <tr key={trans.id}>
                         <td>{index + 1}</td>
@@ -233,11 +225,6 @@ export default class Referrals extends React.Component {
                           )}
                         </td>
                         <td>
-                          {/* {moment(
-                              new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                                trans.created_at.seconds
-                              )
-                            ).format("YYYY-MM-DD")} */}
                           {moment(new Date(trans.created_at)).format(
                             "YYYY-MM-DD"
                           )}
@@ -245,16 +232,14 @@ export default class Referrals extends React.Component {
                         <td>{trans.status}</td>
                         <td>
                           <Link to={`/referal/${trans.id}`}>
-                            <button
-                              className={`btn btn-sm btn-success`}
-                            >
+                            <button className={`btn btn-sm btn-success`}>
                               View
                             </button>
                           </Link>
                         </td>
                       </tr>
                     );
-                  })}{" "}
+                  })}
               </tbody>
             </table>
           </div>

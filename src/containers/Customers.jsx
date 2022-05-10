@@ -16,6 +16,7 @@ import {
   getAllOfCollection,
   saveData,
   saveDataWithoutDocId,
+  searchData,
   updateData,
 } from "../backend/utility";
 import HasRole from "../hoc/HasRole";
@@ -35,16 +36,12 @@ class Customers extends React.Component {
       copyUsers: [],
       user: {},
       blockStatus: undefined,
+      searchQuery: "",
     };
   }
   async componentDidMount() {
     if (Cookie.get("token")) {
-      let allUsers = await getAllData("show-users");
-      this.setState({ users: allUsers.data });
-      this.setState({ copyUsers: allUsers });
-      console.log("This is users", allUsers);
-      let user = JSON.parse(localStorage.getItem("user"));
-      this.setState({ user });
+      this.getAllUsers()
     } else {
       this.props.history.push("/login");
     }
@@ -52,7 +49,8 @@ class Customers extends React.Component {
 
   async getAllUsers() {
     let allUsers = await getAllData("show-users");
-    this.setState({ users: allUsers.data });
+    let user = JSON.parse(localStorage.getItem("user"));
+    this.setState({ users: allUsers.data, copyUsers: allUsers, user });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -113,78 +111,26 @@ class Customers extends React.Component {
         text: "User restored successfully",
       });
     }
-    // let allUsers = await updateData("Users", doc, field, val)
-    //   .then(() => {
-    //     this.componentDidMount();
-    //     if (val) {
-    //     } else {
-    //     }
-    //   })
-    //   .catch(() => {
-    //     alert("Something went wrong");
-    //   });
   }
 
-  handleSearch() {
-    const { q } = this.state;
-    if (q.length) {
-      this.setState({
-        loading: true,
-        brands: [],
-        responseMessage: "Loading Colors...",
-      });
-      axios
-        .get(`${API_END_POINT}/api/brands/search`, {
-          params: { searchWord: this.state.q },
-          headers: { "auth-token": token },
-        })
-        .then((response) => {
-          this.setState({
-            brands: response.data.searchedItems,
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        })
-        .catch(() => {
-          this.setState({
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        });
+  async handleSearch() {
+    let { searchQuery } = this.state
+    searchQuery = searchQuery.trim();
+    let searchResults;
+    if (searchQuery.length > 0) {
+      let reqBody = {
+        query: searchQuery,
+      };
+      searchResults = await searchData("search-users", reqBody);
+      if (searchResults.data && searchResults.data.length > 0) {
+        this.setState({ users: searchResults.data, searchQuery: "" });
+      } else {
+        this.setState({ users: [], searchQuery: "" });
+      }
+    } else {
+      this.getAllUsers()
     }
   }
-
-  handleDeleteUser = async (index) => {
-    const { users } = this.state;
-    let token = users[index].userId;
-    console.log(token);
-    //Delete user from firebase
-
-    //Delete it from Users
-    await firebase.firestore().collection("Users").doc(token).delete();
-
-    //Delete its Posts
-    await firebase.firestore().collection("Posts").doc(token).delete();
-
-    //Delete its Events
-    await firebase.firestore().collection("Events").doc(token).delete();
-
-    //Delete its Chats
-    await firebase.firestore().collection("Chats").doc(token).delete();
-
-    //Delete its MyFeed
-    await firebase.firestore().collection("PosMyFeedts").doc(token).delete();
-
-    //Delete its Rides
-    await firebase.firestore().collection("Rides").doc(token).delete();
-
-    //Delete its UserCollection
-    await firebase.firestore().collection("UserCollection").doc(token).delete();
-
-    let allUsers = await getAllOfCollection("Users");
-
-    this.setState({ users: allUsers });
-  };
 
   async toggleUserBlock(user) {
     let requestBody = {
@@ -196,7 +142,7 @@ class Customers extends React.Component {
     } else if (user.status && user.status === "blocked") {
       userBlockStatus = await addUpdateData("admin-unblock-user", requestBody);
     }
-    if(userBlockStatus) {
+    if (userBlockStatus) {
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
@@ -204,49 +150,11 @@ class Customers extends React.Component {
         showConfirmButton: false,
         text: userBlockStatus.message,
       });
-      this.componentDidMount()
+      this.componentDidMount();
     }
   }
-
-  async FilterFn(text) {
-    if (text !== "") {
-      let newData = this.state.users.filter(function (item) {
-        let itemData = item.firstname
-          ? item.firstname.toUpperCase()
-          : "".toUpperCase();
-        let textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-
-      this.setState({
-        users: newData,
-        isSearching: true,
-      });
-    } else {
-      this.setState({
-        users: this.state.copyUsers,
-        isSearching: false,
-      });
-    }
-  }
-  handleInputChange = (event) => {
-    const { value, name } = event.target;
-    console.log("THis is target value", value);
-    this.setState({ q: event.target.value });
-    this.FilterFn(event.target.value);
-  };
-
-  handleBlockPress = async (val, id) => {
-    await saveData("Users", id, {
-      blocked: !val,
-      blockDate: val ? "" : moment().format(),
-    });
-    this.componentDidMount();
-  };
 
   render() {
-    console.log("component has been re-rendered");
-    const { users } = this.state;
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
@@ -262,13 +170,10 @@ class Customers extends React.Component {
                   type="text"
                   name="search"
                   placeholder="Enter keyword"
-                  value={this.state.q}
-                  onChange={this.handleInputChange}
-                  // onKeyPress={(event) => {
-                  //   if (event.key === "Enter") {
-                  //     this.handleSearch();
-                  //   }
-                  // }}
+                  value={this.state.searchQuery}
+                  onChange={(e) =>
+                    this.setState({ searchQuery: e.target.value })
+                  }
                 />
                 <span className="input-group-btn">
                   <button

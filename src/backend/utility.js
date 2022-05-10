@@ -84,6 +84,22 @@ export async function addUpdateData(url, reqBody) {
   }
 }
 
+export async function searchData(url, reqBody) {
+  try {
+    let result = [];
+    result = await fetch(`${apiUrl}${url}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(reqBody)
+    }).then(res => res.json()).then(res => res)
+    return result
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function getDataWithDoc(collection, doc) {
   let data = [];
   let user = await firebase.firestore().collection(collection).doc(doc).get();

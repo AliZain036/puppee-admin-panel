@@ -11,6 +11,7 @@ import {
   getAllData,
   getAllOfCollection,
   getData,
+  searchData,
   updateData,
 } from "../backend/utility";
 import firebase from "firebase";
@@ -32,28 +33,30 @@ export default class Posts extends React.Component {
       copyEvents: [],
       userPosts: [],
       copyPosts: [],
+      searchQuery: ""
     };
   }
-  async componentWillMount() {
+  async componentDidMount() {
     if (Cookie.get("token")) {
-      var posts = [];
-      // let allPosts = await getAllOfCollection("Posts");
-      let allPosts = await getAllData("show-all-posts");
-      this.setState({ userPosts: allPosts.data.data, copyPosts: allPosts });
-      console.log("This is the post", allPosts);
+      this.getAllPosts()
     } else {
       this.props.history.push("/login");
     }
+  }
+
+  async getAllPosts() {
+    let allPosts = await getAllData("show-all-posts");
+    this.setState({ userPosts: allPosts.data.data, copyPosts: allPosts });
   }
 
   async updateThisPost(doc, field, val) {
     let allUsers = await updateData("Posts", doc, field, val)
       .then(() => {
         if (val === "Block") {
-          this.componentWillMount();
+          this.componentDidMount();
           alert("Post Blocked Successfully");
         } else {
-          this.componentWillMount();
+          this.componentDidMount();
           alert("Post Unblocked Successfully");
         }
       })
@@ -102,6 +105,26 @@ export default class Posts extends React.Component {
     });
   }
 
+  async handleSearch() {
+    let { searchQuery } = this.state
+    searchQuery = searchQuery.trim();
+    let searchResults;
+    if (searchQuery.length > 0) {
+      let reqBody = {
+        query: searchQuery,
+      };
+      searchResults = await searchData("search-posts", reqBody);
+      debugger
+      if (searchResults.data && searchResults.data.length > 0) {
+        this.setState({ userPosts: searchResults.data, searchQuery: "" });
+      } else {
+        this.setState({ userPosts: [], searchQuery: "" });
+      }
+    } else {
+      this.getAllPosts()
+    }
+  }
+
   async setPostBlockStatus(post) {
     let reqBody = {
       post_id: post.id
@@ -109,7 +132,7 @@ export default class Posts extends React.Component {
     let url = post.status === "active" ? "block-post" : "unblock-post";
     let result = await addUpdateData(url, reqBody);
     if(result && result.success === true) {
-      this.componentWillMount()
+      this.componentDidMount()
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
@@ -150,30 +173,17 @@ export default class Posts extends React.Component {
     }
   }
 
-  handleInputChange = (event) => {
-    const { value, name } = event.target;
-    this.setState({ q: event.target.value });
-    this.FilterFn(event.target.value);
+  async sortPostsByDate(){
+    let allPosts = await getAllData("sort-by-date");
+    this.setState({ userPosts: allPosts.data, copyPosts: allPosts })
   };
-  sortPostsByDate = () => {
-    this.setState({
-      userPosts: this.state.userPosts.sort(function (x, y) {
-        return new Date(y.createdAt.seconds) - new Date(x.createdAt.seconds);
-      }),
-    });
-  };
-  sortPostsByName = () => {
-    this.setState({
-      userPosts: this.state.userPosts.sort(function (x, y) {
-        console.log("Thiss is the great", x, y);
-        console.log("THis is greater", y.creatorName < x.creatorName);
-        return y.creatorName < x.creatorName;
-      }),
-    });
+
+  async sortPostsByName() {
+    let allPosts = await getAllData("sort-by-name");
+    this.setState({ userPosts: allPosts.data, copyPosts: allPosts })
   };
 
   render() {
-    const { events } = this.state;
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
@@ -188,14 +198,9 @@ export default class Posts extends React.Component {
                   type="text"
                   name="search"
                   placeholder="Enter keyword"
-                  value={this.state.q}
+                  value={this.state.searchQuery}
                   // onChange={(event) => this.setState({q: event.target.value})}
-                  onChange={this.handleInputChange}
-                  onKeyPress={(event) => {
-                    if (event.key === "Enter") {
-                      this.handleSearch();
-                    }
-                  }}
+                  onChange={(e) => this.setState({ searchQuery: e.target.value })}
                 />
                 <span className="input-group-btn">
                   <button
@@ -211,7 +216,7 @@ export default class Posts extends React.Component {
 
             <div className="col-sm-4 pull-right mobile-space">
               <button
-                type="button"
+                type="button" 
                 className="btn btn-success"
                 onClick={() => {
                   this.sortPostsByName();
@@ -247,19 +252,6 @@ export default class Posts extends React.Component {
               <tbody>
                 {this.state.userPosts &&
                   this.state.userPosts.map((post, index) => {
-                    // console.log(
-                    //   moment(
-                    //     new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                    //       post.createdAt.seconds
-                    //     )
-                    //   ).format("YYYY-MM-DD")
-                    // moment(
-                    //   new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                    //     post.createdAt
-                    //   )
-                    // ).fromNow()
-                    // );
-
                     return (
                       <tr key={post.id}>
                         <td>{index + 1}</td>

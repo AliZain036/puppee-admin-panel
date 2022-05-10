@@ -14,6 +14,7 @@ import {
   updateData,
   getAllData,
   deleteRecord,
+  searchData,
 } from "../backend/utility";
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
@@ -33,6 +34,7 @@ export default class Companies extends React.Component {
       languages: [],
       copyLanguages: [],
       companies: [],
+      searchQuery: ""
     };
   }
   async componentWillMount() {
@@ -185,6 +187,25 @@ export default class Companies extends React.Component {
     this.FilterFn(event.target.value);
   };
 
+  async handleSearch() {
+    let { searchQuery } = this.state;
+    searchQuery = searchQuery.trim();
+    let searchResults;
+    if (searchQuery.length > 0) {
+      let reqBody = {
+        query: searchQuery,
+      };
+      searchResults = await searchData("search-companies", reqBody);
+      if (searchResults.data && searchResults.data.length > 0) {
+        this.setState({ companies: searchResults.data, searchQuery: "" });
+      } else {
+        this.setState({ companies: [], searchQuery: "" });
+      }
+    } else {
+      this.getCompanies()
+    }
+  }
+
   render() {
     const { events } = this.state;
     return (
@@ -201,9 +222,10 @@ export default class Companies extends React.Component {
                   type="text"
                   name="search"
                   placeholder="Enter keyword"
-                  value={this.state.q}
-                  // onChange={(event) => this.setState({q: event.target.value})}
-                  onChange={this.handleInputChange}
+                  value={this.state.searchQuery}
+                  onChange={(event) =>
+                    this.setState({ searchQuery: event.target.value })
+                  }
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
                       this.handleSearch();
@@ -242,7 +264,7 @@ export default class Companies extends React.Component {
                 {this.state.companies &&
                   this.state.companies.map((company, index) => {
                     return (
-                      <tr>
+                      <tr key={company.id}>
                         <td>{index + 1}</td>
                         <td>{company.name}</td>
                         <td>
