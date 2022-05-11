@@ -7,9 +7,6 @@ import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 const token = Cookie.get("clobberswap_access_token");
 import {
-  connectFirebase,
-  getAllOfCollection,
-  getData,
   getDataById,
   getAllData,
 } from "../backend/utility";
@@ -39,8 +36,7 @@ export default class ViewPosts extends React.Component {
 
   async getPostComments(id) {
     let reqBody = {
-      // post_id: this.state.postDetails.id
-      post_id: 2,
+      post_id: this.state.postDetails.id
     };
     const { data } = await getComments("show-comments", reqBody);
     return data;

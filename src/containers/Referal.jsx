@@ -7,6 +7,7 @@ import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import {
   connectFirebase,
+  getAllData,
   getAllOfCollection,
   getData,
   getDataById,
@@ -44,7 +45,7 @@ export default class Referrals extends React.Component {
     let reqBody = {
       user_id: user.id,
     };
-    let referrals = await getDataById("show-referrals", reqBody);
+    let referrals = await getAllData("get-referrals");
     this.setState({ transactions: referrals.data });
   }
 
@@ -94,12 +95,11 @@ export default class Referrals extends React.Component {
     this.FilterFn(event.target.value);
   };
 
-  sortPostsByDate = () => {
-    this.setState({
-      transactions: this.state.transactions.sort(function (x, y) {
-        return new Date(y.createdAt.seconds) - new Date(x.createdAt.seconds);
-      }),
-    });
+  async sortPostsByDate() {
+    let data = await getAllData("sort-by-date-referrals");
+    if(data.data.length > 0) {
+      this.setState({ transactions: data.data })
+    }
   };
 
   async handleSearch() {
@@ -121,14 +121,11 @@ export default class Referrals extends React.Component {
     }
   }
 
-  sortReferralsByName = () => {
-    this.setState({
-      transactions: this.state.transactions.sort(function (x, y) {
-        console.log("Thiss is the great", x, y);
-        console.log("THis is greater", y.clientName < x.clientName);
-        return y.clientName < x.clientName;
-      }),
-    });
+  async sortReferralsByName() {
+    let data = await getAllData("sort-by-name-referrals");
+    if(data.data.length > 0) {
+      this.setState({ transactions: data.data })
+    }
   };
 
   render() {

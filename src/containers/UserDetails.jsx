@@ -399,6 +399,15 @@ export default class UserDetails extends React.Component {
     }
   }
 
+  async updateUserBlockStatus(user) {
+    let reqBody = {
+      user_id: this.props.match.params.userId,
+      block_id: user.id,
+    };
+    
+    let result = await addUpdateData('')
+  }
+
   blockPostHandler = (postId) => {
     this.setState({ loading: true });
     const reqBody = {
@@ -1246,6 +1255,7 @@ export default class UserDetails extends React.Component {
                             <td>
                               <button
                                 className={`btn btn-sm btn-danger`}
+                                onClick={() => this.updateUserBlockStatus(blockedUser)}
                               >
                                 Block
                               </button>

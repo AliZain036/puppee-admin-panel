@@ -168,6 +168,7 @@ export default class ViewReferals extends React.Component {
                 <Grid item md={8} xs={8}>
                   <img
                     src={
+                      detailedReferal.user &&
                       detailedReferal.user.profile &&
                       detailedReferal.user.profile.profile_image
                     }
@@ -272,49 +273,55 @@ export default class ViewReferals extends React.Component {
                     From: Sender Office
                   </p>
                 </Grid>
-                <Grid item md={6} xs={6}>
-                  <p style={headingStyles}>Name</p>
-                  <p style={subHeadingStyles}>
-                    {detailedReferal.user.first_name +
-                      " " +
-                      detailedReferal.user.last_name}
-                  </p>
-                </Grid>
-                <Grid item md={4} xs={4}>
-                  <p style={headingStyles}>Mobile</p>
-                  <p style={subHeadingStyles}>
-                    {detailedReferal.user.profile &&
-                      detailedReferal.user.profile.phone_number}
-                  </p>
-                </Grid>
-                <Grid item md={6} xs={6}>
-                  <p style={headingStyles}>Email</p>
-                  <p style={subHeadingStyles}>{detailedReferal.user.email}</p>
-                </Grid>
-                <Grid item md={4} xs={4}>
-                  <p style={headingStyles}>Website</p>
-                  <p style={subHeadingStyles}>
-                    {(detailedReferal.user.profile &&
-                      detailedReferal.user.profile.website) ||
-                      "N/A"}
-                  </p>
-                </Grid>
-                <Grid item md={6} xs={6}>
-                  <p style={headingStyles}>Office Name</p>
-                  <p style={subHeadingStyles}>
-                    {(detailedReferal.user.profile &&
-                      detailedReferal.user.profile.company_name) ||
-                      "N/A"}
-                  </p>
-                </Grid>
-                <Grid item md={4} xs={4}>
-                  <p style={headingStyles}>Office Address</p>
-                  <p style={subHeadingStyles}>
-                    {(detailedReferal.user.profile &&
-                      detailedReferal.user.profile.brokerage_address) ||
-                      "N/A"}
-                  </p>
-                </Grid>
+                {detailedReferal.user && (
+                  <div>
+                    <Grid item md={6} xs={6}>
+                      <p style={headingStyles}>Name</p>
+                      <p style={subHeadingStyles}>
+                        {detailedReferal.user.first_name +
+                          " " +
+                          detailedReferal.user.last_name}
+                      </p>
+                    </Grid>
+                    <Grid item md={4} xs={4}>
+                      <p style={headingStyles}>Mobile</p>
+                      <p style={subHeadingStyles}>
+                        {detailedReferal.user.profile &&
+                          detailedReferal.user.profile.phone_number}
+                      </p>
+                    </Grid>
+                    <Grid item md={6} xs={6}>
+                      <p style={headingStyles}>Email</p>
+                      <p style={subHeadingStyles}>
+                        {detailedReferal.user.email}
+                      </p>
+                    </Grid>
+                    <Grid item md={4} xs={4}>
+                      <p style={headingStyles}>Website</p>
+                      <p style={subHeadingStyles}>
+                        {(detailedReferal.user.profile &&
+                          detailedReferal.user.profile.website) ||
+                          "N/A"}
+                      </p>
+                    </Grid>
+                    <Grid item md={6} xs={6}>
+                      <p style={headingStyles}>Office Name</p>
+                      <p style={subHeadingStyles}>
+                        {(detailedReferal.user.profile &&
+                          detailedReferal.user.profile.company_name) ||
+                          "N/A"}
+                      </p>
+                    </Grid>
+                    <Grid item md={4} xs={4}>
+                      <p style={headingStyles}>Office Address</p>
+                      <p style={subHeadingStyles}>
+                        {(detailedReferal.user.profile &&
+                          detailedReferal.user.profile.brokerage_address) ||
+                          "N/A"}
+                      </p>
+                    </Grid>
+                  </div>
+                )}
 
                 <Grid item md={12} xs={12}>
                   <p
@@ -380,7 +387,7 @@ export default class ViewReferals extends React.Component {
                     agree to bound the following terms and conditions.
                   </p>
                   <p style={subHeadingStyles}>
-                    {detailedReferal.referral_agreement}
+                    Agreed: {" " + detailedReferal.referral_agreement + "%"}
                   </p>
                 </Grid>
                 <Grid item md={12} xs={12}>
