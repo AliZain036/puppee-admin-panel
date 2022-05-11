@@ -1,17 +1,14 @@
 import firebase from "firebase";
 
 const config = {
-  apiKey: "AIzaSyBsM59wDDpCg9JQf9Q7Bk44F93vSCIBy70",
-  authDomain: "streetdrive-cb4a0.firebaseapp.com",
-  databaseURL: "https://streetdrive-cb4a0.firebaseio.com",
-  projectId: "streetdrive-cb4a0",
-  storageBucket: "streetdrive-cb4a0.appspot.com",
-  messagingSenderId: "886526762142",
-  appId: "1:886526762142:web:5e1eb873d29ce6af61af8f",
-  measurementId: "G-WB52GLTFJE",
+  apiKey: "AIzaSyB5lXzMsD411a8EEjJNJxPp_6MnReyWxUQ",
+  authDomain: "network-desk-163d7.firebaseapp.com",
+  projectId: "network-desk-163d7",
+  storageBucket: "network-desk-163d7.appspot.com",
+  messagingSenderId: "1049688381642",
+  appId: "1:1049688381642:web:097db826a430ba83163c33",
+  measurementId: "G-PJHDW4XJK7",
 };
 firebase.initializeApp(config);
-const db = firebase.firestore();
-const auth = firebase.auth();
 
-export { firebase, db, auth };
+export { firebase };
