@@ -58,7 +58,6 @@ export default class Chats extends React.Component {
         headers: { "auth-token": token },
       })
       .then((response) => {
-        console.log(response);
         this.setState({
           brands: response.data.colors,
           pages: Math.ceil(response.data.colors.length / 10),

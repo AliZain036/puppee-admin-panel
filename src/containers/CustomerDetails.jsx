@@ -29,7 +29,6 @@ export default class CustomerDetails extends React.Component {
   }
 
   async componentWillMount() {
-    console.log("######", this.props);
     this.fetchOrders();
   }
 

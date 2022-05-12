@@ -13,15 +13,9 @@ import {
   InputGroupText,
 } from "reactstrap";
 import Cookie from "js-cookie";
-import axios from "axios/index";
 import Formsy from "formsy-react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { API_END_POINT } from "../config";
-import firebase from "firebase";
-import { connectFirebase, getAllOfCollection } from "../backend/utility";
-import { FormatListNumberedOutlined } from "@material-ui/icons";
 import { login } from "../api/services/User";
 
 const style = {
@@ -35,7 +29,6 @@ const style = {
     fill: "#ffffff",
   },
 };
-
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -48,10 +41,6 @@ class Login extends Component {
     };
   }
 
-  async componentDidMount() {
-    await connectFirebase();
-  }
-
   async submit() {
     const { email, password } = this.state;
     const reqBody = {
@@ -60,19 +49,11 @@ class Login extends Component {
     };
     if (!this.state.loading) {
       this.setState({ loading: true });
-      // if (email === "admin@netdesk.com" && password === "123456") {
       if (email && password) {
-        // if (email && password) {
-        // const user = await login(reqBody);
-        // if(user) {
-        //   this.props.history.push('/')
-        // }
-        // debugger
         let res = await login(reqBody);
         if (res.data) {
           let user = res.data;
           localStorage.setItem('user', JSON.stringify(user));
-          console.log(localStorage.getItem("user"));
           Cookie.set("token", user);
           this.props.history.push("/");
         }
@@ -80,52 +61,6 @@ class Login extends Component {
         this.setState({ loading: false });
         alert("Please use an admin user to login!");
       }
-
-      // let data = await getAllOfCollection("admin");
-      // console.log("My data = ", data);
-      // let success = false;
-      // for (let i = 0; i < data.length; i++) {
-      //   if (email == data[i].email && password == data[i].password) {
-      //     console.log("You are all set to go to next screen");
-      //     success = true;
-      //     break;
-      //   }
-      // }
-      // if (success) {
-      //   Cookie.set("clobberswap_access_token", email, {
-      //     expires: 14,
-      //   });
-      //   this.setState({ loading: false });
-      //   this.props.history.push("/");
-      // } else {
-      //   alert("Email or password is incorrect");
-      //   this.setState({ loading: false });
-      // }
-      // axios
-      //   .post(`${API_END_POINT}/api/login`, reqBody)
-      //   .then((response) => {
-      //     console.log("####", response);
-      //     if (response && response.status == 200) {
-      //       const token = response.data.Authorization_Token;
-      //       console.log("Token", token);
-      //       axios.defaults.headers.common["Authorization"] = `${token}`;
-      //       if (process.env.NODE_ENV === "production") {
-      //         Cookie.set("clobberswap_access_token", `${token}`, {
-      //           expires: 14,
-      //         });
-      //       } else {
-      //         Cookie.set("clobberswap_access_token", `${token}`, {
-      //           expires: 14,
-      //         });
-      //       }
-      //       this.props.history.push("/");
-      //       // window.location.href = ("/");
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     this.setState({ loading: false });
-      //     window.alert("ERROR !!!");
-      //   });
     }
   }
 
@@ -191,9 +126,6 @@ class Login extends Component {
                             Login
                           </Button>
                         </Col>
-                        {/*<Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">Forgot password?</Button>
-                        </Col>*/}
                       </Row>
                     </Formsy>
                   </CardBody>
@@ -207,12 +139,7 @@ class Login extends Component {
                       <div
                         style={style.logoWrapper}
                         className={`svg-logo`}
-                        // style={{ borderRadius: 4 }}
                       >
-                        {/* <img
-                          className={`companyLogo`}
-                          src={`${require("panzer.png")}`}
-                        /> */}
                       </div>
                       <div
                         className={`text-center`}
@@ -235,17 +162,5 @@ class Login extends Component {
     );
   }
 }
-
-// Login.propTypes = {
-//   dispatch: PropTypes.func.isRequired,
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     setUser: (user) => {
-//       dispatch({ payload: user });
-//     },
-//   };
-// };
 
 export default withRouter(connect()(Login));

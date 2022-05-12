@@ -12,10 +12,30 @@ async function login(reqBody) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         return data;
       });
       return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function logout() {
+  try {
+    let user = {};
+    let reqBody;
+    let loggedInUser = JSON.parse(localStorage.getItem("user"));
+    reqBody = { user_id: loggedInUser.id }
+    user = await fetch(`${apiUrl}logout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(reqBody),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
+    return user;
   } catch (error) {
     console.log(error);
   }
@@ -31,7 +51,6 @@ async function setUserBlockStatus(url, requestBody) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         return data;
       });
       return response;
@@ -40,4 +59,4 @@ async function setUserBlockStatus(url, requestBody) {
   }
 }
 
-export { login, setUserBlockStatus }
+export { login, setUserBlockStatus, logout }

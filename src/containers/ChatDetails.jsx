@@ -23,7 +23,6 @@ export default class ChatDetails extends React.Component {
   }
   componentWillMount() {
     const { match, location, history } = this.props;
-    console.log(location.item, location.userChats);
 
     // this.fetchBanners();
   }
@@ -34,7 +33,6 @@ export default class ChatDetails extends React.Component {
         headers: { "auth-token": token },
       })
       .then((response) => {
-        console.log(response);
         this.setState({
           brands: response.data.colors,
           pages: Math.ceil(response.data.colors.length / 10),

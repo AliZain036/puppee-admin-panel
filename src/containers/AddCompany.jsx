@@ -1,294 +1,23 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
-import axios from "axios";
 import SwalAutoHide from "sweetalert2";
 import {
   addUpdateData,
-  getAllOfCollection,
-  getData,
-  updateData,
 } from "../backend/utility";
-// import {Pagination} from 'react-bootstrap';
-
-import { API_END_POINT } from "../config";
-import Cookie from "js-cookie";
-const token = Cookie.get("clobberswap_access_token");
 
 export default class AddCompany extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      userPosts: [],
-      chats: [],
-      allUsers: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      pageSize: 10,
-      responseMessage: "Loading Users...",
-      status: "Details",
-      detailedUser: null,
-      name: "",
-      email: "",
-      phoneNumber: "",
-      followers: [],
-      followings: [],
-      blocked: [],
-      transactions: [],
-      newLanguage: "",
-      languages: [],
+      newCompany: "",
     };
   }
-
-  getUserByID = (id) => {
-    var myUser = "";
-    this.state.allUsers.map((user) => {
-      if (user.id === id) {
-        myUser = user;
-      }
-    });
-    return myUser;
-  };
-
-  async updateLanguagesUsingArray(array) {
-    console.log("this is new data", array);
-    await updateData(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "companies",
-      array
-    )
-      .then(() => {
-        this.componentWillMount();
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Companies Updated Successfully",
-        }).then(() => {
-          window.location.href = "/companies";
-        });
-      })
-      .catch((e) => {
-        SwalAutoHide.fire({
-          icon: "error",
-          timer: 2000,
-          title: "Failed.",
-          showConfirmButton: false,
-          text: "Companies Update Failed",
-        });
-      });
-  }
-
-  getAllUserRelatedData = async () => {
-    console.log("userId = ", this.props.match.params.userId);
-    let allUsers = await getAllOfCollection("Users");
-    console.log("THis is user", allUsers);
-  };
-
-  async componentWillMount() {
-    let Admin = await getAllOfCollection("Admin");
-    // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-    console.log("This is the admin", Admin[0].companies);
-    this.setState({
-      languages: Admin[0].companies,
-    });
-  }
-
-  async fetchUserDetail(id) {
-    this.setState({
-      loading: true,
-      responseMessage: "Loading User Details...",
-    });
-    let userData = await getData("Users", id);
-    // let userPosts = await getData("Posts", id);
-    // let userChats = await getData("Chats", id);
-
-    // if (userPosts) this.setState({ posts: userPosts });
-    // if (userChats) this.setState({ chats: userChats });
-
-    // console.log("user posts:", userPosts);
-
-    this.setState({
-      name: userData.userName,
-      email: userData.email,
-      phoneNumber: userData.phoneNumber,
-      loading: false,
-    });
-  }
-
-  fetchOrders = async () => {
-    axios.get(`${API_END_POINT}/api/show-all-posts`).then((response) => {
-      this.setState({
-        posts: response.data.posts,
-        responseMessage: "No Users Found...",
-      });
-    });
-  };
-
-  fetchPastOrders = async (id) => {
-    // let userPosts = await getData("Posts", id);
-    let userChats = await getData("Chats", id);
-    let AllchatArray = Object.keys(userChats);
-    // if (userPosts) this.setState({ posts: userPosts });
-    // if (userChats) this.setState({ chats: userChats });
-    // axios.get(`${API_END_POINT}/api/show-active-posts`).then((response) => {
-    this.setState({
-      chats: AllchatArray,
-      userChats: userChats,
-      responseMessage: "No Users Found...",
-    });
-    // });
-  };
-
-  fetchRequestOrders = async (id) => {
-    let userPosts = await getData("Posts", id);
-    // let userChats = await getData("Chats", id);
-
-    // if (userPosts) this.setState({ posts: userPosts });
-    // if (userChats) this.setState({ chats: userChats });
-    // axios.get(`${API_END_POINT}/api/show-sold-posts`).then((response) => {
-    this.setState({
-      posts: userPosts,
-      responseMessage: "No Users Found...",
-    });
-    // });
-  };
-
-  fetchActiveOrders = () => {
-    // axios.get(`${API_END_POINT}/api/show-block-posts`).then((response) => {
-    //   this.setState({
-    //     posts: response.data.posts,
-    //     responseMessage: "No Posts Found...",
-    //   });
-    // });
-  };
-
-  getParams() {
-    const { activePage, pageSize, userData, userChats } = this.state;
-    return {
-      params: {
-        pageNumber: activePage,
-        pageSize,
-      },
-    };
-  }
-
-  deleteOrders(dayId, index) {
-    var data = { post_id: dayId };
-    if (confirm("Are you sure you want to delete this user?")) {
-      axios
-        .post(`${API_END_POINT}/api/delete-post`, data)
-        .then((response) => {
-          if (response.status === 200 && response.data.status) {
-            window.alert("User deleted succesfully  ");
-          }
-
-          const posts = this.state.posts.slice();
-          posts.splice(index, 1);
-          this.setState({ posts });
-        })
-        .catch((error) => {
-          window.alert("ERROR !");
-        });
-    }
-  }
-
-  handleSelect(page) {
-    this.setState({ activePage: page }, () => {
-      axios
-        .get(`${API_END_POINT}/api/fetch/locations-fetch`, this.getParams())
-        // axios.get(`https://api.saaditrips.com/api/fetch/locations-fetch`, this.getParams())
-        .then((response) => {
-          this.setState({
-            posts: response.data.items,
-            activePage: page,
-          });
-        });
-    });
-  }
-
-  handleSearch() {
-    const { q } = this.state;
-    var data = new FormData();
-    data.append("query", q);
-    if (q.length) {
-      this.setState({
-        loading: true,
-        posts: [],
-        responseMessage: "Loading Users...",
-      });
-      // if(q === "") {
-      //   this.fetchOrders();
-      // } else {
-      axios.post(`${API_END_POINT}/api/search-post`, data).then((response) => {
-        this.setState({
-          posts: response.data.posts,
-          loading: false,
-          responseMessage: "No Users Found...",
-        });
-      });
-    }
-  }
-
-  tabChangeHandler = (value) => {
-    const { match } = this.props;
-
-    if (this.state.status !== value) {
-      this.setState({
-        status: value,
-        loading: true,
-        responseMessage: "Loading Users...",
-      });
-      if (value === "Details") {
-        this.fetchOrders();
-      } else if (value === "Referals") {
-        this.fetchPastOrders(match.params.userId);
-      } else if (value === "Posts") {
-        this.fetchRequestOrders(match.params.userId);
-      } else if (value === "active") {
-        this.fetchActiveOrders();
-      }
-    }
-  };
-
-  blockPostHandler = (postId) => {
-    this.setState({ loading: true });
-    const reqBody = {
-      post_id: postId,
-    };
-    axios
-      .post(`${API_END_POINT}/api/block-post`, reqBody)
-      .then((response) => {
-        this.fetchOrders();
-      })
-      .catch((err) => {
-        alert("Some error occured...");
-      });
-  };
-
-  unblockPostHandler = (postId) => {
-    this.setState({ loading: true });
-    const reqBody = {
-      post_id: postId,
-    };
-    axios
-      .post(`${API_END_POINT}/api/unblock-post`, reqBody)
-      .then((response) => {
-        this.fetchOrders();
-      })
-      .catch((err) => {
-        alert("Some error occured...");
-      });
-  };
 
   async handleSubmit(e) {
     e.preventDefault()
     let reqBody = {
-      name: this.state.newLanguage
+      name: this.state.newCompany
     }
     let result = await addUpdateData("add-company", reqBody);
     if(result.data) {
@@ -311,7 +40,6 @@ export default class AddCompany extends React.Component {
   }
 
   render() {
-    const { status, name, email, phoneNumber, chats, posts } = this.state;
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
@@ -346,10 +74,10 @@ export default class AddCompany extends React.Component {
                                 name="name"
                                 placeholder="Add Company"
                                 className="form-control"
-                                value={this.state.newLanguage}
+                                value={this.state.newCompany}
                                 onChange={(e) => {
                                   this.setState({
-                                    newLanguage: e.target.value,
+                                    newCompany: e.target.value,
                                   });
                                 }}
                               />

@@ -14,8 +14,6 @@ export const getAbout = async function () {
             abouts.push(about);
         }
     });
-    console.log('abouts', abouts);
-
     return abouts;
 };
 

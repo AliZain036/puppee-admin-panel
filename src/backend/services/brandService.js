@@ -13,8 +13,6 @@ export const getBrands = async function () {
             brands.push(brand);
         }
     });
-    console.log('Brands', brands);
-
     return brands;
 };
 

@@ -1,45 +1,22 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import { Pagination, Image } from "react-bootstrap";
 import moment from "moment";
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { API_END_POINT } from "../config";
 import {
-  connectFirebase,
-  getAllOfCollection,
-  getData,
   getDataById,
 } from "../backend/utility";
 import ReactToPdf from "react-to-pdf";
-import HasRole from "../hoc/HasRole";
 export default class ViewReferals extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      brands: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      responseMessage: "Loading Colors...",
-      eventDetail: {},
       transactions: [],
       detailedReferal: null,
       allUsers: [],
     };
   }
-
-  getUserByID = (id) => {
-    var myUser = "";
-    this.state.allUsers.map((user) => {
-      if (user.id === id) {
-        myUser = user;
-      }
-    });
-    // console.log("This is user", myUser);
-    return myUser;
-  };
 
   async componentDidMount() {
     this.getReferralDetails();
@@ -55,91 +32,22 @@ export default class ViewReferals extends React.Component {
     }
   }
 
-  fetchBanners = () => {
-    axios
-      .get(`${API_END_POINT}/api/show-colors`, {
-        headers: { "auth-token": token },
-      })
-      .then((response) => {
-        console.log(response);
-        this.setState({
-          brands: response.data.colors,
-          pages: Math.ceil(response.data.colors.length / 10),
-          responseMessage: "No Colors Found...",
-        });
-      });
-  };
-
-  deleteBrand(brandId, index) {
-    if (confirm("Are you sure you want to delete this item?")) {
-      axios
-        .post(`${API_END_POINT}/api/delete-color`, { color_id: brandId })
-        .then((response) => {
-          const brands = this.state.brands.slice();
-          brands.splice(index, 1);
-          this.setState({ brands });
-        });
-    }
-  }
-
-  handleSelect(page) {
-    axios.get(`/api/area?offset=${(page - 1) * 10}`).then((response) => {
-      this.setState({
-        areas: response.data.items,
-        activePage: page,
-      });
-    });
-  }
-
-  handleSearch() {
-    const { q } = this.state;
-    if (q.length) {
-      this.setState({
-        loading: true,
-        brands: [],
-        responseMessage: "Loading Colors...",
-      });
-      axios
-        .get(`${API_END_POINT}/api/brands/search`, {
-          params: { searchWord: this.state.q },
-          headers: { "auth-token": token },
-        })
-        .then((response) => {
-          this.setState({
-            brands: response.data.searchedItems,
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        })
-        .catch(() => {
-          this.setState({
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        });
-    }
-  }
-
   render() {
     const { detailedReferal } = this.state;
     const headingStyles = {
       fontWeight: 16,
       fontWeight: "bold",
-      // color: "#5ba4f4",
-      // textDecoration: "underline",
       marginLeft: 10,
       marginBottom: 0,
     };
 
     const subHeadingStyles = {
       fontWeight: 20,
-      // fontWeight: "bold",
       marginTop: 0,
       marginLeft: 10,
     };
     const agreementStyles = {
       fontWeight: 20,
-      // fontWeight: "bold",
       marginTop: 0,
       marginLeft: 10,
       width: "80%",
@@ -157,7 +65,6 @@ export default class ViewReferals extends React.Component {
             className="row content-sm-left content-md-left"
             ref={ref}
             id="pdf"
-            // style={{ width: 800 }}
           >
             {detailedReferal && (
               <Grid
@@ -414,74 +321,6 @@ export default class ViewReferals extends React.Component {
                   </p>
                 </Grid>
               </Grid>
-              // <div
-              //   className="col-sm-10  offset-sm-1"
-              //   style={{ textAlign: "left" }}
-              // >
-              //   <div className="row space-1">
-              //     <div className="col-sm-4" style={{ textAlign: "left" }}>
-              //       <h4 style={{ textAlign: "left", marginTop: "25px" }}>
-              //         Client Information:
-              //       </h4>
-              //       <h5 style={{ textAlign: "left" }}>
-              //         {detailedReferal.clientName}
-              //       </h5>
-              //       <h5 style={{ textAlign: "left" }}>
-              //         {detailedReferal.clientPhone}
-              //       </h5>
-              //       <h5 style={{ textAlign: "left" }}>
-              //         {detailedReferal.clientEmail}
-              //       </h5>
-              //       <h5 style={{ textAlign: "left" }}>
-              //         {detailedReferal.additionalInfo}
-              //       </h5>
-              //     </div>
-              //   </div>
-              //   <h5 style={{ textAlign: "left", marginTop: "25px" }}>
-              //     Property Type: {detailedReferal.propertyType}
-              //   </h5>
-
-              //   <h5 style={{ textAlign: "left", marginTop: "25px" }}>
-              //     Sender :{" "}
-              //     {detailedReferal.user.profile && detailedReferal.user.profile
-              //       .firstname +
-              //       " " +
-              //       this.getUserByID(detailedReferal.creator)
-              //         .lastname}
-              //   </h5>
-
-              //   <h5 style={{ textAlign: "left", marginTop: "25px" }}>
-              //     Receiver :{" "}
-              //     {this.getUserByID(detailedReferal.receiver) != ""
-              //       ? this.getUserByID(detailedReferal.receiver)
-              //           .firstname +
-              //         " " +
-              //         this.getUserByID(detailedReferal.receiver)
-              //           .lastname
-              //       : detailedReferal.receiver}
-              //   </h5>
-
-              //   <h5 style={{ textAlign: "left" }}>
-              //     Property Location:{" "}
-              //     {detailedReferal.propertyLocation}
-              //   </h5>
-              //   <h5 style={{ textAlign: "left" }}>
-              //     Price Range: ${detailedReferal.priceRangeValues[0]}
-              //     K-${detailedReferal.priceRangeValues[1]}K
-              //   </h5>
-              //   <h5 style={{ textAlign: "left" }}>
-              //     Referral Agreement: {detailedReferal.percentage}
-              //   </h5>
-              //   <h5 style={{ textAlign: "left" }}>
-              //     Referral Status: {detailedReferal.status}
-              //   </h5>
-              //   <button
-              //     className={`btn btn-sm btn-primary`}
-              //     style={{ marginTop: "25px" }}
-              //   >
-              //     Download Agreement Form
-              //   </button>
-              // </div>
             )}
           </div>
           {detailedReferal && (

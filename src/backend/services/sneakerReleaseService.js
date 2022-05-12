@@ -13,8 +13,6 @@ export const getSneakersReleaseDates = async function () {
             sneakerReleaseDates.push(sneakersReleaseDates);
         }
     });
-    console.log('SneakersReleaseDates', sneakerReleaseDates);
-
     return sneakerReleaseDates;
 };
 

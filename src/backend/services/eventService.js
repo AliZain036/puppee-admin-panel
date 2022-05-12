@@ -8,12 +8,9 @@ export const getEvents = async function () {
     let Drivers = [];
 
     query.docs.forEach((doc) => {
-        // const brand = Brand.fromFirestore(doc);
-        // if (brand) {
             Drivers.push(doc.data());
         // }
     });
-    console.log('giftCard', Drivers);
 
     return Drivers;
 };

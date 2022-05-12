@@ -19,16 +19,13 @@ const getPaths = (pathname) => {
 };
 
 const BreadcrumbsItem = ({ match, location}) => {
-  //console.log("pathname", location.pathname, match.url);
   const routeName = findRouteName(match.url);
   if (routeName) {
     const pathname = location.pathname.split('/');
     const matchpath = match.url.split('/');
-    // if (Number(pathname[pathname.length-1])){ this was previous
     if (Number(pathname[pathname.length-1][0])){
       pathname.splice(-1,1);
     }
-    //console.log("####", pathname.join('/'), matchpath.join('/'));
     return (
       (match.isExact && routeName !== "Home") ||
       (pathname.length === matchpath.length && pathname.join('/') === matchpath.join('/'))  ?

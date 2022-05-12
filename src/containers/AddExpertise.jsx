@@ -384,45 +384,6 @@ export default class AddExpertise extends React.Component {
         title: "Notarization",
       },
     ];
-    console.log("this is new data", array);
-
-    // this funtion is dangerouse
-
-    // await updateData(
-    //   "Admin",
-    //   //this docuent is to add professions
-    //   "lW16IC5TtfA58gxARBOW",
-
-    //   // "Mortgage Lenders",
-    //   // "Notary Public",
-    //   // "Real Estate Lawyer",
-    //   // "Real Estate Agent",
-    //   // "Professions",
-    //   "AreaOfExpertise",
-    //   // Professions
-    //   AreaOfExpertise
-    // )
-    //   .then(() => {
-    //     this.componentWillMount();
-    //     SwalAutoHide.fire({
-    //       icon: "success",
-    //       timer: 2000,
-    //       title: "Success.",
-    //       showConfirmButton: false,
-    //       text: "Expertise Updated Successfully",
-    //     }).then(() => {
-    //       window.location.href = "/expertise";
-    //     });
-    //   })
-    //   .catch((e) => {
-    //     SwalAutoHide.fire({
-    //       icon: "error",
-    //       timer: 2000,
-    //       title: "Failed.",
-    //       showConfirmButton: false,
-    //       text: "Languages Updated Failed",
-    //     });
-    //   });
 
     await updateData(
       "Admin",
@@ -454,7 +415,6 @@ export default class AddExpertise extends React.Component {
   }
 
   async addProfessionUsingArray() {
-    console.log("This is state.", this.state.expertise);
     var tempCat = this.state.expertise;
     tempCat.push({
       name: this.state.newLanguage,
@@ -462,7 +422,6 @@ export default class AddExpertise extends React.Component {
       profession: this.props.match.params.name,
       id: this.state.expertise.length,
     });
-    console.log("This is new Category", tempCat);
     await updateData(
       "Admin",
       "lW16IC5TtfA58gxARBOW",
@@ -493,15 +452,12 @@ export default class AddExpertise extends React.Component {
   }
 
   getAllUserRelatedData = async () => {
-    console.log("userId = ", this.props.match.params.userId);
     let allUsers = await getAllOfCollection("Users");
-    console.log("THis is user", allUsers);
   };
 
   async componentWillMount() {
     var cats = [];
     let Admin = await getAllOfCollection("Admin");
-    console.log("THis is it", Admin);
 
     this.setState({
       expertise: Admin[1].AreaOfExpertise,
@@ -520,7 +476,6 @@ export default class AddExpertise extends React.Component {
     // if (userPosts) this.setState({ posts: userPosts });
     // if (userChats) this.setState({ chats: userChats });
 
-    // console.log("user posts:", userPosts);
 
     this.setState({
       name: userData.userName,
@@ -611,19 +566,6 @@ export default class AddExpertise extends React.Component {
                         className="form-horizontal form-label-left"
                         onSubmit={(e) => {
                           e.preventDefault();
-                          // console.log(
-                          //   "this is new Language",
-                          //   this.state.newLanguage
-                          // );
-                          // console.log(
-                          //   "this all languages",
-                          //   this.state.languages
-                          // );
-                          // this.state.expertise.push({
-                          //   selected: false,
-                          //   title: this.state.newLanguage,
-                          // });
-                          // this.updateDataUsingArray(this.state.expertise);
                           this.addProfessionUsingArray();
                         }}
                       >

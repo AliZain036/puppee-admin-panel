@@ -31,7 +31,7 @@ export default class Area extends React.Component {
         });
       })
       .catch((err) => {
-        console.log("error fetching data");
+        console.log(err);
       });
     axios
       .get(`${API_END_POINT}/api/v1/program`)
@@ -42,7 +42,7 @@ export default class Area extends React.Component {
         });
       })
       .catch((err) => {
-        console.log("error fetching data");
+        console.log(err);
       });
   }
 

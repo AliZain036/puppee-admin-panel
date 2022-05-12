@@ -1,22 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { Pagination } from "react-bootstrap";
 import moment from "moment";
-import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import {
   addUpdateData,
-  connectFirebase,
   getAllData,
-  getAllOfCollection,
-  getData,
   searchData,
-  updateData,
 } from "../backend/utility";
-import firebase from "firebase";
-const token = Cookie.get("clobberswap_access_token");
-import HasRole from "../hoc/HasRole";
 import SwalAutoHide from "sweetalert2";
 
 export default class Posts extends React.Component {
@@ -24,15 +14,7 @@ export default class Posts extends React.Component {
     super(props);
 
     this.state = {
-      brands: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      responseMessage: "Loading Colors...",
-      events: [],
-      copyEvents: [],
       userPosts: [],
-      copyPosts: [],
       searchQuery: ""
     };
   }
@@ -46,63 +28,7 @@ export default class Posts extends React.Component {
 
   async getAllPosts() {
     let allPosts = await getAllData("show-all-posts");
-    this.setState({ userPosts: allPosts.data.data, copyPosts: allPosts });
-  }
-
-  async updateThisPost(doc, field, val) {
-    let allUsers = await updateData("Posts", doc, field, val)
-      .then(() => {
-        if (val === "Block") {
-          this.componentDidMount();
-          alert("Post Blocked Successfully");
-        } else {
-          this.componentDidMount();
-          alert("Post Unblocked Successfully");
-        }
-      })
-      .catch(() => {
-        alert("Something went wrong");
-      });
-  }
-
-  fetchBanners = () => {
-    axios
-      .get(`${API_END_POINT}/api/show-colors`, {
-        headers: { "auth-token": token },
-      })
-      .then((response) => {
-        console.log(response);
-        this.setState({
-          brands: response.data.colors,
-          pages: Math.ceil(response.data.colors.length / 10),
-          responseMessage: "No Colors Found...",
-        });
-      });
-  };
-
-  // const requestParams = {
-  //   "userId": userId,
-  // }
-
-  deleteBrand(brandId, index) {
-    if (confirm("Are you sure you want to delete this item?")) {
-      axios
-        .post(`${API_END_POINT}/api/delete-color`, { color_id: brandId })
-        .then((response) => {
-          const brands = this.state.brands.slice();
-          brands.splice(index, 1);
-          this.setState({ brands });
-        });
-    }
-  }
-
-  handleSelect(page) {
-    axios.get(`/api/area?offset=${(page - 1) * 10}`).then((response) => {
-      this.setState({
-        areas: response.data.items,
-        activePage: page,
-      });
-    });
+    this.setState({ userPosts: allPosts.data.data });
   }
 
   async handleSearch() {
@@ -151,36 +77,14 @@ export default class Posts extends React.Component {
     }
   }
 
-  async FilterFn(text) {
-    if (text !== "") {
-      let newData = this.state.userPosts.filter(function (item) {
-        let itemData = item.creatorName
-          ? item.creatorName.toUpperCase()
-          : "".toUpperCase();
-        let textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-
-      this.setState({
-        userPosts: newData,
-        isSearching: true,
-      });
-    } else {
-      this.setState({
-        userPosts: this.state.copyPosts,
-        isSearching: false,
-      });
-    }
-  }
-
   async sortPostsByDate(){
     let allPosts = await getAllData("sort-by-date");
-    this.setState({ userPosts: allPosts.data, copyPosts: allPosts })
+    this.setState({ userPosts: allPosts.data })
   };
 
   async sortPostsByName() {
     let allPosts = await getAllData("sort-by-name");
-    this.setState({ userPosts: allPosts.data, copyPosts: allPosts })
+    this.setState({ userPosts: allPosts.data })
   };
 
   render() {
@@ -199,7 +103,6 @@ export default class Posts extends React.Component {
                   name="search"
                   placeholder="Enter keyword"
                   value={this.state.searchQuery}
-                  // onChange={(event) => this.setState({q: event.target.value})}
                   onChange={(e) => this.setState({ searchQuery: e.target.value })}
                 />
                 <span className="input-group-btn">
@@ -271,11 +174,6 @@ export default class Posts extends React.Component {
 
                         <td>{post.location}</td>
                         <td>
-                          {/* {moment(
-                            new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                              post.created_at.seconds
-                            )
-                          ).format("YYYY-MM-DD")} */}
                           {moment(new Date(post.created_at)).format("YYYY-MM-DD")}
                         </td>
                         <td>
@@ -291,11 +189,6 @@ export default class Posts extends React.Component {
                         <td>
                           <Link to={`/viewposts/${post.id}`}>
                             <button
-                              // onClick={() =>
-                              //   topic.status === "block"
-                              //     ? this.unblockPostHandler(topic.id)
-                              //     : this.blockPostHandler(topic.id)
-                              // }
                               className={`btn btn-sm btn-success`}
                             >
                               View

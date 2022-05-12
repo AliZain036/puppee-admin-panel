@@ -31,7 +31,6 @@ export default class Followers extends React.Component {
         headers: { "auth-token": token },
       })
       .then((response) => {
-        console.log(response);
         this.setState({
           brands: response.data.colors,
           pages: Math.ceil(response.data.colors.length / 10),
@@ -39,10 +38,6 @@ export default class Followers extends React.Component {
         });
       });
   };
-
-  // const requestParams = {
-  //   "userId": userId,
-  // }
 
   deleteBrand(brandId, index) {
     if (confirm("Are you sure you want to delete this item?")) {

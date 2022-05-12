@@ -60,18 +60,14 @@ export async function getCurrentUserId() {
 }
 
 export async function getSignedInUser() {
-  console.log("CALEED")
   try {
     await firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         // User is signed in.
         const res = await user;
-        console.log("HHA  res  HHAHA", res)
-        console.log("HAHAHAHHAHA", user)
         return res
       } else {
         // No user is signed in.
-        console.log("No user is signed in.",)
         return 0;
       }
     })

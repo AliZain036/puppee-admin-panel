@@ -14,7 +14,6 @@ export const getFAQ = async function () {
             FAQs.push(faq);
         }
     });
-    console.log('FAQs', FAQs);
 
     return FAQs;
 };

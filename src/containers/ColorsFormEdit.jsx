@@ -30,7 +30,6 @@ export default class GalleryForm extends React.Component {
   }
 
   componentDidMount() {
-    console.log("props", this.props);
     const { match } = this.props;
     if (match.params.brandId) {
       axios
@@ -90,7 +89,6 @@ export default class GalleryForm extends React.Component {
               text:
                 "Brand has been updated successfully.Redirecting in 2 seconds.",
             }).then(() => {
-              console.log("YESSSS");
               window.history.back();
             });
             this.setState({ loading: false });
@@ -118,7 +116,6 @@ export default class GalleryForm extends React.Component {
               text:
                 "Color   has been updated successfully.Redirecting in 2 seconds.",
             }).then(() => {
-              console.log("YESSSS");
               window.history.back();
             });
             this.setState({ loading: false });
@@ -131,8 +128,7 @@ export default class GalleryForm extends React.Component {
   }
 
   render() {
-    const { loading, brand } = this.state;
-    console.log(this.state);
+    const { brand } = this.state;
 
     return (
       <div className="row animated fadeIn">

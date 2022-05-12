@@ -24,7 +24,6 @@ export default class DriverDetails extends React.Component {
   }
 
   componentWillMount() {
-    console.log("######", this.props);
     this.fetchOrders();
   }
 

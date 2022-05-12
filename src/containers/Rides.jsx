@@ -42,7 +42,6 @@ export default class Rides extends React.Component {
         headers: { "auth-token": token },
       })
       .then((response) => {
-        console.log(response);
         this.setState({
           brands: response.data.colors,
           pages: Math.ceil(response.data.colors.length / 10),
@@ -50,10 +49,6 @@ export default class Rides extends React.Component {
         });
       });
   };
-
-  // const requestParams = {
-  //   "userId": userId,
-  // }
 
   deleteBrand(brandId, index) {
     if (confirm("Are you sure you want to delete this item?")) {
@@ -148,14 +143,6 @@ export default class Rides extends React.Component {
                   placeholder="Enter keyword"
                   value={this.state.q}
                   onChange={this.handleInputChange}
-                  // onChange={(event) => this.setState({q: event.target.value})}
-                  // onChange={(event) =>
-                  //   this.setState({ q: event.target.value }, () => {
-                  //     if (this.state.q === "") {
-                  //       this.fetchBanners();
-                  //     }
-                  //   })
-                  // }
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
                       this.handleSearch();
@@ -219,30 +206,11 @@ export default class Rides extends React.Component {
                         <td>{item.comments.length}</td>
                         <td>
                           <button
-                            // onClick={() =>
-                            //   topic.status === "block"
-                            //     ? this.unblockPostHandler(topic.id)
-                            //     : this.blockPostHandler(topic.id)
-                            // }
                             className={`btn btn-sm btn-danger`}
                           >
                             Block
                           </button>
                         </td>
-                        {/* <td>
-                    <Link to="/viewEvent">
-                      <button
-                        // onClick={() =>
-                        //   topic.status === "block"
-                        //     ? this.unblockPostHandler(topic.id)
-                        //     : this.blockPostHandler(topic.id)
-                        // }
-                        className={`btn btn-sm btn-success`}
-                      >
-                        View
-                      </button>
-                    </Link>
-                  </td> */}
                       </tr>
                     );
                   })

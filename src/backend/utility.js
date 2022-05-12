@@ -16,8 +16,6 @@ var fire = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-export async function connectFirebase() {}
-
 export async function getUserId() {
   let userid = "";
   firebase.auth().then(function (user) {
@@ -163,41 +161,9 @@ export async function saveData(collection, doc, jsonObject) {
     .doc(doc)
     .set(jsonObject, { merge: true })
     .then(function () {
-      console.log("Document successfully written!");
     })
     .catch(function (error) {
-      console.error("Error writing document: ", error);
-    });
-}
-
-export async function saveInitialData(collection, userId) {
-  firebase
-    .firestore()
-    .collection(collection)
-    .doc(userId)
-    .set({ userdocc: "Me" })
-    .then(function () {
-      alert("Data saved succesfuly");
-    })
-    .catch(function (error) {
-      alert(error);
-    });
-}
-
-//Save coordinates of collector to firestore
-export async function saveCoordinates(collection, doc, jsonObject) {
-  firebase
-    .firestore()
-    .collection(collection)
-    .doc(doc)
-    .set({ jsonObject })
-    .then(function () {
-      console.log("Coordinates saved successfuly");
-    })
-    .catch({
-      function(error) {
-        console.log("Failed to save coordinates: ", error);
-      },
+      console.error(error);
     });
 }
 
@@ -224,8 +190,6 @@ export async function addToArray(collection, doc, array, value) {
             [array]: firebase.firestore.FieldValue.arrayUnion(value),
           });
       }
-
-      console.log(docData);
     })
     .catch((fail) => {
       firebase

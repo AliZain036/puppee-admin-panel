@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Switch, Route, withRouter } from "react-router-dom";
-import axios from "axios";
-import Cookie from "js-cookie";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
@@ -18,22 +16,14 @@ import DriverDetails from "./DriverDetails";
 
 import Chats from "./Chats";
 import ChatDetails from "./ChatDetails";
-import Restaurants from "./Restuarants";
 import Customers from "./Customers";
-import Categories from "./Categories";
-import Menus from "./Menus";
-import MenuDetails from "./MenuDetails";
 import Posts from "./Posts";
 import ViewPosts from "./ViewPosts";
 import TermsAndConditions from "./TermsAndConditions";
 import PrivacyPolicy from "./PrivacyPolicy";
 import CookiePolicy from "./CookiePolicy";
 import About from "./About";
-// import Earnings from "./Earnings";
-// import Followers from "./Followers";
-// import Following from "./Following";
 import Referal from "./Referal";
-// import ViewEvent from "./ViewEvent";
 import ViewReferal from "./ViewReferals";
 import Languages from "./Languages";
 import Companies from "./Companies";
@@ -58,18 +48,6 @@ class App extends React.Component {
       displayApp: false,
       displayMessage: "Loading User Data...",
     };
-  }
-
-  componentWillMount() {
-    // const { dispatch, history } = this.props;
-    // const token = Cookie.get("clobberswap_access_token");
-    // if (token) {
-    //   axios.defaults.headers.common.Authorization = `${token}`;
-    //   this.setState({ loading: false });
-    // } else {
-    //   history.push("/");
-    // }
-    // alert("IT is coming here");
   }
 
   render() {

@@ -1,37 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { Pagination } from "react-bootstrap";
 import moment from "moment";
-import { API_END_POINT } from "../config";
-import Cookie from "js-cookie";
 import {
-  connectFirebase,
   getAllData,
-  getAllOfCollection,
-  getData,
-  getDataById,
   searchData,
 } from "../backend/utility";
-import firebase from "firebase";
-const token = Cookie.get("clobberswap_access_token");
-
-import HasRole from "../hoc/HasRole";
 
 export default class Referrals extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      brands: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      responseMessage: "Loading Colors...",
-      events: [],
-      copyEvents: [],
       transactions: [],
-      copyTransactions: [],
       user: {},
       searchQuery: "",
     };
@@ -42,58 +21,9 @@ export default class Referrals extends React.Component {
     if (user) {
       this.setState({ user });
     }
-    let reqBody = {
-      user_id: user.id,
-    };
     let referrals = await getAllData("get-referrals");
     this.setState({ transactions: referrals.data });
   }
-
-  getUserByID = (id) => {
-    var myUser = "";
-    this.state.allUsers.map((user) => {
-      if (user.id === id) {
-        myUser = user;
-      }
-    });
-    return myUser;
-  };
-
-  handleSelect(page) {
-    axios.get(`/api/area?offset=${(page - 1) * 10}`).then((response) => {
-      this.setState({
-        areas: response.data.items,
-        activePage: page,
-      });
-    });
-  }
-
-  async FilterFn(text) {
-    if (text !== "") {
-      let newData = this.state.transactions.filter(function (item) {
-        let itemData = item.clientName
-          ? item.clientName.toUpperCase()
-          : "".toUpperCase();
-        let textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-
-      this.setState({
-        transactions: newData,
-        isSearching: true,
-      });
-    } else {
-      this.setState({
-        transactions: this.state.copyTransactions,
-        isSearching: false,
-      });
-    }
-  }
-  handleInputChange = (event) => {
-    const { value, name } = event.target;
-    this.setState({ q: event.target.value });
-    this.FilterFn(event.target.value);
-  };
 
   async sortPostsByDate() {
     let data = await getAllData("sort-by-date-referrals");
@@ -129,7 +59,6 @@ export default class Referrals extends React.Component {
   };
 
   render() {
-    const { events } = this.state;
     return (
       <div className="row animated fadeIn">
         <div className="col-12">

@@ -21,7 +21,6 @@ class HasRole extends Component {
       requiredDepartment,
       superAdmin
     } = this.props;
-    //console.log("#### role", requiredRole, currentUserRole, requiredRole.indexOf(currentUserRole), "#### department", requiredDepartment, currentUserDepartment, requiredDepartment.indexOf(currentUserDepartment));
     if (!superAdmin && (requiredRole.indexOf(currentUserRole) === -1 ||
         requiredDepartment.indexOf(currentUserDepartment) === -1)) return null;
     return (

@@ -1,41 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { Pagination } from "react-bootstrap";
-import moment from "moment";
-import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import swal from "sweetalert";
 import SwalAutoHide from "sweetalert2";
-import firebase from "firebase";
 import {
   addUpdateData,
-  connectFirebase,
   deleteRecord,
   getAllData,
-  getAllOfCollection,
-  saveData,
-  saveDataWithoutDocId,
   searchData,
-  updateData,
 } from "../backend/utility";
-import HasRole from "../hoc/HasRole";
-import { connect } from "react-redux";
-
 class Customers extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      brands: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      responseMessage: "Loading Colors...",
       users: [],
       copyUsers: [],
       user: {},
-      blockStatus: undefined,
       searchQuery: "",
     };
   }
@@ -51,41 +32,6 @@ class Customers extends React.Component {
     let allUsers = await getAllData("show-users");
     let user = JSON.parse(localStorage.getItem("user"));
     this.setState({ users: allUsers.data, copyUsers: allUsers, user });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.blockStatus !== this.state.blockStatus) {
-      console.log("Block Status state has changed.");
-    }
-  }
-
-  async updateThisUser(doc, field, val) {
-    console.log("This iscomponet did mount");
-    let allUsers = await updateData("Users", doc, field, val)
-      .then(() => {
-        if (val === "Block") {
-          this.componentDidMount();
-          SwalAutoHide.fire({
-            icon: "success",
-            timer: 2000,
-            title: "Success.",
-            showConfirmButton: false,
-            text: "User Blocked Successfully",
-          });
-        } else {
-          this.componentDidMount();
-          SwalAutoHide.fire({
-            icon: "success",
-            timer: 2000,
-            title: "Success.",
-            showConfirmButton: false,
-            text: "User Unblocked Successfully",
-          });
-        }
-      })
-      .catch(() => {
-        alert("Something went wrong");
-      });
   }
 
   async deleteThisUser(user) {
@@ -186,14 +132,6 @@ class Customers extends React.Component {
                 </span>
               </div>
             </div>
-
-            {/* <div className="col-sm-4 pull-right mobile-space">
-              <Link to="colors/colors-form">
-                <button type="button" className="btn btn-success">
-                  Add new Color
-                </button>
-              </Link>
-            </div> */}
           </div>
           <div className="table-responsive">
             <table className="table table-striped">
@@ -248,46 +186,12 @@ class Customers extends React.Component {
                         <td>
                           <Link to={`/userdetails/${user.id}`}>
                             <button
-                              // onClick={() =>
-                              //   topic.status === "block"
-                              //     ? this.unblockPostHandler(topic.id)
-                              //     : this.blockPostHandler(topic.id)
-                              // }
                               className={`btn btn-sm btn-success`}
                             >
                               View
                             </button>
                           </Link>
                         </td>
-                        {/* {user.isDeleted === true && (
-                          <td>
-                            <span
-                              className="fa fa-recycle"
-                              aria-hidden="true"
-                              style={{ cursor: "pointer" }}
-                              onClick={() => this.deleteThisUser(user)}
-                              // onClick={() => {
-                              //   swal({
-                              //     title: "Undo Delete?",
-                              //     text: "Are you sure, the user will be able to use app again!",
-                              //     icon: "warning",
-                              //     buttons: true,
-                              //     dangerMode: true,
-                              //   }).then(async (willDelete) => {
-                              //     if (willDelete) {
-                              //       this.deleteThisUser(
-                              //         user.id,
-                              //         "isDeleted",
-                              //         false
-                              //       );
-                              //     } else {
-                              //       return;
-                              //     }
-                              //   });
-                              // }}
-                            ></span>
-                          </td>
-                        )} */}
 
                         {user.isDeleted !== true && (
                           <td>

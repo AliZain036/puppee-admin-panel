@@ -1,39 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { Pagination } from "react-bootstrap";
-import moment from "moment";
-import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import SwalAutoHide from "sweetalert2";
 import {
-  connectFirebase,
-  getAllOfCollection,
-  getData,
-  addToArray,
-  updateData,
   getAllData,
   deleteRecord,
   searchData,
 } from "../backend/utility";
-import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
-
-import HasRole from "../hoc/HasRole";
-
 export default class Expertise extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      brands: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      responseMessage: "Loading Colors...",
       expertise: [],
-      copyexpertise: [],
-      Admin: [],
       searchQuery: ""
     };
   }
@@ -51,101 +30,6 @@ export default class Expertise extends React.Component {
       expertise: data,
     });
   }
-
-  async updateexpertise() {
-    await addToArray(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "expertise",
-      this.state.expertise
-    )
-      .then(() => {
-        this.componentDidMount();
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Expertise Updated Successfully",
-        });
-      })
-      .catch(() => {
-        alert("Something went wrong");
-      });
-  }
-
-  async deleteExpertiseUsingArray(category) {
-    console.log("This is category", category);
-    var tempCat = [];
-    this.state.expertise.map((cat) => {
-      if (cat.name != category.name) {
-        tempCat.push(cat);
-      }
-    });
-    
-    console.log("This is new Category", tempCat);
-    await updateData(
-      "Admin",
-      "lW16IC5TtfA58gxARBOW",
-      "AreaOfExpertise",
-      tempCat
-    )
-      .then(() => {
-        this.componentDidMount();
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Associated Company Deleted Successfully",
-        }).then(() => {
-          // window.location.reload();
-        });
-      })
-      .catch((e) => {
-        SwalAutoHide.fire({
-          icon: "error",
-          timer: 2000,
-          title: "Failed.",
-          showConfirmButton: false,
-          text: "Associated Company Delete Failed",
-        });
-      });
-  }
-
-  async updateexpertiseUsingArray(array, category) {
-    console.log("this is new data", array, category);
-    await updateData("Admin", "0qYmJUZhg0WLUATMjaohcgrsGs33", category, array)
-      .then(() => {
-        this.componentDidMount();
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Expertise Updated Successfully",
-        });
-      })
-      .catch((e) => {
-        console.log("This is error", e);
-        alert("Something went wrong");
-      });
-  }
-
-  fetchBanners = () => {
-    axios
-      .get(`${API_END_POINT}/api/show-colors`, {
-        headers: { "auth-token": token },
-      })
-      .then((response) => {
-        console.log(response);
-        this.setState({
-          brands: response.data.colors,
-          pages: Math.ceil(response.data.colors.length / 10),
-          responseMessage: "No Colors Found...",
-        });
-      });
-  };
 
   async deleteExpertise(expertise) {
     let reqBody = {
@@ -174,47 +58,6 @@ export default class Expertise extends React.Component {
     }
   }
 
-  deleteBrand(brandId, index) {
-    if (confirm("Are you sure you want to delete this item?")) {
-      axios
-        .post(`${API_END_POINT}/api/delete-color`, { color_id: brandId })
-        .then((response) => {
-          const brands = this.state.brands.slice();
-          brands.splice(index, 1);
-          this.setState({ brands });
-        });
-    }
-  }
-
-  handleSelect(page) {
-    axios.get(`/api/area?offset=${(page - 1) * 10}`).then((response) => {
-      this.setState({
-        areas: response.data.items,
-        activePage: page,
-      });
-    });
-  }
-
-  async FilterFn(text) {
-    if (text !== "") {
-      let newData = this.state.expertise.filter(function (item) {
-        let itemData = item.name ? item.name.toUpperCase() : "".toUpperCase();
-        let textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-
-      this.setState({
-        expertise: newData,
-        isSearching: true,
-      });
-    } else {
-      this.setState({
-        expertise: this.state.copyexpertise,
-        isSearching: false,
-      });
-    }
-  }
-
   async handleSearch() {
     let { searchQuery } = this.state;
     searchQuery = searchQuery.trim();
@@ -234,14 +77,7 @@ export default class Expertise extends React.Component {
     }
   }
 
-  handleInputChange = (event) => {
-    const { value, name } = event.target;
-    this.setState({ q: event.target.value });
-    this.FilterFn(event.target.value);
-  };
-
   render() {
-    const { events } = this.state;
     return (
       <div className="row animated fadeIn">
         <div className="col-12">

@@ -1,45 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { Pagination, Image } from "react-bootstrap";
 import moment from "moment";
-import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
-const token = Cookie.get("clobberswap_access_token");
 import {
   getDataById,
   getAllData,
 } from "../backend/utility";
-import firebase from "firebase";
-import HasRole from "../hoc/HasRole";
-import { getPost } from "../api/services/Post";
-import { getComments } from "../api/services/Comments";
 
 export default class ViewPosts extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      brands: [],
       detailedPost: null,
-      activePage: 1,
-      pages: 1,
-      q: "",
-      responseMessage: "Loading Colors...",
-      eventDetail: {},
       allUsers: [],
       allComments: [],
       allLikes: [],
       postDetails: {},
     };
-  }
-
-  async getPostComments(id) {
-    let reqBody = {
-      post_id: this.state.postDetails.id
-    };
-    const { data } = await getComments("show-comments", reqBody);
-    return data;
   }
 
   getUserByID = (item) => {
@@ -52,10 +28,8 @@ export default class ViewPosts extends React.Component {
     if (Cookie.get("token")) {
       let allPosts = await getAllData("show-all-posts");
       let { data } = await getAllData("show-users");
-      debugger;
       this.setState({ allUsers: data, allPosts: allPosts.data.data });
       await this.getPostDetail();
-      // await this.getPostComments();
     } else {
       this.props.history.push("/login");
     }
@@ -67,7 +41,6 @@ export default class ViewPosts extends React.Component {
       post_id: postId,
     };
     let postDetail = await getDataById("show-post", reqBody);
-    debugger;
     let postComments = [];
     let postReactions = [];
     if (postDetail) {
@@ -86,74 +59,6 @@ export default class ViewPosts extends React.Component {
       this.setState({
         postDetails: postDetail.data,
       });
-    }
-  }
-
-  fetchBanners = () => {
-    axios
-      .get(`${API_END_POINT}/api/show-colors`, {
-        headers: { "auth-token": token },
-      })
-      .then((response) => {
-        this.setState({
-          brands: response.data.colors,
-          pages: Math.ceil(response.data.colors.length / 10),
-          responseMessage: "No Colors Found...",
-        });
-      });
-  };
-
-  // const requestParams = {
-  //   "userId": userId,
-  // }
-
-  deleteBrand(brandId, index) {
-    if (confirm("Are you sure you want to delete this item?")) {
-      axios
-        .post(`${API_END_POINT}/api/delete-color`, { color_id: brandId })
-        .then((response) => {
-          const brands = this.state.brands.slice();
-          brands.splice(index, 1);
-          this.setState({ brands });
-        });
-    }
-  }
-
-  handleSelect(page) {
-    axios.get(`/api/area?offset=${(page - 1) * 10}`).then((response) => {
-      this.setState({
-        areas: response.data.items,
-        activePage: page,
-      });
-    });
-  }
-
-  handleSearch() {
-    const { q } = this.state;
-    if (q.length) {
-      this.setState({
-        loading: true,
-        brands: [],
-        responseMessage: "Loading Colors...",
-      });
-      axios
-        .get(`${API_END_POINT}/api/brands/search`, {
-          params: { searchWord: this.state.q },
-          headers: { "auth-token": token },
-        })
-        .then((response) => {
-          this.setState({
-            brands: response.data.searchedItems,
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        })
-        .catch(() => {
-          this.setState({
-            loading: false,
-            responseMessage: "No Brands Found...",
-          });
-        });
     }
   }
 
@@ -228,8 +133,6 @@ export default class ViewPosts extends React.Component {
                 </h4>
                 <div className="commentSection">
                 {this.state.allComments.map((comment) => {
-                  var tageName = "";
-                  var tagId = "";
                   var commentText = comment.comment;
                   var CleanComment = "";
                   var foundTag = false;
@@ -255,7 +158,6 @@ export default class ViewPosts extends React.Component {
                       foundTag = true;
                     }
                   }
-                  console.log("fount tag in comment", CleanComment);
                   return (
                     <div
                       className="row comment"
@@ -325,7 +227,6 @@ export default class ViewPosts extends React.Component {
                               foundReplyTag = true;
                             }
                           }
-                          console.log("this is comment reply", CleanReply);
                           return (
                             <div
                               className="row"

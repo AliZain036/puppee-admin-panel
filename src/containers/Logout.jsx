@@ -14,7 +14,6 @@ class Logout extends Component {
     } else {
       Cookie.remove("token");
     }
-    //this.props.history.push("/login");
     window.location.href = "/login";
   }
 

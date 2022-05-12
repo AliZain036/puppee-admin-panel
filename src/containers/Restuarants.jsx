@@ -23,7 +23,6 @@ export default class Restuarants extends React.Component {
   }
 
   componentWillMount() {
-    console.log("######", this.props);
     this.fetchOrders();
   }
 

@@ -1,15 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import { Pagination } from "react-bootstrap";
-import moment from "moment";
 import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import SwalAutoHide from "sweetalert2";
 import {
-  connectFirebase,
   getAllOfCollection,
-  getDataWithDoc,
   updateData,
   addToArray,
   deleteData,
@@ -34,13 +29,11 @@ export default class AssociatedCompanies extends React.Component {
     };
   }
   async componentWillMount() {
-    // console.log("This is token now", Cookie.get("token"));
     if (Cookie.get("token")) {
       var cats = [];
       let Admin = await getAllOfCollection("Admin");
       // let TestAdmin = await getDataWithDoc("Admin","")
       // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      console.log("This is the admin", Admin[1]);
       // for (let key in Admin[0]) {
       //   if (key !== "languages" && key !== "companies") {
       //     cats.push(key);
@@ -56,14 +49,12 @@ export default class AssociatedCompanies extends React.Component {
   }
 
   async deleteExpertiseUsingArray(category) {
-    console.log("This is category", category);
     var tempCat = [];
     this.state.categories.map((cat) => {
       if (cat.name != category.name) {
         tempCat.push(cat);
       }
     });
-    console.log("This is new Category", tempCat);
     await updateData(
       "Admin",
       "lW16IC5TtfA58gxARBOW",
@@ -124,7 +115,6 @@ export default class AssociatedCompanies extends React.Component {
       []
     )
       .then((e) => {
-        console.log("This is delted", e);
         SwalAutoHide.fire({
           icon: "success",
           timer: 2000,
@@ -136,7 +126,6 @@ export default class AssociatedCompanies extends React.Component {
         });
       })
       .catch((e) => {
-        console.log("this is", e);
         SwalAutoHide.fire({
           icon: "error",
           timer: 2000,
@@ -146,25 +135,6 @@ export default class AssociatedCompanies extends React.Component {
         });
       });
   }
-
-  fetchBanners = () => {
-    axios
-      .get(`${API_END_POINT}/api/show-colors`, {
-        headers: { "auth-token": token },
-      })
-      .then((response) => {
-        console.log(response);
-        this.setState({
-          brands: response.data.colors,
-          pages: Math.ceil(response.data.colors.length / 10),
-          responseMessage: "No Colors Found...",
-        });
-      });
-  };
-
-  // const requestParams = {
-  //   "userId": userId,
-  // }
 
   deleteBrand(brandId, index) {
     if (confirm("Are you sure you want to delete this item?")) {

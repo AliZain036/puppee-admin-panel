@@ -8,12 +8,8 @@ export const getEarning = async function () {
     let Drivers = [];
 
     query.docs.forEach((doc) => {
-        // const brand = Brand.fromFirestore(doc);
-        // if (brand) {
             Drivers.push(doc.data());
-        // }
     });
-    // console.log('Users', Drivers);
 
     return Drivers;
 };

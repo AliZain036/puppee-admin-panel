@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "easyqadmin"
-  }
+    "default": "network-desk-163d7",
+    "network-desk": "network-desk-163d7"
+  },
+  "targets": {}
 }

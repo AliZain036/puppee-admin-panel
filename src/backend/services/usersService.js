@@ -13,8 +13,6 @@ export const getUsers = async function () {
             users.push(user);
         }
     });
-    console.log('Users', users);
-
     return users;
 };
 

@@ -13,7 +13,6 @@ export const getAdmins = async function () {
             admins.push(admin);
         }
     });
-    console.log('Admins', admins);
 
     return admins;
 };
@@ -34,15 +33,3 @@ export const getAdminById = async function (id) {
     const query = await db.collection('Admins').doc(id).get();
     return Admin.fromFirestore(query);
 };
-
-// export const getAllAdmins = () => {
-//     admin.auth().listUsers(100)
-//       .then(function(listUsersResult) {
-//         listUsersResult.users.forEach(function(userRecord) {
-//           console.log('user', userRecord.toJSON());
-//         });
-//       })
-//       .catch(function(error) {
-//         console.log('Error listing users:', error);
-//       });
-//   }

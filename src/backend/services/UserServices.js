@@ -13,7 +13,6 @@ export const getUsers = async function () {
             Drivers.push(doc.data());
         // }
     });
-    console.log('Users', Drivers);
 
     return Drivers;
 };

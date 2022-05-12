@@ -30,7 +30,6 @@ export default class ViewEvent extends React.Component {
   componentDidMount() {
     connectFirebase();
     const { match, location, history } = this.props;
-    console.log(location.item);
     this.setState({ eventDetail: location.item });
     this.fetchBanners();
   }
@@ -41,7 +40,6 @@ export default class ViewEvent extends React.Component {
         headers: { "auth-token": token },
       })
       .then((response) => {
-        console.log(response);
         this.setState({
           brands: response.data.colors,
           pages: Math.ceil(response.data.colors.length / 10),

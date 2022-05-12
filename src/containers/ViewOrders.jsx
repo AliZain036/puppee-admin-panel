@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-// import {Pagination} from 'react-bootstrap';
 
 import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
@@ -23,7 +22,6 @@ export default class ViewOrders extends React.Component {
   }
 
   componentWillMount() {
-    console.log("######", this.props);
     this.fetchOrders();
   }
 
