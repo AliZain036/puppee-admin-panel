@@ -21,12 +21,12 @@ export default class Area extends React.Component {
     if (Cookie.get("token")) {
       let allUsers = await getAllData("show-users");
       let allPosts = await getAllData("show-all-posts");
-      let allRef
+      let allReferrals = await getAllData("get-referrals");
 
       this.setState({
-        userCount: allUsers.data.length,
-        postCount: allPosts.data.data.length,
-        refCount: allTransactions.length,
+        userCount: allUsers.data && allUsers.data.length,
+        postCount: allPosts && allPosts.data.data.length,
+        refCount: allReferrals.data && allReferrals.data.length,
       });
     } else {
       this.props.history.push("/login");

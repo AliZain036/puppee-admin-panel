@@ -9,6 +9,7 @@ import {
   getAllData,
   searchData,
 } from "../backend/utility";
+import { connect } from "react-redux";
 class Customers extends React.Component {
   constructor(props) {
     super(props);

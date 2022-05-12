@@ -238,10 +238,10 @@ export default class UserDetails extends React.Component {
           <div className="row space-1">
             <div className="col-sm-4">
               <h3>
-                {this.state.detailedUser &&
-                  this.state.detailedUser.firstname +
+                {user &&
+                  user.first_name +
                     " " +
-                    this.state.detailedUser.lastname +
+                    user.last_name +
                     "'s "}{" "}
                 Details
               </h3>
@@ -384,8 +384,7 @@ export default class UserDetails extends React.Component {
                                   value={
                                     user.first_name + " " + user.last_name || ""
                                   }
-                                  // onChange={this.handleInputChange}
-                                  onChange={null}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -402,7 +401,7 @@ export default class UserDetails extends React.Component {
                                   value={
                                     (user.profile && user.profile.about) || ""
                                   }
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -417,7 +416,7 @@ export default class UserDetails extends React.Component {
                                   name="name"
                                   className="form-control"
                                   value={user.phone_number || ""}
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -436,7 +435,7 @@ export default class UserDetails extends React.Component {
                                       user.profile.company_name) ||
                                     ""
                                   }
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -455,7 +454,7 @@ export default class UserDetails extends React.Component {
                                       user.profile && user.profile.expertise
                                     ) || ""
                                   }
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -474,7 +473,7 @@ export default class UserDetails extends React.Component {
                                       user.profile && user.profile.language
                                     ) || ""
                                   }
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -489,7 +488,7 @@ export default class UserDetails extends React.Component {
                                   name="name"
                                   className="form-control"
                                   value={user.email || ""}
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -506,7 +505,7 @@ export default class UserDetails extends React.Component {
                                   value={
                                     (user.profile && user.profile.website) || ""
                                   }
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -524,7 +523,7 @@ export default class UserDetails extends React.Component {
                                     (user.profile && user.profile.profession) ||
                                     ""
                                   }
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>
@@ -543,7 +542,7 @@ export default class UserDetails extends React.Component {
                                       user.profile.brokerage_address) ||
                                     ""
                                   }
-                                  onChange={this.handleInputChange}
+                                  readOnly
                                 />
                               </div>
                             </div>

@@ -35,8 +35,8 @@ class Login extends Component {
 
     this.state = {
       user: null,
-      email: "admin@netdesk.com",
-      password: "123456",
+      email: "",
+      password: "",
       loading: false,
     };
   }

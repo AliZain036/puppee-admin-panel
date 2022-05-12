@@ -14,7 +14,7 @@ export default class Languages extends React.Component {
       languages: [],
     };
   }
-  async componentWillMount() {
+  async componentDidMount() {
     if (Cookie.get("token")) {
       this.getLanguages()
     } else {

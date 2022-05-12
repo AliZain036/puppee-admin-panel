@@ -7,7 +7,7 @@ class Logout extends Component {
     super(props);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     axios.defaults.headers.common["Authorization"] = "";
     if (process.env.NODE_ENV === "production") {
       Cookie.remove("token");
