@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import HasRole from '../hoc/HasRole';
-import axios from 'axios';
 import Cookie from 'js-cookie';
-import { logout } from '../api/services/User'
+import { logout } from '../backend/utility'
 export default class SideNav extends React.Component {
   constructor(props) {
     super(props);
@@ -11,9 +9,6 @@ export default class SideNav extends React.Component {
       active: 'stats',
       user: this.props.user
     }
-  }
-  componentDidMount() {
-
   }
 
   async logout() {

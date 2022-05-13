@@ -98,20 +98,6 @@ export default class CustomerDetails extends React.Component {
     }
   }
 
-  handleSelect(page) {
-    this.setState({ activePage: page }, () => {
-      axios
-        .get(`${API_END_POINT}/api/fetch/locations-fetch`, this.getParams())
-        // axios.get(`https://api.saaditrips.com/api/fetch/locations-fetch`, this.getParams())
-        .then((response) => {
-          this.setState({
-            posts: response.data.items,
-            activePage: page,
-          });
-        });
-    });
-  }
-
   handleSearch() {
     const { q } = this.state;
     var data = new FormData();

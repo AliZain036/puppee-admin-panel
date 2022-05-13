@@ -16,7 +16,7 @@ import Cookie from "js-cookie";
 import Formsy from "formsy-react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { login } from "../api/services/User";
+import { login } from "../backend/utility";
 
 const style = {
   logoWrapper: {

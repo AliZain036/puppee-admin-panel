@@ -5,6 +5,7 @@ import SwalAutoHide from "sweetalert2";
 import {
   getAllData,
   deleteRecord,
+  searchData,
 } from "../backend/utility";
 export default class Languages extends React.Component {
   constructor(props) {
@@ -12,11 +13,12 @@ export default class Languages extends React.Component {
 
     this.state = {
       languages: [],
+      searchQuery: "",
     };
   }
   async componentDidMount() {
     if (Cookie.get("token")) {
-      this.getLanguages()
+      this.getLanguages();
     } else {
       this.props.history.push("/login");
     }
@@ -24,8 +26,27 @@ export default class Languages extends React.Component {
 
   async getLanguages() {
     let result = await getAllData("show-languages");
-    if(result) {
-      this.setState({ languages: result.data })
+    if (result) {
+      this.setState({ languages: result.data });
+    }
+  }
+
+  async handleSearch() {
+    let { searchQuery } = this.state;
+    searchQuery = searchQuery.trim();
+    let searchResults;
+    if (searchQuery.length > 0) {
+      let reqBody = {
+        query: searchQuery,
+      };
+      searchResults = await searchData("search-languages", reqBody);
+      if (searchResults.data && searchResults.data.length > 0) {
+        this.setState({ languages: searchResults.data, searchQuery: "" });
+      } else {
+        this.setState({ languages: [], searchQuery: "" });
+      }
+    } else {
+      this.getLanguages();
     }
   }
 
@@ -35,7 +56,7 @@ export default class Languages extends React.Component {
     };
     let result = await deleteRecord("delete-language", reqBody);
     if (result) {
-      this.getLanguages()
+      this.getLanguages();
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
@@ -69,8 +90,8 @@ export default class Languages extends React.Component {
                   type="text"
                   name="search"
                   placeholder="Enter keyword"
-                  value={this.state.q}
-                  onChange={this.handleInputChange}
+                  value={this.state.searchQuery}
+                  onChange={(e) => this.setState({ searchQuery: e.target.value })}
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
                       this.handleSearch();
@@ -91,11 +112,7 @@ export default class Languages extends React.Component {
 
             <div className="col-sm-4 pull-right mobile-space">
               <Link to={"/addLanguage"}>
-                <button
-                  className="btn btn-success"
-                >
-                  Add New Language
-                </button>
+                <button className="btn btn-success">Add New Language</button>
               </Link>
             </div>
           </div>

@@ -40,7 +40,7 @@ export default class About extends React.Component {
         timer: 2000,
         title: "Success.",
         showConfirmButton: false,
-        text: "Terms and Conditions Updated Successfully",
+        text: "About Us Updated Successfully!",
       });
     } else {
       SwalAutoHide.fire({

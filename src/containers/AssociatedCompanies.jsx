@@ -12,8 +12,6 @@ import {
 import firebase from "firebase";
 const token = Cookie.get("clobberswap_access_token");
 
-import HasRole from "../hoc/HasRole";
-
 export default class AssociatedCompanies extends React.Component {
   constructor(props) {
     super(props);
@@ -28,21 +26,8 @@ export default class AssociatedCompanies extends React.Component {
       copyCategories: [],
     };
   }
-  async componentWillMount() {
+  async componentDidMount() {
     if (Cookie.get("token")) {
-      var cats = [];
-      let Admin = await getAllOfCollection("Admin");
-      // let TestAdmin = await getDataWithDoc("Admin","")
-      // this.setState({ userPosts: allPosts, copyPosts: allPosts });
-      // for (let key in Admin[0]) {
-      //   if (key !== "languages" && key !== "companies") {
-      //     cats.push(key);
-      //   }
-      // }
-      this.setState({
-        categories: Admin[1].AssociatedCompanies,
-        copyCategories: Admin[1].AssociatedCompanies,
-      });
     } else {
       this.props.history.push("/login");
     }
@@ -62,7 +47,7 @@ export default class AssociatedCompanies extends React.Component {
       tempCat
     )
       .then(() => {
-        this.componentWillMount();
+        this.componentDidMount();
         SwalAutoHide.fire({
           icon: "success",
           timer: 2000,
@@ -99,7 +84,7 @@ export default class AssociatedCompanies extends React.Component {
           showConfirmButton: false,
           text: "Languages Updated Successfully",
         }).then(() => {
-          this.componentWillMount();
+          this.componentDidMount();
         });
       })
       .catch(() => {
@@ -122,7 +107,7 @@ export default class AssociatedCompanies extends React.Component {
           showConfirmButton: false,
           text: "Terms and Conditions Updated Successfully",
         }).then(() => {
-          this.componentWillMount();
+          this.componentDidMount();
         });
       })
       .catch((e) => {

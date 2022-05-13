@@ -79,7 +79,7 @@ export default class ExpertiseCategories extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              <h3>List of Expertise Catgories</h3>
+              <h3>List of Expertise Categories</h3>
             </div>
             <div className="col-sm-4">
               <div className="input-group">

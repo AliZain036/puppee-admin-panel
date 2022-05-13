@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import createHistory from "history/createBrowserHistory";
+import { createBrowserHistory } from "history";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { Provider } from "react-redux";
@@ -29,7 +29,7 @@ import App from "./containers/App";
 import Login from "./containers/Login";
 import Logout from "./containers/Logout";
 
-const history = createHistory({ basename: "/" });
+const history =  createBrowserHistory({ basename: "/" });
 const store = configureStore(history);
 const syncHistory = syncHistoryWithStore(history, store);
 

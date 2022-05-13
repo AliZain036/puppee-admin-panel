@@ -1,11 +1,8 @@
 import React from "react";
 import Cookie from "js-cookie";
 import SwalAutoHide from "sweetalert2";
-import {
-  getAllData,
-  deleteRecord,
-  searchData,
-} from "../backend/utility";
+import { Link } from "react-router-dom";
+import { getAllData, deleteRecord, searchData } from "../backend/utility";
 const token = Cookie.get("clobberswap_access_token");
 export default class Expertise extends React.Component {
   constructor(props) {
@@ -13,12 +10,12 @@ export default class Expertise extends React.Component {
 
     this.state = {
       expertise: [],
-      searchQuery: ""
+      searchQuery: "",
     };
   }
   async componentDidMount() {
     if (Cookie.get("token")) {
-      this.getAllExpertise()
+      this.getAllExpertise();
     } else {
       this.props.history.push("/login");
     }
@@ -36,10 +33,12 @@ export default class Expertise extends React.Component {
       expertise_id: expertise.id,
     };
     let result = await deleteRecord("delete-expertise", reqBody);
-    let message = '';
-    result ? message = 'Expertise Deleted Successfully': 'Something went wrong!'
-    if(result) {
-      this.getAllExpertise()
+    let message = "";
+    result
+      ? (message = "Expertise Deleted Successfully")
+      : "Something went wrong!";
+    if (result) {
+      this.getAllExpertise();
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
@@ -83,7 +82,7 @@ export default class Expertise extends React.Component {
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              <h3>List of expertise</h3>
+              <h3>List of Expertise</h3>
             </div>
             <div className="col-sm-4">
               <div className="input-group">
@@ -114,11 +113,13 @@ export default class Expertise extends React.Component {
               </div>
             </div>
 
-            <div className="col-sm-4 pull-right mobile-space">
-              {/* <button type="button" className="btn btn-success">
-                Add new Language
-              </button> */}
-            </div>
+            {/* <div className="col-sm-4 pull-right mobile-space">
+              <Link to={"/addExpertise"}>
+                <button type="button" className="btn btn-success">
+                  Add new Expertise
+                </button>
+              </Link>
+            </div> */}
           </div>
           <div className="table-responsive">
             <table className="table table-striped">
@@ -148,20 +149,14 @@ export default class Expertise extends React.Component {
                             className={`btn btn-sm btn-danger`}
                           >
                             Delete
-                            {/* {post.statusAdmin && post.statusAdmin === "Block"
-                              ? "Unblock"
-                              : "Block"} */}
                           </button>
                         </td>
                         <td>
-                          {/* <button
-                            onClick={() =>
-                              (window.location.href = `/addExpertise/${language.title}`)
-                            }
-                            className={`btn btn-sm btn-success`}
-                          >
-                            Add
-                          </button> */}
+                          <Link to={`/addExpertise/${experti.category && experti.category.id}`}>
+                            <button className={`btn btn-sm btn-success`}>
+                              Add
+                            </button>
+                          </Link>
                         </td>
                       </tr>
                     );
@@ -169,12 +164,6 @@ export default class Expertise extends React.Component {
               </tbody>
             </table>
           </div>
-          {/* <button
-            onClick={() => this.updateexpertise()}
-            className={`btn btn-sm btn-success`}
-          >
-            Save
-          </button> */}
         </div>
       </div>
     );

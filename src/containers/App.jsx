@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Switch, Route, withRouter } from "react-router-dom";
+import { Switch, Route, withRouter, BrowserRouter as Router } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
@@ -10,12 +10,6 @@ import Stats from "../containers/Stats";
 import { Container } from "reactstrap";
 
 import UserDetails from "./UserDetails";
-import ViewOrders from "./ViewOrders";
-import CustomerDetails from "./CustomerDetails";
-import DriverDetails from "./DriverDetails";
-
-import Chats from "./Chats";
-import ChatDetails from "./ChatDetails";
 import Customers from "./Customers";
 import Posts from "./Posts";
 import ViewPosts from "./ViewPosts";
@@ -35,18 +29,14 @@ import ExpertiseCategories from "./ExpertiseCategories";
 import AddExpertiseCategory from "./AddExpertiseCategory";
 import AssociateCompany from "./AssociateCompany";
 import AssociatedCompanies from "./AssociatedCompanies";
+import Login from "./Login";
 
-import Rides from "./Rides";
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      loading: true,
       user: null,
-      displayLoading: true,
-      displayApp: false,
-      displayMessage: "Loading User Data...",
     };
   }
 
@@ -59,90 +49,62 @@ class App extends React.Component {
           <main className="main">
             <Breadcrumb />
             <Container fluid>
-              <Switch>
-                <Route
-                  exact={true}
-                  path="/userdetails/:userId"
-                  component={UserDetails}
-                />
-                <Route
-                  exact={true}
-                  path="/viewOrder/:orderId"
-                  component={ViewOrders}
-                />
-                <Route
-                  exact={true}
-                  path="/viewOrderCustomer/:orderId/:customerId"
-                  component={CustomerDetails}
-                />
-                <Route exact={true} path="/chats" component={Chats} />
-                <Route
-                  exact={true}
-                  path="/chatDetails/:userId"
-                  component={ChatDetails}
-                />
-                <Route
-                  exact={true}
-                  path="/viewOrderDriver/:orderId/:driverId"
-                  component={DriverDetails}
-                />
-                <Route
-                  exact={true}
-                  path="/terms"
-                  component={TermsAndConditions}
-                />
-                <Route exact={true} path="/cookie" component={CookiePolicy} />
-                <Route exact={true} path="/privacy" component={PrivacyPolicy} />
-                <Route exact={true} path="/companies" component={Companies} />
-                <Route exact={true} path="/addCompany" component={AddCompany} />
-                <Route
-                  exact={true}
-                  path="/expertiseCategories"
-                  component={ExpertiseCategories}
-                />
-                <Route
-                  exact={true}
-                  path="/addExpertiseCategories"
-                  component={AddExpertiseCategory}
-                />
-                <Route exact={true} path="/languages" component={Languages} />
-                <Route
-                  exact={true}
-                  path="/addLanguage"
-                  component={AddLanguage}
-                />
-                <Route exact={true} path="/expertise" component={Expertise} />
-                <Route
-                  exact={true}
-                  path="/addExpertise/:name"
-                  component={AddExpertise}
-                />
-                <Route
-                  exact={true}
-                  path="/associateCompany/:name"
-                  component={AssociateCompany}
-                />{" "}
-                <Route
-                  exact={true}
-                  path="/associatedCompanies"
-                  component={AssociatedCompanies}
-                />
-                <Route exact={true} path="/about" component={About} />
-                <Route exact={true} path="/customers" component={Customers} />
-                <Route exact={true} path="/posts" component={Posts} />
-                <Route
-                  exact={true}
-                  path="/viewposts/:postId"
-                  component={ViewPosts}
-                />
-                <Route exact={true} path="/referal" component={Referal} />
-                <Route
-                  exact={true}
-                  path="/referal/:refId"
-                  component={ViewReferal}
-                />
-                <Route exact={true} path="/" component={Stats} />
-              </Switch>
+              {/* <Router> */}
+                <Switch>
+
+                  <Route
+                    exact
+                    path="/userdetails/:userId"
+                    component={UserDetails}
+                  />
+                  <Route exact path="/terms" component={TermsAndConditions} />
+                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/cookie" component={CookiePolicy} />
+                  <Route exact path="/privacy" component={PrivacyPolicy} />
+                  <Route exact path="/companies" component={Companies} />
+                  <Route exact path="/addCompany" component={AddCompany} />
+                  <Route
+                    exact
+                    path="/expertiseCategories"
+                    component={ExpertiseCategories}
+                  />
+                  <Route
+                    exact
+                    path="/addExpertiseCategories"
+                    component={AddExpertiseCategory}
+                  />
+                  <Route exact path="/languages" component={Languages} />
+                  <Route exact path="/addLanguage" component={AddLanguage} />
+                  <Route exact path="/expertise" component={Expertise} />
+                  <Route
+                    exact
+                    path="/addExpertise/:id"
+                    component={AddExpertise}
+                  />
+                  <Route
+                    exact
+                    path="/associateCompany/:name"
+                    component={AssociateCompany}
+                  />{" "}
+                  <Route
+                    exact
+                    path="/associatedCompanies"
+                    component={AssociatedCompanies}
+                  />
+                  <Route exact path="/about" component={About} />
+                  <Route exact path="/customers" component={Customers} />
+                  <Route exact path="/posts" component={Posts} />
+                  <Route
+                    exact
+                    path="/viewposts/:postId"
+                    component={ViewPosts}
+                  />
+                  <Route exact path="/referal" component={Referal} />
+                  <Route exact path="/referal/:refId" component={ViewReferal} />
+                  <Route exact path="/" component={Stats} />
+                  <Route path="/*" name="Stats" component={Stats} />
+                </Switch>
+              {/* </Router> */}
             </Container>
           </main>
         </div>

@@ -80,7 +80,7 @@ export default class ViewPosts extends React.Component {
               >
                 <div className="row space-1">
                   {postDetails.images &&
-                    postDetails.images.map((photo, index) => {
+                    JSON.parse(postDetails.images).map((photoUrl, index) => {
                       return (
                         <div
                           className="col-sm-4"
@@ -88,7 +88,7 @@ export default class ViewPosts extends React.Component {
                           style={{ textAlign: "left" }}
                         >
                           <img
-                            src={photo}
+                            src={photoUrl}
                             style={{ width: "250px", height: "200px" }}
                           />
                         </div>

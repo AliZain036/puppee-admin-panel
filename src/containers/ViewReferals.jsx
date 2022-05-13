@@ -3,9 +3,7 @@ import axios from "axios";
 import moment from "moment";
 import { Grid } from "@material-ui/core";
 import { API_END_POINT } from "../config";
-import {
-  getDataById,
-} from "../backend/utility";
+import { getDataById } from "../backend/utility";
 import ReactToPdf from "react-to-pdf";
 export default class ViewReferals extends React.Component {
   constructor(props) {
@@ -89,12 +87,15 @@ export default class ViewReferals extends React.Component {
                       marginTop: 20,
                     }}
                   >
-                    Date
-                    {moment(
+                    Date:
+                    {moment(new Date(detailedReferal.created_at)).format(
+                      "YYYY-MM-DD"
+                    )}
+                    {/* {moment(
                       new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                        detailedReferal.created_at.seconds
+                        detailedReferal.created_at
                       )
-                    ).format("MMMM DD YYYY")}
+                    ).format("MMMM DD YYYY")} */}
                   </p>
                 </Grid>
                 <div
@@ -320,30 +321,33 @@ export default class ViewReferals extends React.Component {
                     claims or legitation that may result from this agreement
                   </p>
                 </Grid>
+                <Grid item md={12} xs={12}>
+                  {detailedReferal && (
+                    <ReactToPdf
+                      targetRef={document.getElementById("pdf")}
+                      filename="Refferal.pdf"
+                    >
+                      {({ toPdf }) => (
+                        <button
+                          className="my-3"
+                          style={{
+                            background: "rgb(81, 173, 246)",
+                            color: "white",
+                            borderRadius: 20,
+                            height: 35,
+                            border: "none",
+                          }}
+                          onClick={toPdf}
+                        >
+                          Generate pdf
+                        </button>
+                      )}
+                    </ReactToPdf>
+                  )}
+                </Grid>
               </Grid>
             )}
           </div>
-          {detailedReferal && (
-            <ReactToPdf
-              targetRef={document.getElementById("pdf")}
-              filename="Refferal.pdf"
-            >
-              {({ toPdf }) => (
-                <button
-                  style={{
-                    background: "rgb(81, 173, 246)",
-                    color: "white",
-                    borderRadius: 20,
-                    height: 35,
-                    border: "none",
-                  }}
-                  onClick={toPdf}
-                >
-                  Generate pdf
-                </button>
-              )}
-            </ReactToPdf>
-          )}
         </div>
       </div>
     );

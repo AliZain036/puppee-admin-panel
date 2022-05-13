@@ -15,12 +15,12 @@ export default class Posts extends React.Component {
 
     this.state = {
       userPosts: [],
-      searchQuery: ""
+      searchQuery: "",
     };
   }
   async componentDidMount() {
     if (Cookie.get("token")) {
-      this.getAllPosts()
+      this.getAllPosts();
     } else {
       this.props.history.push("/login");
     }
@@ -32,7 +32,7 @@ export default class Posts extends React.Component {
   }
 
   async handleSearch() {
-    let { searchQuery } = this.state
+    let { searchQuery } = this.state;
     searchQuery = searchQuery.trim();
     let searchResults;
     if (searchQuery.length > 0) {
@@ -40,25 +40,24 @@ export default class Posts extends React.Component {
         query: searchQuery,
       };
       searchResults = await searchData("search-posts", reqBody);
-      debugger
       if (searchResults.data && searchResults.data.length > 0) {
         this.setState({ userPosts: searchResults.data, searchQuery: "" });
       } else {
         this.setState({ userPosts: [], searchQuery: "" });
       }
     } else {
-      this.getAllPosts()
+      this.getAllPosts();
     }
   }
 
   async setPostBlockStatus(post) {
     let reqBody = {
-      post_id: post.id
-    }
+      post_id: post.id,
+    };
     let url = post.status === "active" ? "block-post" : "unblock-post";
     let result = await addUpdateData(url, reqBody);
-    if(result && result.success === true) {
-      this.componentDidMount()
+    if (result && result.success === true) {
+      this.componentDidMount();
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
@@ -77,14 +76,21 @@ export default class Posts extends React.Component {
     }
   }
 
-  async sortPostsByDate(){
+  async sortPostsByDate() {
     let allPosts = await getAllData("sort-by-date");
-    this.setState({ userPosts: allPosts.data })
-  };
+    this.setState({ userPosts: allPosts.data });
+  }
 
   async sortPostsByName() {
     let allPosts = await getAllData("sort-by-name");
-    this.setState({ userPosts: allPosts.data })
+    this.setState({ userPosts: allPosts.data });
+  }
+
+  parsePostImage(post) {
+    if (post.images) {
+      let imagesArray = JSON.parse(post.images)
+      return imagesArray[0]
+    }
   };
 
   render() {
@@ -103,7 +109,9 @@ export default class Posts extends React.Component {
                   name="search"
                   placeholder="Enter keyword"
                   value={this.state.searchQuery}
-                  onChange={(e) => this.setState({ searchQuery: e.target.value })}
+                  onChange={(e) =>
+                    this.setState({ searchQuery: e.target.value })
+                  }
                 />
                 <span className="input-group-btn">
                   <button
@@ -119,7 +127,7 @@ export default class Posts extends React.Component {
 
             <div className="col-sm-4 pull-right mobile-space">
               <button
-                type="button" 
+                type="button"
                 className="btn btn-success"
                 onClick={() => {
                   this.sortPostsByName();
@@ -161,7 +169,7 @@ export default class Posts extends React.Component {
                         <td>
                           {" "}
                           <img
-                            src={post.images && post.images[0]}
+                            src={this.parsePostImage(post)}
                             style={{ width: "50px", height: "50px" }}
                           />
                         </td>
@@ -174,7 +182,9 @@ export default class Posts extends React.Component {
 
                         <td>{post.location}</td>
                         <td>
-                          {moment(new Date(post.created_at)).format("YYYY-MM-DD")}
+                          {moment(new Date(post.created_at)).format(
+                            "YYYY-MM-DD"
+                          )}
                         </td>
                         <td>
                           <button
@@ -188,9 +198,7 @@ export default class Posts extends React.Component {
                         </td>
                         <td>
                           <Link to={`/viewposts/${post.id}`}>
-                            <button
-                              className={`btn btn-sm btn-success`}
-                            >
+                            <button className={`btn btn-sm btn-success`}>
                               View
                             </button>
                           </Link>

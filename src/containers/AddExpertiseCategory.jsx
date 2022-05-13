@@ -10,25 +10,7 @@ export default class AddExpertiseCategory extends React.Component {
     super(props);
 
     this.state = {
-      userPosts: [],
-      chats: [],
-      allUsers: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      pageSize: 10,
-      responseMessage: "Loading Users...",
-      status: "Details",
-      detailedUser: null,
-      name: "",
-      email: "",
-      phoneNumber: "",
-      followers: [],
-      followings: [],
-      blocked: [],
-      transactions: [],
       newExpertiseCategory: "",
-      languages: [],
       active: true,
     };
   }
@@ -48,6 +30,7 @@ export default class AddExpertiseCategory extends React.Component {
         showConfirmButton: false,
         text: "New Category Added Sucessfully!",
       });
+      this.props.history.push("expertiseCategories");
     } else {
       SwalAutoHide.fire({
         icon: "error",

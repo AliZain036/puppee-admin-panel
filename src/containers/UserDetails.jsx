@@ -225,7 +225,9 @@ export default class UserDetails extends React.Component {
 
   arrToStr(value) {
     if (value) {
-      let val = JSON.parse(value).join(",");
+      let languages = [];
+      value.forEach(lang => languages.push(lang.name))
+      let val = languages.join(",");
       return val;
     }
   }
@@ -235,8 +237,7 @@ export default class UserDetails extends React.Component {
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
-          <div className="row space-1">
-            <div className="col-sm-4">
+            <div>
               <h3>
                 {user &&
                   user.first_name +
@@ -246,10 +247,9 @@ export default class UserDetails extends React.Component {
                 Details
               </h3>
             </div>
-          </div>
 
-          <div className="row justify-content-between">
-            <div className="float-left col-sm-6 space-1">
+          <div>
+            <div className="space-1">
               <button
                 type="button"
                 style={{
@@ -470,7 +470,7 @@ export default class UserDetails extends React.Component {
                                   className="form-control"
                                   value={
                                     this.arrToStr(
-                                      user.profile && user.profile.language
+                                      user.languages
                                     ) || ""
                                   }
                                   readOnly

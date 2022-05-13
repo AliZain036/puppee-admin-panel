@@ -29,6 +29,7 @@ export default class AddLanguage extends React.Component {
         showConfirmButton: false,
         text: "Language Added Successfully",
       });
+      this.props.history.push("/languages")
     } else {
       SwalAutoHide.fire({
         icon: "error",
