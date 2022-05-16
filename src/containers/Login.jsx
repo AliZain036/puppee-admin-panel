@@ -17,6 +17,7 @@ import Formsy from "formsy-react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { login } from "../backend/utility";
+import SwalAutoHide from "sweetalert2";
 
 const style = {
   logoWrapper: {
@@ -51,9 +52,30 @@ class Login extends Component {
       this.setState({ loading: true });
       if (email && password) {
         let res = await login(reqBody);
+        if (!res.data && res.message === "User not found with this email") {
+          SwalAutoHide.fire({
+            icon: "error",
+            timer: 2000,
+            title: "Failed.",
+            showConfirmButton: false,
+            text: "No user found with this email!",
+          });
+          this.setState({ loading: false });
+          return;
+        } else if (!res.data && res.message === "Password is incorrect") {
+          SwalAutoHide.fire({
+            icon: "error",
+            timer: 2000,
+            title: "Failed.",
+            showConfirmButton: false,
+            text: "Your password is incorrect!",
+          });
+          this.setState({ loading: false });
+          return;
+        }
         if (res.data) {
           let user = res.data;
-          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem("user", JSON.stringify(user));
           Cookie.set("token", user);
           this.props.history.push("/");
         }
@@ -139,8 +161,7 @@ class Login extends Component {
                       <div
                         style={style.logoWrapper}
                         className={`svg-logo`}
-                      >
-                      </div>
+                      ></div>
                       <div
                         className={`text-center`}
                         style={{

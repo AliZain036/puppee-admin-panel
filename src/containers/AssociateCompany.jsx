@@ -1,14 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
-import axios from "axios";
-import Select from "react-select";
 import SwalAutoHide from "sweetalert2";
 import {
-  connectFirebase,
-  getAllOfCollection,
-  getData,
-  updateData,
+  addUpdateData,
+  getAllData,
 } from "../backend/utility";
 // import {Pagination} from 'react-bootstrap';
 
@@ -21,184 +16,44 @@ export default class AssociateCompany extends React.Component {
     super(props);
 
     this.state = {
-      userPosts: [],
-      chats: [],
-      allUsers: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      pageSize: 10,
-      responseMessage: "Loading Users...",
-      status: "Details",
-      detailedUser: null,
-      name: "",
-      email: "",
-      phoneNumber: "",
-      followers: [],
-      followings: [],
-      blocked: [],
-      transactions: [],
-      newLanguage: "",
-      languages: [],
-      categories: [],
-      options: [],
-      expertise: [],
+      category: {},
+      companyName: ""
     };
   }
 
-  async updateDataUsingArray(array) {
-    await updateData(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      this.props.match.params.name,
-      array
-    )
-      .then(() => {
-        this.componentWillMount();
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Expertise Updated Successfully",
-        }).then(() => {
-          window.location.href = "/associatedCompanies";
-        });
-      })
-      .catch((e) => {
-        SwalAutoHide.fire({
-          icon: "error",
-          timer: 2000,
-          title: "Failed.",
-          showConfirmButton: false,
-          text: "Languages Updated Failed",
-        });
+  componentDidMount() {
+    let {category} = this.props.location.state
+    this.setState({ category })
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault()
+    let reqBody = {
+      name: this.state.companyName,
+      category_id: this.state.category.id
+    }
+    let result = await addUpdateData("associate-company", reqBody);
+    if(result.data) {
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Associate Company Added Successfully!",
       });
-  }
-
-  async associateCompanyUsingArray() {
-    var tempCat = this.state.expertise;
-    tempCat.push({
-      name: this.state.newLanguage,
-      active: true,
-      profession: this.props.match.params.name,
-      id: this.state.expertise.length,
-    });
-    await updateData(
-      "Admin",
-      "lW16IC5TtfA58gxARBOW",
-      "AssociatedCompanies",
-      tempCat
-    )
-      .then(() => {
-        this.componentWillMount();
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Company Associated Successfully",
-        }).then(() => {
-          window.location.href = "/expertise";
-        });
-      })
-      .catch((e) => {
-        SwalAutoHide.fire({
-          icon: "error",
-          timer: 2000,
-          title: "Failed.",
-          showConfirmButton: false,
-          text: "Company Association Failed",
-        });
+      this.props.history.push("/associatedCompanies");
+    } else {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something went wrong!",
       });
-  }
-
-  getAllUserRelatedData = async () => {
-    let allUsers = await getAllOfCollection("Users");
-  };
-
-  async componentWillMount() {
-    var cats = [];
-    let Admin = await getAllOfCollection("Admin");
-
-    this.setState({
-      expertise: Admin[1].AssociatedCompanies,
-    });
-  }
-
-  async fetchUserDetail(id) {
-    this.setState({
-      loading: true,
-      responseMessage: "Loading User Details...",
-    });
-    let userData = await getData("Users", id);
-    this.setState({
-      name: userData.userName,
-      email: userData.email,
-      phoneNumber: userData.phoneNumber,
-      loading: false,
-    });
-  }
-
-  fetchOrders = async () => {
-    axios.get(`${API_END_POINT}/api/show-all-posts`).then((response) => {
-      this.setState({
-        posts: response.data.posts,
-        responseMessage: "No Users Found...",
-      });
-    });
-  };
-
-  fetchPastOrders = async (id) => {
-    // let userPosts = await getData("Posts", id);
-    let userChats = await getData("Chats", id);
-    let AllchatArray = Object.keys(userChats);
-    // if (userPosts) this.setState({ posts: userPosts });
-    // if (userChats) this.setState({ chats: userChats });
-    // axios.get(`${API_END_POINT}/api/show-active-posts`).then((response) => {
-    this.setState({
-      chats: AllchatArray,
-      userChats: userChats,
-      responseMessage: "No Users Found...",
-    });
-    // });
-  };
-
-  fetchRequestOrders = async (id) => {
-    let userPosts = await getData("Posts", id);
-    // let userChats = await getData("Chats", id);
-
-    // if (userPosts) this.setState({ posts: userPosts });
-    // if (userChats) this.setState({ chats: userChats });
-    // axios.get(`${API_END_POINT}/api/show-sold-posts`).then((response) => {
-    this.setState({
-      posts: userPosts,
-      responseMessage: "No Users Found...",
-    });
-    // });
-  };
-
-  fetchActiveOrders = () => {
-    // axios.get(`${API_END_POINT}/api/show-block-posts`).then((response) => {
-    //   this.setState({
-    //     posts: response.data.posts,
-    //     responseMessage: "No Posts Found...",
-    //   });
-    // });
-  };
-
-  getParams() {
-    const { activePage, pageSize, userData, userChats } = this.state;
-    return {
-      params: {
-        pageNumber: activePage,
-        pageSize,
-      },
-    };
+    }
   }
 
   render() {
-    const { status, name, email, phoneNumber, chats, posts } = this.state;
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
@@ -219,10 +74,7 @@ export default class AssociateCompany extends React.Component {
                         id="demo-form2"
                         data-parsley-validate
                         className="form-horizontal form-label-left"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          this.associateCompanyUsingArray();
-                        }}
+                        onSubmit={(e) => { this.handleSubmit(e) }}
                       >
                         <div className="form-group row">
                           <label className="control-label col-md-3 col-sm-3">
@@ -234,12 +86,12 @@ export default class AssociateCompany extends React.Component {
                                 required
                                 type="text"
                                 name="name"
-                                placeholder="Add Expertise"
+                                placeholder="Add Associate Company"
                                 className="form-control"
-                                value={this.state.newLanguage}
+                                value={this.state.companyName}
                                 onChange={(e) => {
                                   this.setState({
-                                    newLanguage: e.target.value,
+                                    companyName: e.target.value,
                                   });
                                 }}
                               />

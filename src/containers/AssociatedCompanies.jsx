@@ -1,175 +1,76 @@
 import React from "react";
-import axios from "axios";
-import { API_END_POINT } from "../config";
 import Cookie from "js-cookie";
 import SwalAutoHide from "sweetalert2";
-import {
-  getAllOfCollection,
-  updateData,
-  addToArray,
-  deleteData,
-} from "../backend/utility";
-import firebase from "firebase";
-const token = Cookie.get("clobberswap_access_token");
+import { deleteRecord, getAllData, searchData } from "../backend/utility";
 
 export default class AssociatedCompanies extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      brands: [],
-      activePage: 1,
-      pages: 1,
-      q: "",
-      responseMessage: "Loading Colors...",
       categories: [],
-      copyCategories: [],
+      searchQuery: "",
     };
   }
-  async componentDidMount() {
+
+  componentDidMount() {
     if (Cookie.get("token")) {
+      this.getAssociatedCompanies();
     } else {
       this.props.history.push("/login");
     }
   }
 
-  async deleteExpertiseUsingArray(category) {
-    var tempCat = [];
-    this.state.categories.map((cat) => {
-      if (cat.name != category.name) {
-        tempCat.push(cat);
-      }
-    });
-    await updateData(
-      "Admin",
-      "lW16IC5TtfA58gxARBOW",
-      "AssociatedCompanies",
-      tempCat
-    )
-      .then(() => {
-        this.componentDidMount();
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Associated Company Deleted Successfully",
-        }).then(() => {
-          // window.location.reload();
-        });
-      })
-      .catch((e) => {
-        SwalAutoHide.fire({
-          icon: "error",
-          timer: 2000,
-          title: "Failed.",
-          showConfirmButton: false,
-          text: "Associated Company Delete Failed",
-        });
-      });
+  async getAssociatedCompanies() {
+    let result = await getAllData("show-associate-companies");
+    this.setState({ categories: result.data });
   }
 
-  async updateLanguages() {
-    await addToArray(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      "languages",
-      this.state.languages
-    )
-      .then(() => {
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 3000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Languages Updated Successfully",
-        }).then(() => {
-          this.componentDidMount();
-        });
-      })
-      .catch(() => {
-        alert("Something went wrong");
-      });
-  }
-
-  async deleteCategory(fieldName) {
-    let allUsers = await deleteData(
-      "Admin",
-      "0qYmJUZhg0WLUATMjaohcgrsGs33",
-      fieldName,
-      []
-    )
-      .then((e) => {
-        SwalAutoHide.fire({
-          icon: "success",
-          timer: 2000,
-          title: "Success.",
-          showConfirmButton: false,
-          text: "Terms and Conditions Updated Successfully",
-        }).then(() => {
-          this.componentDidMount();
-        });
-      })
-      .catch((e) => {
-        SwalAutoHide.fire({
-          icon: "error",
-          timer: 2000,
-          title: "Failure",
-          showConfirmButton: false,
-          text: "Something went wrong!!",
-        });
-      });
-  }
-
-  deleteBrand(brandId, index) {
-    if (confirm("Are you sure you want to delete this item?")) {
-      axios
-        .post(`${API_END_POINT}/api/delete-color`, { color_id: brandId })
-        .then((response) => {
-          const brands = this.state.brands.slice();
-          brands.splice(index, 1);
-          this.setState({ brands });
-        });
+  async deleteAssociatedCompany(id) {
+    let reqBody = {
+      associateCompany_id: id
     }
-  }
-
-  handleSelect(page) {
-    axios.get(`/api/area?offset=${(page - 1) * 10}`).then((response) => {
-      this.setState({
-        areas: response.data.items,
-        activePage: page,
+    let result = await deleteRecord("delete-associate-company", reqBody);
+    if(result.success === true) {
+      SwalAutoHide.fire({
+        icon: "success",
+        timer: 2000,
+        title: "Success.",
+        showConfirmButton: false,
+        text: "Associated Company Deleted Successfully!",
       });
-    });
-  }
-
-  async FilterFn(text) {
-    if (text !== "") {
-      let newData = this.state.categories.filter(function (item) {
-        let itemData = item ? item.name.toUpperCase() : "".toUpperCase();
-        let textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-
-      this.setState({
-        categories: newData,
-        isSearching: true,
-      });
+      this.getAssociatedCompanies()
     } else {
-      this.setState({
-        categories: this.state.copyCategories,
-        isSearching: false,
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something went wrong!",
       });
     }
   }
 
-  handleInputChange = (event) => {
-    const { value, name } = event.target;
-    this.setState({ q: event.target.value });
-    this.FilterFn(event.target.value);
-  };
+  async handleSearch() {
+    let { searchQuery } = this.state;
+    searchQuery = searchQuery.trim();
+    let searchResults;
+    if (searchQuery.length > 0) {
+      let reqBody = {
+        query: searchQuery,
+      };
+      searchResults = await searchData("search-associate-companies", reqBody);
+      if (searchResults.data && searchResults.data.length > 0) {
+        this.setState({ categories: searchResults.data, searchQuery: "" });
+      } else {
+        this.setState({ categories: [], searchQuery: "" });
+      }
+    } else {
+      this.getAssociatedCompanies()
+    }
+  }
 
   render() {
-    const { events } = this.state;
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
@@ -184,9 +85,10 @@ export default class AssociatedCompanies extends React.Component {
                   type="text"
                   name="search"
                   placeholder="Enter keyword"
-                  value={this.state.q}
-                  // onChange={(event) => this.setState({q: event.target.value})}
-                  onChange={this.handleInputChange}
+                  value={this.state.searchQuery}
+                  onChange={(event) =>
+                    this.setState({ searchQuery: event.target.value })
+                  }
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
                       this.handleSearch();
@@ -205,17 +107,14 @@ export default class AssociatedCompanies extends React.Component {
               </div>
             </div>
 
-            <div className="col-sm-4 pull-right mobile-space">
+            {/* <div className="col-sm-4 pull-right mobile-space">
               <button
                 type="button"
                 className="btn btn-success"
-                onClick={() => {
-                  window.location.href = "/addExpertiseCategories";
-                }}
               >
                 Add new Category
               </button>
-            </div>
+            </div> */}
           </div>
           <div className="table-responsive">
             <table className="table table-striped">
@@ -231,23 +130,16 @@ export default class AssociatedCompanies extends React.Component {
                 {this.state.categories &&
                   this.state.categories.map((cat, index) => {
                     return (
-                      <tr>
+                      <tr key={cat.id}>
                         <td>{index + 1}</td>
-
                         <td>{cat.name}</td>
-                        <td>{cat.profession}</td>
-
+                        <td>{cat.category && cat.category.name}</td>
                         <td>
                           <button
-                            onClick={() => {
-                              this.deleteExpertiseUsingArray(cat);
-                            }}
                             className={`btn btn-sm btn-danger`}
+                            onClick={() => this.deleteAssociatedCompany(cat.id)}
                           >
                             Delete
-                            {/* {post.statusAdmin && post.statusAdmin === "Block"
-                              ? "Unblock"
-                              : "Block"} */}
                           </button>
                         </td>
                       </tr>
@@ -256,12 +148,6 @@ export default class AssociatedCompanies extends React.Component {
               </tbody>
             </table>
           </div>
-          {/* <button
-            onClick={() => this.updateLanguages()}
-            className={`btn btn-sm btn-success`}
-          >
-            Save
-          </button> */}
         </div>
       </div>
     );

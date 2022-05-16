@@ -91,6 +91,11 @@ class App extends React.Component {
                     path="/associatedCompanies"
                     component={AssociatedCompanies}
                   />
+                  {/* <Route
+                    exact
+                    path="/addAssociatedCompanies"
+                    component={}
+                  /> */}
                   <Route exact path="/about" component={About} />
                   <Route exact path="/customers" component={Customers} />
                   <Route exact path="/posts" component={Posts} />

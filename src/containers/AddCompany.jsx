@@ -28,6 +28,7 @@ export default class AddCompany extends React.Component {
         showConfirmButton: false,
         text: "New Company Added Successfully",
       });
+      this.props.history.push("/companies");
     } else {
       SwalAutoHide.fire({
         icon: "error",

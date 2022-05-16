@@ -145,14 +145,18 @@ export default class ExpertiseCategories extends React.Component {
                           </button>
                         </td>
                         <td>
-                          <button
-                            onClick={() =>
-                              (window.location.href = `/associateCompany/${cat.name}`)
-                            }
-                            className={`btn btn-sm btn-success`}
+                          <Link
+                            to={{ pathname: `/associateCompany/${cat.name}`, state: { category: cat } }}
                           >
-                            Associate Company
-                          </button>
+                            <button
+                              // onClick={() =>
+                              //   (window.location.href = `/associateCompany/${cat.name}`)
+                              // }
+                              className={`btn btn-sm btn-success`}
+                            >
+                              Associate Company
+                            </button>
+                          </Link>
                         </td>
                         <td>
                           <button
