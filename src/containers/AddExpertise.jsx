@@ -26,12 +26,11 @@ export default class AddExpertise extends React.Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    let {id} = this.props.match.params
+    let { id } = this.props.match.params;
     let reqBody = {
       name: this.state.description,
       category_id: id ? id : this.state.category_id,
     };
-    debugger
     let result = await addUpdateData("add-expertise", reqBody);
     if (result && result.data) {
       SwalAutoHide.fire({
@@ -54,7 +53,7 @@ export default class AddExpertise extends React.Component {
   }
 
   async handleCategoryChange(e) {
-    this.setState({ category_id: e.target.value })
+    this.setState({ category_id: e.target.value });
   }
 
   render() {
@@ -64,8 +63,8 @@ export default class AddExpertise extends React.Component {
           <div className="space-1">
             <div>
               <h3>
-                Add New Expertise:{" "}
-                {/* {" " + this.state.category && this.state.category.name} */}
+                Add New Expertise{" "}
+                {this.state.category && " to " + this.state.category.name}{" "}
               </h3>
             </div>
           </div>
@@ -104,15 +103,25 @@ export default class AddExpertise extends React.Component {
                               }}
                             />
                           </div>
-                          <div className="form-group col-xs-12 col-sm-12 col-md-4">
-                            <select className="form-control" onChange={(e) => this.handleCategoryChange(e)} id="exampleSelect">
-                              {this.state.categories &&
-                                this.state.categories.map((item) => {
-                                  return <option key={item.id} value={item.id}>{item.name}</option>;
-                                })}
-                            </select>
-                          </div>
-                          <div className="col-md-2 col-sm-12">
+                          {!this.state.category && (
+                            <div className={`form-group col-xs-12 col-sm-12 ${this.state.category ? 'col-md-8' : 'col-md-4'}`}>
+                              <select
+                                className="form-control"
+                                onChange={(e) => this.handleCategoryChange(e)}
+                                id="exampleSelect"
+                              >
+                                {this.state.categories &&
+                                  this.state.categories.map((item) => {
+                                    return (
+                                      <option key={item.id} value={item.id}>
+                                        {item.name}
+                                      </option>
+                                    );
+                                  })}
+                              </select>
+                            </div>
+                          )}
+                          <div className="col-md-2 col-sm-12 text-right">
                             <Button className="btn btn-success btn-md">
                               {" "}
                               Submit
