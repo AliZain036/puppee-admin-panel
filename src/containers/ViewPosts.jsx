@@ -1,10 +1,7 @@
 import React from "react";
 import moment from "moment";
 import Cookie from "js-cookie";
-import {
-  getDataById,
-  getAllData,
-} from "../backend/utility";
+import { getDataById, getAllData } from "../backend/utility";
 
 export default class ViewPosts extends React.Component {
   constructor(props) {
@@ -16,29 +13,45 @@ export default class ViewPosts extends React.Component {
       allComments: [],
       allLikes: [],
       postDetails: {},
-      postImages: []
+      postImages: [],
     };
   }
 
-  getUserByID = (item) => {
+  getUserByID(item) {
     let reactionUser = {};
-    reactionUser = this.state.allUsers.find((user) => user.id === item.id);
-    return reactionUser;
-  };
+    if (item) {
+      reactionUser = this.state.allUsers.find(
+        (user) => user.id === item.user_id
+      );
+      return reactionUser;
+    }
+  }
 
   async componentDidMount() {
     if (Cookie.get("token")) {
-      getAllData("show-all-posts").then(res => {
-        let post = res.data.data.find(
-          (el) => el.id == this.props.match.params.postId
-          );
-          let postImages = JSON.parse(post.images);
-          debugger
-          this.setState({ allPosts: res.data.data, postDetails: post, postImages });
-          this.getPostDetail(post)
+      let userPost = await getDataById("show-post", {
+        post_id: this.props.match.params.postId,
       });
-      let users = await getAllData("show-users");
-      this.setState({ allUsers: users.data })
+      debugger;
+      this.setState({ postDetails: userPost && userPost.data });
+
+      // .then((res) => {
+      //   post = res.data.data.find(
+      //     (el) => el.id == this.props.match.params.postId
+      //   );
+      //   let postImages = JSON.parse(post.images);
+      //   this.setState({
+      //     allPosts: res.data.data,
+      //     postDetails: post,
+      //     postImages,
+      //   });
+      // });
+      // let users = await getAllData("show-users");
+      // let postLikes = await getDataById("show-reactions", {
+      //   post_id: post && post.id,
+      // });
+      // debugger
+      // this.setState({ allUsers: users.data, allLikes: postLikes.data });
       // await this.getPostDetail();
     } else {
       this.props.history.push("/login");
@@ -86,24 +99,22 @@ export default class ViewPosts extends React.Component {
                 style={{ textAlign: "left" }}
               >
                 <div className="row space-1">
-                  {this.state.postImages &&
-                    this.state.postImages.map(
-                      (photoUrl, index) => {
-                        return (
-                          <div
-                            className="col-sm-4"
-                            key={index}
-                            style={{ textAlign: "left" }}
-                          >
-                            <img
-                              src={photoUrl || ""}
-                              style={{ width: "250px", height: "200px" }}
-                              alt="Post Image"
-                            />
-                          </div>
-                        );
-                      }
-                    )}
+                  {postDetails.images &&
+                    JSON.parse(postDetails.images).map((photoUrl, index) => {
+                      return (
+                        <div
+                          className="col-sm-4"
+                          key={index}
+                          style={{ textAlign: "left" }}
+                        >
+                          <img
+                            src={photoUrl || ""}
+                            style={{ width: "250px", height: "200px" }}
+                            alt="Post Image"
+                          />
+                        </div>
+                      );
+                    })}
                 </div>
                 <h5 style={{ textAlign: "left", marginTop: "25px" }}>
                   Creator Name :
@@ -141,10 +152,11 @@ export default class ViewPosts extends React.Component {
                 </h5>
                 <h4>
                   Comments{" "}
-                  {" (" + this.state.allComments &&
-                    this.state.allComments.length + ") "}
+                  {" (" + this.state.postDetails &&
+                    this.state.postDetails.comments &&
+                    this.state.postDetails.comments.length + ") "}
                 </h4>
-                <div className="commentSection">
+                {/* <div className="commentSection">
                   {this.state.allComments.map((comment) => {
                     var commentText = comment.comment;
                     var CleanComment = "";
@@ -296,16 +308,17 @@ export default class ViewPosts extends React.Component {
                       </div>
                     );
                   })}
-                </div>
+                </div> */}
                 <h4>
                   Liked By{" "}
-                  {" (" + this.state.allLikes &&
-                    this.state.allLikes.length + ") "}
+                  {" (" + this.state.postDetails &&
+                    this.state.postDetails.reactions &&
+                    this.state.postDetails.reactions.length + ") "}
                 </h4>
                 <div className="commentSection">
-                  {this.state.allLikes &&
-                    this.state.allLikes.map((item, index) => {
-                      var user = this.getUserByID(item);
+                  {postDetails.reactions &&
+                    postDetails.reactions.map((item, index) => {
+                      // var user = this.getUserByID(item);
                       return (
                         <div
                           key={item.id}
@@ -315,9 +328,9 @@ export default class ViewPosts extends React.Component {
                           <div className="col-sm-4 col-md-2">
                             <img
                               src={
-                                user &&
-                                user.profile &&
-                                user.profile.profile_image
+                                item.user &&
+                                item.user.profile &&
+                                item.user.profile.profile_image
                               }
                               style={{
                                 height: "50px",
@@ -330,7 +343,10 @@ export default class ViewPosts extends React.Component {
                             <p
                               style={{ textAlign: "start", fontWeight: "bold" }}
                             >
-                              {user.first_name + " " + user.last_name}
+                              {item.user &&
+                                item.user.first_name +
+                                  " " +
+                                  item.user.last_name}
                             </p>
                           </div>
                         </div>

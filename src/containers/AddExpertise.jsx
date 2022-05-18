@@ -9,6 +9,8 @@ export default class AddExpertise extends React.Component {
     this.state = {
       description: "",
       category: {},
+      categories: [],
+      category_id: null,
     };
   }
 
@@ -18,16 +20,18 @@ export default class AddExpertise extends React.Component {
       let category = result.data.find(
         (el) => el.id === +this.props.match.params.id
       );
-      this.setState({ category });
+      this.setState({ category, categories: result.data });
     }
   }
 
   async handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
+    let {id} = this.props.match.params
     let reqBody = {
       name: this.state.description,
-      category_id: this.state.category.id,
+      category_id: id ? id : this.state.category_id,
     };
+    debugger
     let result = await addUpdateData("add-expertise", reqBody);
     if (result && result.data) {
       SwalAutoHide.fire({
@@ -49,6 +53,10 @@ export default class AddExpertise extends React.Component {
     }
   }
 
+  async handleCategoryChange(e) {
+    this.setState({ category_id: e.target.value })
+  }
+
   render() {
     return (
       <div className="row animated fadeIn">
@@ -56,8 +64,8 @@ export default class AddExpertise extends React.Component {
           <div className="space-1">
             <div>
               <h3>
-                Add New Expertise to Category:{" "}
-                {" " + this.state.category && this.state.category.name}
+                Add New Expertise:{" "}
+                {/* {" " + this.state.category && this.state.category.name} */}
               </h3>
             </div>
           </div>
@@ -78,27 +86,33 @@ export default class AddExpertise extends React.Component {
                         }}
                       >
                         <div className="form-group row">
-                          <label className="control-label col-md-3 col-sm-3">
+                          <label className="control-label col-md-2 col-sm-2">
                             Name
                           </label>
-                          <div className="col-md-8 col-sm-8">
-                            <div className="col-md-8 col-sm-8">
-                              <input
-                                required
-                                type="text"
-                                name="description"
-                                placeholder="Add Expertise"
-                                className="form-control"
-                                value={this.state.description}
-                                onChange={(e) => {
-                                  this.setState({
-                                    description: e.target.value,
-                                  });
-                                }}
-                              />
-                            </div>
+                          <div className="col-md-4 col-sm-12">
+                            <input
+                              required
+                              type="text"
+                              name="description"
+                              placeholder="Add Expertise"
+                              className="form-control"
+                              value={this.state.description}
+                              onChange={(e) => {
+                                this.setState({
+                                  description: e.target.value,
+                                });
+                              }}
+                            />
                           </div>
-                          <div className="col-md-1 col-sm-1">
+                          <div className="form-group col-xs-12 col-sm-12 col-md-4">
+                            <select className="form-control" onChange={(e) => this.handleCategoryChange(e)} id="exampleSelect">
+                              {this.state.categories &&
+                                this.state.categories.map((item) => {
+                                  return <option key={item.id} value={item.id}>{item.name}</option>;
+                                })}
+                            </select>
+                          </div>
+                          <div className="col-md-2 col-sm-12">
                             <Button className="btn btn-success btn-md">
                               {" "}
                               Submit

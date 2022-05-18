@@ -83,6 +83,11 @@ class App extends React.Component {
                   />
                   <Route
                     exact
+                    path="/addExpertise"
+                    component={AddExpertise}
+                  />
+                  <Route
+                    exact
                     path="/associateCompany/:name"
                     component={AssociateCompany}
                   />{" "}

@@ -81,10 +81,10 @@ export default class Expertise extends React.Component {
       <div className="row animated fadeIn">
         <div className="col-12">
           <div className="row space-1">
-            <div className="col-sm-4">
+            <div className="col-md-4 col-xs-12 col-sm-12">
               <h3>List of Expertise</h3>
             </div>
-            <div className="col-sm-4">
+            <div className="col-md-4 col-xs-12 col-sm-12">
               <div className="input-group">
                 <input
                   className="form-control"
@@ -111,6 +111,13 @@ export default class Expertise extends React.Component {
                   </button>
                 </span>
               </div>
+            </div>
+            <div className="col-sm-4 pull-right mobile-space">
+              <Link to={"/addExpertise"}>
+                <button type="button" className="btn btn-success">
+                  Add new Expertise
+                </button>
+              </Link>
             </div>
 
             {/* <div className="col-sm-4 pull-right mobile-space">
@@ -152,7 +159,11 @@ export default class Expertise extends React.Component {
                           </button>
                         </td>
                         <td>
-                          <Link to={`/addExpertise/${experti.category && experti.category.id}`}>
+                          <Link
+                            to={`/addExpertise/${
+                              experti.category && experti.category.id
+                            }`}
+                          >
                             <button className={`btn btn-sm btn-success`}>
                               Add
                             </button>
