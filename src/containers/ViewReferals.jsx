@@ -70,16 +70,7 @@ export default class ViewReferals extends React.Component {
                 direction="row"
                 style={{ background: "white", paddingInline: 30 }}
               >
-                <Grid item md={8} xs={8}>
-                  <img
-                    src={
-                      detailedReferal.user &&
-                      detailedReferal.user.profile &&
-                      detailedReferal.user.profile.profile_image
-                    }
-                  ></img>
-                </Grid>
-                <Grid item md={4} xs={4}>
+                <Grid item md={12} xs={12}>
                   <p
                     style={{
                       fontWeight: 16,
@@ -91,22 +82,18 @@ export default class ViewReferals extends React.Component {
                     {moment(new Date(detailedReferal.created_at)).format(
                       "YYYY-MM-DD"
                     )}
-                    {/* {moment(
-                      new Date(Date.UTC(1970, 0, 1)).setUTCSeconds(
-                        detailedReferal.created_at
-                      )
-                    ).format("MMMM DD YYYY")} */}
                   </p>
+                  <img
+                    src={
+                      detailedReferal.user &&
+                      detailedReferal.user.profile &&
+                      detailedReferal.user.profile.profile_image
+                    }
+                    alt="User Profile Photo"
+                    height={200}
+                  ></img>
                 </Grid>
-                <div
-                  style={{
-                    width: "100%",
-                    border: "1px solid #5ba4f4",
-                    marginTop: 20,
-                    marginBottom: 20,
-                  }}
-                ></div>
-                <Grid item md={12} xs={12}>
+                <Grid item md={12} xs={12} className='mt-4'>
                   <p
                     style={{
                       fontWeight: 16,
