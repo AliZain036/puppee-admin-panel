@@ -30,6 +30,7 @@ import AddExpertiseCategory from "./AddExpertiseCategory";
 import AssociateCompany from "./AssociateCompany";
 import AssociatedCompanies from "./AssociatedCompanies";
 import Login from "./Login";
+import UpdateUser from "./UpdateUser";
 
 class App extends React.Component {
   constructor(props) {
@@ -50,70 +51,71 @@ class App extends React.Component {
             <Breadcrumb />
             <Container fluid>
               {/* <Router> */}
-                <Switch>
-
-                  <Route
-                    exact
-                    path="/userdetails/:userId"
-                    component={UserDetails}
-                  />
-                  <Route exact path="/terms" component={TermsAndConditions} />
-                  <Route exact path="/login" component={Login} />
-                  <Route exact path="/cookie" component={CookiePolicy} />
-                  <Route exact path="/privacy" component={PrivacyPolicy} />
-                  <Route exact path="/companies" component={Companies} />
-                  <Route exact path="/addCompany" component={AddCompany} />
-                  <Route
-                    exact
-                    path="/expertiseCategories"
-                    component={ExpertiseCategories}
-                  />
-                  <Route
-                    exact
-                    path="/addExpertiseCategories"
-                    component={AddExpertiseCategory}
-                  />
-                  <Route exact path="/languages" component={Languages} />
-                  <Route exact path="/addLanguage" component={AddLanguage} />
-                  <Route exact path="/expertise" component={Expertise} />
-                  <Route
-                    exact
-                    path="/addExpertise/:id"
-                    component={AddExpertise}
-                  />
-                  <Route
-                    exact
-                    path="/addExpertise"
-                    component={AddExpertise}
-                  />
-                  <Route
-                    exact
-                    path="/associateCompany/:name"
-                    component={AssociateCompany}
-                  />{" "}
-                  <Route
-                    exact
-                    path="/associatedCompanies"
-                    component={AssociatedCompanies}
-                  />
-                  {/* <Route
+              <Switch>
+                <Route
+                  exact
+                  path="/userdetails/:userId"
+                  component={UserDetails}
+                />
+                <Route
+                  exact
+                  path="/updateUser/:userId"
+                  component={UpdateUser}
+                />
+                <Route exact path="/terms" component={TermsAndConditions} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/cookie" component={CookiePolicy} />
+                <Route exact path="/privacy" component={PrivacyPolicy} />
+                <Route exact path="/companies" component={Companies} />
+                <Route exact path="/addCompany" component={AddCompany} />
+                <Route
+                  exact
+                  path="/expertiseCategories"
+                  component={ExpertiseCategories}
+                />
+                <Route
+                  exact
+                  path="/addExpertiseCategories"
+                  component={AddExpertiseCategory}
+                />
+                <Route
+                  exact
+                  path="/updateCategory"
+                  component={AddExpertiseCategory}
+                />
+                <Route exact path="/languages" component={Languages} />
+                <Route exact path="/addLanguage" component={AddLanguage} />
+                <Route exact path="/expertise" component={Expertise} />
+                <Route
+                  exact
+                  path="/addExpertise/:id"
+                  component={AddExpertise}
+                />
+                <Route exact path="/addExpertise" component={AddExpertise} />
+                <Route
+                  exact
+                  path="/associateCompany/:name"
+                  component={AssociateCompany}
+                />{" "}
+                <Route
+                  exact
+                  path="/associatedCompanies"
+                  component={AssociatedCompanies}
+                />
+                {/* <Route
                     exact
                     path="/addAssociatedCompanies"
                     component={}
                   /> */}
-                  <Route exact path="/about" component={About} />
-                  <Route exact path="/customers" component={Customers} />
-                  <Route exact path="/posts" component={Posts} />
-                  <Route
-                    exact
-                    path="/viewposts/:postId"
-                    component={ViewPosts}
-                  />
-                  <Route exact path="/referal" component={Referal} />
-                  <Route exact path="/referal/:refId" component={ViewReferal} />
-                  <Route exact path="/" component={Stats} />
-                  <Route path="/*" name="Stats" component={Stats} />
-                </Switch>
+                <Route exact path="/about" component={About} />
+                <Route exact path="/customers" component={Customers} />
+                <Route exact path="/posts" component={Posts} />
+                <Route exact path="/viewposts/:postId" component={ViewPosts} />
+                <Route exact path="/referal" component={Referal} />
+                <Route exact path="/referal/:refId" component={ViewReferal} />
+                <Route exact path="/" component={Stats} />
+                <Route path="/*" name="Stats" component={Stats} />
+              </Switch>
               {/* </Router> */}
             </Container>
           </main>

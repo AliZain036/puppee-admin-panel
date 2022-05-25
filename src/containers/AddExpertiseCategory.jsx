@@ -1,9 +1,7 @@
 import React from "react";
 import { Button } from "reactstrap";
 import SwalAutoHide from "sweetalert2";
-import {
-  addUpdateData,
-} from "../backend/utility";
+import { addUpdateData } from "../backend/utility";
 
 export default class AddExpertiseCategory extends React.Component {
   constructor(props) {
@@ -12,23 +10,44 @@ export default class AddExpertiseCategory extends React.Component {
     this.state = {
       newExpertiseCategory: "",
       active: true,
+      category: {},
     };
+  }
+
+  componentDidMount() {
+    if (this.props.location.state) {
+      let { category } = this.props.location.state;
+      this.setState({
+        category,
+        newExpertiseCategory: category.name,
+        active: category.status,
+      });
+    }
   }
 
   async handleSubmit(e) {
     e.preventDefault();
     let reqBody = {
       name: this.state.newExpertiseCategory,
-      status: this.state.active,
+      status: this.state.active ? "inactive" : 'active',
     };
-    let result = await addUpdateData("add-category", reqBody);
+    let result,
+      successMessage = "";
+    if (this.props.location.state) {
+      reqBody['category_id'] = this.state.category.id;
+      result = await addUpdateData("update-category", reqBody);
+      successMessage = "New Category Added Sucessfully";
+    } else {
+      result = await addUpdateData("add-category", reqBody);
+      successMessage = "Category Updated Sucessfully";
+    }
     if (result && result.data) {
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
         title: "Success.",
         showConfirmButton: false,
-        text: "New Category Added Sucessfully!",
+        text: successMessage,
       });
       this.props.history.push("expertiseCategories");
     } else {
@@ -77,7 +96,7 @@ export default class AddExpertiseCategory extends React.Component {
                                 placeholder="Add New Category"
                                 className="form-control"
                                 style={{ width: "95%" }}
-                                value={this.state.newLanguage}
+                                value={this.state.newExpertiseCategory}
                                 onChange={(e) => {
                                   this.setState({
                                     newExpertiseCategory: e.target.value,

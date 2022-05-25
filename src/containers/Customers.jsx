@@ -191,6 +191,13 @@ class Customers extends React.Component {
                             </button>
                           </Link>
                         </td>
+                        <td>
+                          <Link to={`/updateUser/${user.id}`}>
+                            <button className={`btn btn-sm btn-success`}>
+                              Update
+                            </button>
+                          </Link>
+                        </td>
 
                         {user.isDeleted !== true && (
                           <td>

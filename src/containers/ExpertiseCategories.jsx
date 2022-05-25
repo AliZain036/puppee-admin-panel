@@ -2,11 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Cookie from "js-cookie";
 import SwalAutoHide from "sweetalert2";
-import {
-  getAllData,
-  deleteRecord,
-  searchData,
-} from "../backend/utility";
+import { getAllData, deleteRecord, searchData } from "../backend/utility";
 
 export default class ExpertiseCategories extends React.Component {
   constructor(props) {
@@ -14,7 +10,7 @@ export default class ExpertiseCategories extends React.Component {
 
     this.state = {
       categories: [],
-      searchQuery: ""
+      searchQuery: "",
     };
   }
 
@@ -69,7 +65,7 @@ export default class ExpertiseCategories extends React.Component {
         this.setState({ categories: [], searchQuery: "" });
       }
     } else {
-      this.getAllCategories()
+      this.getAllCategories();
     }
   }
 
@@ -136,15 +132,25 @@ export default class ExpertiseCategories extends React.Component {
                         <td>{cat.name}</td>
                         <td>
                           <Link
-                            to={{ pathname: `/associateCompany/${cat.name}`, state: { category: cat } }}
+                            to={{
+                              pathname: `/associateCompany/${cat.name}`,
+                              state: { category: cat },
+                            }}
                           >
-                            <button
-                              // onClick={() =>
-                              //   (window.location.href = `/associateCompany/${cat.name}`)
-                              // }
-                              className={`btn btn-sm btn-success`}
-                            >
+                            <button className={`btn btn-sm btn-success`}>
                               Associate Company
+                            </button>
+                          </Link>
+                        </td>
+                        <td>
+                          <Link
+                            to={{
+                              pathname: `/updateCategory`,
+                              state: { category: cat },
+                            }}
+                          >
+                            <button type="button" className="btn btn-success">
+                              Update
                             </button>
                           </Link>
                         </td>

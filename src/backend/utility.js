@@ -1,7 +1,7 @@
 // import firebase from "firebase";
 // import firestore from "firebase/firestore";
 const apiUrl = "https://network-desk-backend.herokuapp.com/api/";
-
+import SwalAutoHide from "sweetalert2";
 
 export async function login(reqBody) {
   try {
@@ -17,7 +17,13 @@ export async function login(reqBody) {
       });
     return user;
   } catch (error) {
-    console.log(error);
+    SwalAutoHide.fire({
+      icon: "error",
+      timer: 2000,
+      title: "Failed.",
+      showConfirmButton: false,
+      text: error.message,
+    });
   }
 }
 
@@ -38,20 +44,32 @@ export async function logout() {
       });
     return user;
   } catch (error) {
-    console.log(error);
+    SwalAutoHide.fire({
+      icon: "error",
+      timer: 2000,
+      title: "Failed.",
+      showConfirmButton: false,
+      text: error.message,
+    });
   }
 }
 
 export async function getAllData(endpoint) {
-  let data = [];
-  data = await fetch(`${apiUrl}${endpoint}`)
-    .then((response) => {
+  try {
+    let data = [];
+    data = await fetch(`${apiUrl}${endpoint}`).then((response) => {
       return response.json();
-    })
-    .catch((error) => {
-      console.log(error);
     });
-  return data;
+    return data;
+  } catch (error) {
+    SwalAutoHide.fire({
+      icon: "error",
+      timer: 2000,
+      title: "Failed.",
+      showConfirmButton: false,
+      text: error.message,
+    });
+  }
 }
 
 export async function getDataById(url, reqBody) {
@@ -64,10 +82,16 @@ export async function getDataById(url, reqBody) {
     })
       .then((res) => res.json())
       .then((res) => res);
-    
+
     return data;
   } catch (error) {
-    console.log(error);
+    SwalAutoHide.fire({
+      icon: "error",
+      timer: 2000,
+      title: "Failed.",
+      showConfirmButton: false,
+      text: error.message,
+    });
   }
 }
 
@@ -83,7 +107,13 @@ export async function addUpdateData(url, reqBody) {
       .then((res) => res);
     return result;
   } catch (error) {
-    console.log(error);
+    SwalAutoHide.fire({
+      icon: "error",
+      timer: 2000,
+      title: "Failed.",
+      showConfirmButton: false,
+      text: error.message,
+    });
   }
 }
 
@@ -93,18 +123,25 @@ export async function searchData(url, reqBody) {
     result = await fetch(`${apiUrl}${url}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(reqBody)
-    }).then(res => res.json()).then(res => res)
-    return result
+      body: JSON.stringify(reqBody),
+    })
+      .then((res) => res.json())
+      .then((res) => res);
+    return result;
   } catch (error) {
-    console.log(error);
+    SwalAutoHide.fire({
+      icon: "error",
+      timer: 2000,
+      title: "Failed.",
+      showConfirmButton: false,
+      text: error.message,
+    });
   }
 }
 
 export async function deleteRecord(endpoint, reqBody) {
-  
   try {
     let result = await fetch(`${apiUrl}${endpoint}`, {
       method: "POST",
@@ -112,9 +149,17 @@ export async function deleteRecord(endpoint, reqBody) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(reqBody),
-    }).then(res => res.json()).then(res => res);
-    return result
+    })
+      .then((res) => res.json())
+      .then((res) => res);
+    return result;
   } catch (error) {
-    console.log(error);
+    SwalAutoHide.fire({
+      icon: "error",
+      timer: 2000,
+      title: "Failed.",
+      showConfirmButton: false,
+      text: error.message,
+    });
   }
 }

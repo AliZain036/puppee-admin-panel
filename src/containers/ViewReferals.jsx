@@ -5,6 +5,12 @@ import { Grid } from "@material-ui/core";
 import { API_END_POINT } from "../config";
 import { getDataById } from "../backend/utility";
 import ReactToPdf from "react-to-pdf";
+
+const options = {
+  orientation: "landscape",
+  unit: "in",
+  format: [4, 2],
+};
 export default class ViewReferals extends React.Component {
   constructor(props) {
     super(props);
@@ -48,29 +54,23 @@ export default class ViewReferals extends React.Component {
       fontWeight: 20,
       marginTop: 0,
       marginLeft: 10,
-      width: "80%",
+      width: "50%",
     };
     const ref = "";
     return (
-      <div className="row animated fadeIn">
+      <div className="animated fadeIn">
         <div className="col-12">
-          <div className="row space-1">
-            <div className="col-sm-4">
-              <h3>Referral Details</h3>
-            </div>
-          </div>
-          <div
-            className="row content-sm-left content-md-left"
-            ref={ref}
-            id="pdf"
-          >
+          <h3>Referral Details</h3>
+        </div>
+        <div className="col-12">
+          <div className="content-sm-center content-md-center" ref={ref} id="pdf">
+
             {detailedReferal && (
-              <Grid
-                container
-                direction="row"
+              <div
+                className="container row"
                 style={{ background: "white", paddingInline: 30 }}
               >
-                <Grid item md={12} xs={12}>
+                <div className="col-12">
                   <p
                     style={{
                       fontWeight: 16,
@@ -92,70 +92,68 @@ export default class ViewReferals extends React.Component {
                     alt="User Profile Photo"
                     height={200}
                   ></img>
-                </Grid>
-                <Grid item md={12} xs={12} className='mt-4'>
+                </div>
+                <div className="mt-4 col-12">
                   <p
+                    className="fs-16 font-weight-bold text-decoration-underline"
                     style={{
-                      fontWeight: 16,
-                      fontWeight: "bold",
                       color: "#5ba4f4",
-                      textDecoration: "underline",
                       marginLeft: 10,
                     }}
                   >
                     To: Receiving Office
                   </p>
-                </Grid>
+                </div>
                 {detailedReferal.receiver && (
-                  <div>
-                    <Grid item md={6} xs={6}>
+                  <div className="col-12 row">
+                    <div className="col-md-6 col-xs-12 col-sm-12">
                       <p style={headingStyles}>Name</p>
                       <p style={subHeadingStyles}>
                         {detailedReferal.receiver.first_name +
                           " " +
                           detailedReferal.receiver.last_name}
                       </p>
-                    </Grid>
-                    <Grid item md={4} xs={4}>
+                    </div>
+                    <div className="col-md-6 col-xs-12 col-sm-12">
                       <p style={headingStyles}>Mobile</p>
                       <p style={subHeadingStyles}>
                         {detailedReferal.receiver.phone_number}
                       </p>
-                    </Grid>
-                    <Grid item md={6} xs={6}>
+                    </div>
+                    <div className="col-md-6 col-xs-12 col-sm-12">
                       <p style={headingStyles}>Email</p>
                       <p style={subHeadingStyles}>
                         {detailedReferal.receiver.email}
                       </p>
-                    </Grid>
-                    <Grid item md={4} xs={4}>
+                    </div>
+                    <div className="col-md-6 col-xs-12 col-sm-12">
                       <p style={headingStyles}>Website</p>
                       <p style={subHeadingStyles}>
                         {(detailedReferal.receiver.profile &&
                           detailedReferal.receiver.profile.website) ||
                           "N/A"}
                       </p>
-                    </Grid>
-                    <Grid item md={6} xs={6}>
+                    </div>
+                    <div className="col-md-6 col-xs-12 col-sm-12">
                       <p style={headingStyles}>Office Name</p>
                       <p style={subHeadingStyles}>
                         {(detailedReferal.receiver.profile &&
                           detailedReferal.receiver.profile.company_name) ||
                           "N/A"}
                       </p>
-                    </Grid>
-                    <Grid item md={4} xs={4}>
+                    </div>
+                    <div className="col-md-6 col-xs-12 col-sm-12">
                       <p style={headingStyles}>Office Address</p>
                       <p style={subHeadingStyles}>
                         {(detailedReferal.receiver.profile &&
                           detailedReferal.receiver.profile.brokerage_address) ||
                           "N/A"}
                       </p>
-                    </Grid>
+                    </div>
                   </div>
                 )}
 
-                <Grid item md={12} xs={12}>
+                <div className="col-12">
                   <p
                     style={{
                       fontWeight: 16,
@@ -167,58 +165,58 @@ export default class ViewReferals extends React.Component {
                   >
                     From: Sender Office
                   </p>
-                </Grid>
+                </div>
                 {detailedReferal.user && (
-                  <div>
-                    <Grid item md={6} xs={6}>
+                  <div className="col-12 row">
+                    <div className="col-xs-12 col-md-6">
                       <p style={headingStyles}>Name</p>
                       <p style={subHeadingStyles}>
                         {detailedReferal.user.first_name +
                           " " +
                           detailedReferal.user.last_name}
                       </p>
-                    </Grid>
-                    <Grid item md={4} xs={4}>
+                    </div>
+                    <div className="col-xs-12 col-md-6">
                       <p style={headingStyles}>Mobile</p>
                       <p style={subHeadingStyles}>
                         {detailedReferal.user.profile &&
                           detailedReferal.user.profile.phone_number}
                       </p>
-                    </Grid>
-                    <Grid item md={6} xs={6}>
+                    </div>
+                    <div className="col-xs-12 col-md-6">
                       <p style={headingStyles}>Email</p>
                       <p style={subHeadingStyles}>
                         {detailedReferal.user.email}
                       </p>
-                    </Grid>
-                    <Grid item md={4} xs={4}>
+                    </div>
+                    <div className="col-xs-12 col-md-6">
                       <p style={headingStyles}>Website</p>
                       <p style={subHeadingStyles}>
                         {(detailedReferal.user.profile &&
                           detailedReferal.user.profile.website) ||
                           "N/A"}
                       </p>
-                    </Grid>
-                    <Grid item md={6} xs={6}>
+                    </div>
+                    <div className="col-xs-12 col-md-6">
                       <p style={headingStyles}>Office Name</p>
                       <p style={subHeadingStyles}>
                         {(detailedReferal.user.profile &&
                           detailedReferal.user.profile.company_name) ||
                           "N/A"}
                       </p>
-                    </Grid>
-                    <Grid item md={4} xs={4}>
+                    </div>
+                    <div className="col-xs-12 col-md-6">
                       <p style={headingStyles}>Office Address</p>
                       <p style={subHeadingStyles}>
                         {(detailedReferal.user.profile &&
                           detailedReferal.user.profile.brokerage_address) ||
                           "N/A"}
                       </p>
-                    </Grid>
+                    </div>
                   </div>
                 )}
 
-                <Grid item md={12} xs={12}>
+                <div className="col-12">
                   <p
                     style={{
                       fontWeight: 16,
@@ -230,42 +228,42 @@ export default class ViewReferals extends React.Component {
                   >
                     Buyer / Seller Information
                   </p>
-                </Grid>
-                <Grid item md={6} xs={6}>
+                </div>
+                <div className="col-xs-6 col-12">
                   <p style={headingStyles}>Name</p>
                   <p style={subHeadingStyles}>{detailedReferal.name}</p>
-                </Grid>
-                <Grid item md={4} xs={4}>
+                </div>
+                <div className="col-xs-6 col-12">
                   <p style={headingStyles}>Mobile</p>
                   <p style={subHeadingStyles}>{detailedReferal.phone}</p>
-                </Grid>
-                <Grid item md={6} xs={6}>
+                </div>
+                <div className="col-xs-6 col-12">
                   <p style={headingStyles}>Email</p>
                   <p style={subHeadingStyles}>
                     {detailedReferal.email || "N/A"}
                   </p>
-                </Grid>
-                <Grid item md={4} xs={4}>
+                </div>
+                <div className="col-xs-6 col-12">
                   <p style={headingStyles}>Property Type</p>
                   <p style={subHeadingStyles}>
                     {detailedReferal.property_type}
                   </p>
-                </Grid>
-                <Grid item md={6} xs={6}>
+                </div>
+                <div className="col-xs-6 col-12">
                   <p style={headingStyles}>Property Address</p>
                   <p style={subHeadingStyles}>
                     {detailedReferal.property_address}
                   </p>
-                </Grid>
-                <Grid item md={4} xs={4}>
+                </div>
+                <div className="col-xs-6 col-12">
                   <p style={headingStyles}>Desired Price Range</p>
                   <p style={subHeadingStyles}>
                     {detailedReferal.min_price +
                       " - " +
                       detailedReferal.max_price}
                   </p>
-                </Grid>
-                <Grid item md={12} xs={12}>
+                </div>
+                <div item md={12} xs={12}>
                   <p
                     style={{
                       fontWeight: 16,
@@ -284,8 +282,8 @@ export default class ViewReferals extends React.Component {
                   <p style={subHeadingStyles}>
                     Agreed: {" " + detailedReferal.referral_agreement + "%"}
                   </p>
-                </Grid>
-                <Grid item md={12} xs={12}>
+                </div>
+                <div item md={12} xs={12}>
                   <p
                     style={{
                       fontWeight: 16,
@@ -301,18 +299,19 @@ export default class ViewReferals extends React.Component {
                     All payments must be mailed by cheque not later than 7 days
                     following the final completion of the sale
                   </p>
-                </Grid>
-                <Grid item md={12} xs={12}>
+                </div>
+                <div item md={12} xs={12}>
                   <p style={headingStyles}>
                     Disclaimer: NetworkDesk will not be held responsible for any
                     claims or legitation that may result from this agreement
                   </p>
-                </Grid>
-                <Grid item md={12} xs={12}>
+                </div>
+                <div item md={12} xs={12}>
                   {detailedReferal && (
                     <ReactToPdf
                       targetRef={document.getElementById("pdf")}
                       filename="Refferal.pdf"
+                      // options={options}
                     >
                       {({ toPdf }) => (
                         <button
@@ -331,8 +330,8 @@ export default class ViewReferals extends React.Component {
                       )}
                     </ReactToPdf>
                   )}
-                </Grid>
-              </Grid>
+                </div>
+              </div>
             )}
           </div>
         </div>
