@@ -1,32 +1,71 @@
 import React from "react";
 import { Button } from "reactstrap";
 import SwalAutoHide from "sweetalert2";
-import {
-  addUpdateData,
-} from "../backend/utility";
+import { addUpdateData, getDataById } from "../backend/utility";
 
 export default class AddCompany extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      newCompany: "",
+      companyName: "",
+      company: {},
+      company_id: null,
     };
   }
 
-  async handleSubmit(e) {
-    e.preventDefault()
-    let reqBody = {
-      name: this.state.newCompany
+  componentDidMount() {
+    if (this.props.match.params.company_id) {
+      let { company_id } = this.props.match.params;
+      this.getCompany(company_id);
     }
-    let result = await addUpdateData("add-company", reqBody);
-    if(result.data) {
+  }
+
+  async getCompany(company_id) {
+    try {
+      let reqBody = {
+        company_id: company_id
+      }
+      let response = await getDataById("show-company", reqBody);
+      if(response.data) {
+        this.setState({ company: response.data, company_id: response.data.id, companyName: response.data.name })
+      }
+    } catch (error) {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "Something Went Wrong!",
+      });
+    }
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault();
+    let reqBody = {
+      name: this.state.companyName,
+    };
+    let result, message;
+    if(this.state.company_id !== null) {
+      reqBody.company_id = this.state.company_id;
+      result = await addUpdateData("update-company", reqBody);
+      if(result.data) {
+        message = "Company has been updated"
+      }
+    } else {
+      result = await addUpdateData("add-company", reqBody);
+      if(result.data) {
+        message = "New company added successfully"
+      }
+    }
+    if (result.data) {
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
         title: "Success.",
         showConfirmButton: false,
-        text: "New Company Added Successfully",
+        text: message,
       });
       this.props.history.push("/companies");
     } else {
@@ -35,7 +74,7 @@ export default class AddCompany extends React.Component {
         timer: 2000,
         title: "Failed.",
         showConfirmButton: false,
-        text: "Something Went Wrong!",
+        text: "Something went wrong",
       });
     }
   }
@@ -75,10 +114,10 @@ export default class AddCompany extends React.Component {
                                 name="name"
                                 placeholder="Add Company"
                                 className="form-control"
-                                value={this.state.newCompany}
+                                value={this.state.companyName}
                                 onChange={(e) => {
                                   this.setState({
-                                    newCompany: e.target.value,
+                                    companyName: e.target.value,
                                   });
                                 }}
                               />

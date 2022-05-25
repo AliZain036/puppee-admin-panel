@@ -42,14 +42,15 @@ const UpdateUser = (props) => {
   const handleProfileChange = (e) => {};
 
   const handleChange = (e) => {
+      debugger
     if (e.target.value) {
-      setUser({ ...userToUpdate, [e.target.name]: e.target.value });
+      setUserToUpdate({ [e.target.name]: e.target.value });
     }
   };
 
   const handleSubmit = (e) => {
     console.log(user);
-    debugger;
+    return
   };
 
   return (
@@ -77,8 +78,8 @@ const UpdateUser = (props) => {
                 type="text"
                 name="first_name"
                 id="first_name"
-                value={userToUpdate.first_name}
                 className="form-control"
+                value={userToUpdate.first_name}
                 onChange={(e) => handleProfileChange(e)}
               />
             </div>

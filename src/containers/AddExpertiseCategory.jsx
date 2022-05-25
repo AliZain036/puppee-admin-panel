@@ -20,7 +20,7 @@ export default class AddExpertiseCategory extends React.Component {
       this.setState({
         category,
         newExpertiseCategory: category.name,
-        active: category.status,
+        active: category.status === 'active' ? true : false,
       });
     }
   }
@@ -29,17 +29,17 @@ export default class AddExpertiseCategory extends React.Component {
     e.preventDefault();
     let reqBody = {
       name: this.state.newExpertiseCategory,
-      status: this.state.active ? "inactive" : 'active',
+      status: this.state.active === true ? "active" : "inactive",
     };
     let result,
       successMessage = "";
     if (this.props.location.state) {
-      reqBody['category_id'] = this.state.category.id;
+      reqBody["category_id"] = this.state.category.id;
       result = await addUpdateData("update-category", reqBody);
-      successMessage = "New Category Added Sucessfully";
+      successMessage = "Category Updated Successfully";
     } else {
       result = await addUpdateData("add-category", reqBody);
-      successMessage = "Category Updated Sucessfully";
+      successMessage = "New Category Added Sucessfully";
     }
     if (result && result.data) {
       SwalAutoHide.fire({
@@ -59,6 +59,12 @@ export default class AddExpertiseCategory extends React.Component {
         text: "Something Went Wrong!",
       });
     }
+  }
+
+  handleChange(e) {
+    this.setState({
+      active: !this.state.active,
+    });
   }
 
   render() {
@@ -112,10 +118,10 @@ export default class AddExpertiseCategory extends React.Component {
                             <div className="col-md-8 col-sm-8">
                               <input
                                 type="checkbox"
-                                onChange={() => {
-                                  this.setState({ active: !this.state.active });
-                                }}
-                                checked={this.state.active}
+                                onChange={(e) => this.handleChange(e)}
+                                checked={
+                                  this.state.active
+                                }
                               ></input>
                             </div>
                           </div>

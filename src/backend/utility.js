@@ -100,7 +100,10 @@ export async function addUpdateData(url, reqBody) {
     let result = {};
     result = await fetch(`${apiUrl}${url}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify(reqBody),
     })
       .then((res) => res.json())
