@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getAllData } from "../backend/utility";
+import { getAllData, getDataById } from "../backend/utility";
+import SwalAutoHide from "sweetalert2";
 
 const UpdateUser = (props) => {
   const [users, setUsers] = useState([]);
@@ -15,9 +16,30 @@ const UpdateUser = (props) => {
   });
 
   useEffect(() => {
-    getAllUsers();
+    getUser();
     return () => {};
   }, []);
+
+  const getUser = async () => {
+    try {
+      let { userId } = props.match.params;
+      let reqBody = {
+        user_id: userId
+      }
+      let response = await getDataById('show-single-user', reqBody);
+      if(response.data !== null) {
+        
+      }
+    } catch (error) {
+      SwalAutoHide.fire({
+        icon: "error",
+        timer: 2000,
+        title: "Failed.",
+        showConfirmButton: false,
+        text: "No record found!",
+      });
+    }
+  }
 
   const getAllUsers = async () => {
     let users = await getAllData("show-users");
