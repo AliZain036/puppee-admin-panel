@@ -11,14 +11,14 @@ export default class AddExpertise extends React.Component {
       category: {},
       categories: [],
       category_id: null,
-      expertise: null
+      expertise: null,
     };
   }
 
   async componentDidMount() {
-    if(this.props.match.params.expertise_id) {
+    if (this.props.match.params.expertise_id) {
       let { expertise_id } = this.props.match.params;
-      this.getSingleExpertise(expertise_id)
+      this.getSingleExpertise(expertise_id);
     }
     let result = await getAllData("show-categories");
     if (result && result.data) {
@@ -34,11 +34,11 @@ export default class AddExpertise extends React.Component {
       expertise_id: id,
     };
     let expertise = await getDataById("show-single-expertise", reqBody);
-    if(expertise.data) {
+    if (expertise.data) {
       this.setState({
         expertise: expertise.data,
-        category_id: expertise.category_id,
-        description: expertise.data.name
+        category_id: expertise.data.category_id,
+        description: expertise.data.name,
       });
     }
   }
@@ -51,17 +51,17 @@ export default class AddExpertise extends React.Component {
       category_id: id ? id : this.state.category_id,
     };
     let result, message;
-    if(this.state.expertise != null) {
-      reqBody.category_id = this.state.expertise.category_id;
+    if (this.state.expertise) {
+      reqBody.category_id = +this.state.category_id;
       reqBody.expertise_id = this.state.expertise.id;
       result = await addUpdateData("update-expertise", reqBody);
-      if(result.data) {
-        message = "Expertise has been updaed successfully"
+      if (result.data) {
+        message = "Expertise has been updaed successfully";
       }
     } else {
       result = await addUpdateData("add-expertise", reqBody);
-      if(result.data) {
-        message = "New expertise has been added successfully"
+      if (result.data) {
+        message = "New expertise has been added successfully";
       }
     }
     if (result.data) {
@@ -85,10 +85,11 @@ export default class AddExpertise extends React.Component {
   }
 
   async handleCategoryChange(e) {
-    this.setState({ expertise: { category_id: e.target.value } });
+    this.setState({ category_id: e.target.value });
   }
 
   render() {
+    console.log(this.state.category_id);
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
@@ -145,11 +146,7 @@ export default class AddExpertise extends React.Component {
                                 className="form-control"
                                 onChange={(e) => this.handleCategoryChange(e)}
                                 id="exampleSelect"
-                                value={
-                                  (this.state.expertise &&
-                                    this.state.expertise.category_id) ||
-                                  ""
-                                }
+                                value={this.state.category_id || ""}
                               >
                                 {this.state.categories &&
                                   this.state.categories.map((item) => {
