@@ -1,51 +1,61 @@
-import React, { useEffect, useState } from "react";
-import { getAllData, getDataById } from "../backend/utility";
-import SwalAutoHide from "sweetalert2";
+import React, { useEffect, useState } from 'react'
+import { addUpdateData, getAllData, getDataById } from '../backend/utility'
+import SwalAutoHide from 'sweetalert2'
+import axios from 'axios'
 
 const UpdateUser = (props) => {
-  const [users, setUsers] = useState([]);
-  const [user, setUser] = useState({});
+  const [users, setUsers] = useState([])
+  const [user, setUser] = useState({})
   const [userToUpdate, setUserToUpdate] = useState({
-    first_name: "",
-    last_name: "",
-    image: "",
-    email: "",
-    phone_number: "",
-    office: "",
-    profession: "",
-  });
+    first_name: '',
+    last_name: '',
+    image: null,
+    email: '',
+    phone_number: '',
+    office: '',
+    profession: '',
+  })
 
   useEffect(() => {
-    getUser();
-    return () => {};
-  }, []);
+    getUser()
+    return () => {}
+  }, [])
 
   const getUser = async () => {
     try {
-      let { userId } = props.match.params;
+      let { userId } = props.match.params
       let reqBody = {
-        user_id: userId
+        user_id: userId,
       }
-      let response = await getDataById('show-single-user', reqBody);
-      if(response.data !== null) {
-        
+      let response = await getDataById('show-single-user', reqBody)
+      if (response.data !== null) {
+        let user = response.data
+        setUserToUpdate({
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          office: user.profile && user.profile.company_name,
+          phone_number: user.phone_number,
+          profession: user.profile && user.profile.profession,
+          image: user.profile && user.profile.profile_image,
+        })
       }
     } catch (error) {
       SwalAutoHide.fire({
-        icon: "error",
+        icon: 'error',
         timer: 2000,
-        title: "Failed.",
+        title: 'Failed.',
         showConfirmButton: false,
-        text: "No record found!",
-      });
+        text: 'No record found!',
+      })
     }
   }
 
   const getAllUsers = async () => {
-    let users = await getAllData("show-users");
+    let users = await getAllData('show-users')
     if (users.data && users.data.length > 0) {
-      let { userId } = props.match.params;
-      let editUser = users.data.find((user) => user.id === +userId);
+      let { userId } = props.match.params
+      let editUser = users.data.find((user) => user.id === +userId)
       setUserToUpdate({
         ...userToUpdate,
         first_name: editUser.first_name,
@@ -55,24 +65,39 @@ const UpdateUser = (props) => {
         email: editUser.email,
         office: editUser.profile && editUser.profile.company_name,
         image: editUser.profile && editUser.profile.profile_image,
-      });
-      setUsers(users);
-      setUser(editUser);
+      })
+      setUsers(users)
+      setUser(editUser)
     }
-  };
+  }
 
-  const handleProfileChange = (e) => {};
+  const selectedFileHandler = (e) => {
+    setUserToUpdate({ ...userToUpdate, image: e.target.files[0] })
+  }
 
   const handleChange = (e) => {
     if (e.target.value) {
-      setUser({ ...userToUpdate, [e.target.name]: e.target.value });
+      console.log(e.target.name, e.target.value)
+      setUserToUpdate({ ...userToUpdate, [e.target.name]: e.target.value })
     }
-  };
+  }
 
-  const handleSubmit = (e) => {
-    console.log(user);
-    debugger;
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    let fd = new FormData()
+    fd.append('image[]', userToUpdate.image, userToUpdate.image.name)
+    fd.append('first_name', userToUpdate.first_name)
+    fd.append('last_name', userToUpdate.last_name)
+    fd.append('profession', userToUpdate.profession)
+    fd.append('office', userToUpdate.office)
+    fd.append('email', userToUpdate.email)
+    fd.append('phone_number', userToUpdate.phone_number)
+    axios.post('')
+    let response = await addUpdateData('admin-update-user', fd)
+    debugger
+  }
+
+  console.log(userToUpdate)
 
   return (
     <div className="row fadeIn animated">
@@ -90,7 +115,7 @@ const UpdateUser = (props) => {
                 name="profile-image"
                 id="profile-image"
                 className="form-control"
-                onChange={(e) => handleProfileChange(e)}
+                onChange={(e) => selectedFileHandler(e)}
               />
             </div>
             <div className="form-group">
@@ -101,7 +126,7 @@ const UpdateUser = (props) => {
                 id="first_name"
                 value={userToUpdate.first_name}
                 className="form-control"
-                onChange={(e) => handleProfileChange(e)}
+                onChange={(e) => handleChange(e)}
               />
             </div>
             <div className="form-group">
@@ -149,7 +174,7 @@ const UpdateUser = (props) => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="phone-number">Phone Nummber</label>
+              <label htmlFor="phone-number">Phone Number</label>
               <input
                 type="text"
                 name="phone_number"
@@ -168,7 +193,7 @@ const UpdateUser = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UpdateUser;
+export default UpdateUser
