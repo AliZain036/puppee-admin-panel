@@ -197,6 +197,13 @@ export default class Posts extends React.Component {
                           </button>
                         </td>
                         <td>
+                          <Link to={`/updatePost/${post.id}`}>
+                            <button className={`btn btn-sm btn-success`}>
+                              Update
+                            </button>
+                          </Link>
+                        </td>
+                        <td>
                           <Link to={`/viewposts/${post.id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               View

@@ -90,7 +90,11 @@ class App extends React.Component {
                 />
                 <Route exact path="/languages" component={Languages} />
                 <Route exact path="/addLanguage" component={AddLanguage} />
-                <Route exact path="/updateLanguage/:language_id" component={AddLanguage} />
+                <Route
+                  exact
+                  path="/updateLanguage/:language_id"
+                  component={AddLanguage}
+                />
                 <Route exact path="/expertise" component={Expertise} />
                 <Route
                   exact
@@ -122,6 +126,7 @@ class App extends React.Component {
                 <Route exact path="/customers" component={Customers} />
                 <Route exact path="/posts" component={Posts} />
                 <Route exact path="/viewposts/:postId" component={ViewPosts} />
+                <Route exact path="/updatePost/:postId" component={ViewPosts} />
                 <Route exact path="/referal" component={Referal} />
                 <Route exact path="/referal/:refId" component={ViewReferal} />
                 <Route exact path="/" component={Stats} />

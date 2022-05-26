@@ -61,10 +61,11 @@ const UpdateUser = (props) => {
     }
   };
 
-  const handleProfileChange = (e) => {};
+  const handleProfileChange = (e) => {
+      setUserToUpdate({ image: e.target.value })
+  };
 
   const handleChange = (e) => {
-      debugger
     if (e.target.value) {
       setUserToUpdate({ [e.target.name]: e.target.value });
     }
@@ -84,6 +85,7 @@ const UpdateUser = (props) => {
         <div className="user-details-section">
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="form-group">
+                <img src={userToUpdate.image} alt="" />
               <label htmlFor="profile-image">Profile Image</label>
               <input
                 type="file"

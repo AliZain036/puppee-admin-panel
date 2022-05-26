@@ -32,7 +32,6 @@ export default class ViewPosts extends React.Component {
       let userPost = await getDataById("show-post", {
         post_id: this.props.match.params.postId,
       });
-      debugger;
       this.setState({ postDetails: userPost && userPost.data });
 
       // .then((res) => {
