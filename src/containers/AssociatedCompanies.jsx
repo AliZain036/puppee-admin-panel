@@ -1,69 +1,70 @@
-import React from "react";
-import Cookie from "js-cookie";
-import SwalAutoHide from "sweetalert2";
-import { deleteRecord, getAllData, searchData } from "../backend/utility";
+import React from 'react'
+import Cookie from 'js-cookie'
+import SwalAutoHide from 'sweetalert2'
+import { deleteRecord, getAllData, searchData } from '../backend/utility'
+import { Link } from 'react-router-dom'
 
 export default class AssociatedCompanies extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       categories: [],
-      searchQuery: "",
-    };
+      searchQuery: '',
+    }
   }
 
   componentDidMount() {
-    if (Cookie.get("token")) {
-      this.getAssociatedCompanies();
+    if (Cookie.get('token')) {
+      this.getAssociatedCompanies()
     } else {
-      this.props.history.push("/login");
+      this.props.history.push('/login')
     }
   }
 
   async getAssociatedCompanies() {
-    let result = await getAllData("show-associate-companies");
-    this.setState({ categories: result.data });
+    let result = await getAllData('show-associate-companies')
+    this.setState({ categories: result.data })
   }
 
   async deleteAssociatedCompany(id) {
     let reqBody = {
-      associateCompany_id: id
+      associateCompany_id: id,
     }
-    let result = await deleteRecord("delete-associate-company", reqBody);
-    if(result.success === true) {
+    let result = await deleteRecord('delete-associate-company', reqBody)
+    if (result.success === true) {
       SwalAutoHide.fire({
-        icon: "success",
+        icon: 'success',
         timer: 2000,
-        title: "Success.",
+        title: 'Success.',
         showConfirmButton: false,
-        text: "Associated Company Deleted Successfully!",
-      });
+        text: 'Associated Company Deleted Successfully!',
+      })
       this.getAssociatedCompanies()
     } else {
       SwalAutoHide.fire({
-        icon: "error",
+        icon: 'error',
         timer: 2000,
-        title: "Failed.",
+        title: 'Failed.',
         showConfirmButton: false,
-        text: "Something went wrong!",
-      });
+        text: 'Something went wrong!',
+      })
     }
   }
 
   async handleSearch() {
-    let { searchQuery } = this.state;
-    searchQuery = searchQuery.trim();
-    let searchResults;
+    let { searchQuery } = this.state
+    searchQuery = searchQuery.trim()
+    let searchResults
     if (searchQuery.length > 0) {
       let reqBody = {
         query: searchQuery,
-      };
-      searchResults = await searchData("search-associate-companies", reqBody);
+      }
+      searchResults = await searchData('search-associate-companies', reqBody)
       if (searchResults.data && searchResults.data.length > 0) {
-        this.setState({ categories: searchResults.data, searchQuery: "" });
+        this.setState({ categories: searchResults.data, searchQuery: '' })
       } else {
-        this.setState({ categories: [], searchQuery: "" });
+        this.setState({ categories: [], searchQuery: '' })
       }
     } else {
       this.getAssociatedCompanies()
@@ -90,8 +91,8 @@ export default class AssociatedCompanies extends React.Component {
                     this.setState({ searchQuery: event.target.value })
                   }
                   onKeyPress={(event) => {
-                    if (event.key === "Enter") {
-                      this.handleSearch();
+                    if (event.key === 'Enter') {
+                      this.handleSearch()
                     }
                   }}
                 />
@@ -135,6 +136,15 @@ export default class AssociatedCompanies extends React.Component {
                         <td>{cat.name}</td>
                         <td>{cat.category && cat.category.name}</td>
                         <td>
+                          <Link to={`/updateAssociatedCompany/${cat.id}`}>
+                            <button
+                              className={`btn btn-sm btn-success`}
+                            >
+                              Update
+                            </button>
+                          </Link>
+                        </td>
+                        <td>
                           <button
                             className={`btn btn-sm btn-danger`}
                             onClick={() => this.deleteAssociatedCompany(cat.id)}
@@ -143,13 +153,13 @@ export default class AssociatedCompanies extends React.Component {
                           </button>
                         </td>
                       </tr>
-                    );
+                    )
                   })}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    );
+    )
   }
 }

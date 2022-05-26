@@ -89,7 +89,6 @@ export default class AddExpertise extends React.Component {
   }
 
   render() {
-    console.log(this.state.category_id);
     return (
       <div className="row animated fadeIn">
         <div className="col-12">

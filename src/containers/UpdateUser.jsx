@@ -116,7 +116,6 @@ const UpdateUser = (props) => {
         <div className="user-details-section">
           <form onSubmit={(e) => handleSubmit(e)} id="userUpdateForm">
             <div className="form-group">
-                <img src={userToUpdate.image} alt="" />
               <label htmlFor="profile-image">Profile Image</label>
               <input
                 type="file"

@@ -31,6 +31,7 @@ import AssociateCompany from "./AssociateCompany";
 import AssociatedCompanies from "./AssociatedCompanies";
 import Login from "./Login";
 import UpdateUser from "./UpdateUser";
+import UpdatePost from "./UpdatePost";
 
 class App extends React.Component {
   constructor(props) {
@@ -111,7 +112,12 @@ class App extends React.Component {
                   exact
                   path="/associateCompany/:name"
                   component={AssociateCompany}
-                />{" "}
+                />
+                <Route
+                  exact
+                  path="/updateAssociatedCompany/:id"
+                  component={AssociateCompany}
+                />
                 <Route
                   exact
                   path="/associatedCompanies"
@@ -126,7 +132,7 @@ class App extends React.Component {
                 <Route exact path="/customers" component={Customers} />
                 <Route exact path="/posts" component={Posts} />
                 <Route exact path="/viewposts/:postId" component={ViewPosts} />
-                <Route exact path="/updatePost/:postId" component={ViewPosts} />
+                <Route exact path="/updatePost/:postId" component={UpdatePost} />
                 <Route exact path="/referal" component={Referal} />
                 <Route exact path="/referal/:refId" component={ViewReferal} />
                 <Route exact path="/" component={Stats} />
