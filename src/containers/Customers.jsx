@@ -169,7 +169,7 @@ class Customers extends React.Component {
                         <td>{user.first_name + " " + user.last_name}</td>
                         <td>{user.email}</td>
                         <td>{user.profile && user.profile.profession}</td>
-                        <td>{user.company_name}</td>
+                        <td>{user.profile && user.profile.company_name}</td>
                         <td>{user.phone_number}</td>
 
                         <td>

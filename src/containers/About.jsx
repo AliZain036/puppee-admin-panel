@@ -32,7 +32,6 @@ export default class About extends React.Component {
       description: this.state.description
     }
     let result = await addUpdateData("add-aboutus", reqBody);
-    debugger;
     if (result) {
       this.setState({ description: result.data.description });
       SwalAutoHide.fire({

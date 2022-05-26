@@ -14,6 +14,7 @@ const UpdateUser = (props) => {
     phone_number: '',
     office: '',
     profession: '',
+    user_id: '',
   })
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const UpdateUser = (props) => {
           office: user.profile && user.profile.company_name,
           phone_number: user.phone_number,
           profession: user.profile && user.profile.profession,
-          image: user.profile && user.profile.profile_image,
+          user_id: user.id,
         })
       }
     } catch (error) {
@@ -51,32 +52,11 @@ const UpdateUser = (props) => {
     }
   }
 
-  const getAllUsers = async () => {
-    let users = await getAllData('show-users')
-    if (users.data && users.data.length > 0) {
-      let { userId } = props.match.params
-      let editUser = users.data.find((user) => user.id === +userId)
-      setUserToUpdate({
-        ...userToUpdate,
-        first_name: editUser.first_name,
-        last_name: editUser.last_name,
-        profession: editUser.profile && editUser.profile.profession,
-        phone_number: editUser.phone_number,
-        email: editUser.email,
-        office: editUser.profile && editUser.profile.company_name,
-        image: editUser.profile && editUser.profile.profile_image,
-      })
-      setUsers(users)
-      setUser(editUser)
-    }
-  }
-
   const selectedFileHandler = (e) => {
     setUserToUpdate({ ...userToUpdate, image: e.target.files[0] })
   }
 
   const handleChange = (e) => {
-      debugger
     if (e.target.value) {
       console.log(e.target.name, e.target.value)
       setUserToUpdate({ ...userToUpdate, [e.target.name]: e.target.value })
@@ -84,21 +64,48 @@ const UpdateUser = (props) => {
   }
 
   const handleSubmit = async (e) => {
+    try {
     e.preventDefault()
     let fd = new FormData()
-    fd.append('image[]', userToUpdate.image, userToUpdate.image.name)
+    if(userToUpdate.image) {
+      fd.append('image', userToUpdate.image)
+    }
     fd.append('first_name', userToUpdate.first_name)
     fd.append('last_name', userToUpdate.last_name)
     fd.append('profession', userToUpdate.profession)
     fd.append('office', userToUpdate.office)
     fd.append('email', userToUpdate.email)
     fd.append('phone_number', userToUpdate.phone_number)
-    axios.post('')
-    let response = await addUpdateData('admin-update-user', fd)
-    debugger
+    fd.append('user_id', userToUpdate.user_id)
+      axios
+        .post(
+          'https://network-desk-backend.herokuapp.com/api/admin-update-user',
+          fd,
+        )
+        .then((res) => {
+          if (res.data != null) {
+            SwalAutoHide.fire({
+              icon: 'success',
+              timer: 2000,
+              title: 'Success.',
+              showConfirmButton: false,
+              text: 'User details updated successfully',
+            })
+            props.history.push('/customers')
+          }
+        })
+    } catch (error) {
+      if (res.data != null) {
+        SwalAutoHide.fire({
+          icon: 'error',
+          timer: 2000,
+          title: 'Failed.',
+          showConfirmButton: false,
+          text: 'Something went wrong!',
+        })
+      }
+    }
   }
-
-  console.log(userToUpdate)
 
   return (
     <div className="row fadeIn animated">
@@ -107,7 +114,7 @@ const UpdateUser = (props) => {
       </div>
       <div className="col-6 col-xs-12">
         <div className="user-details-section">
-          <form onSubmit={(e) => handleSubmit(e)}>
+          <form onSubmit={(e) => handleSubmit(e)} id="userUpdateForm">
             <div className="form-group">
               <label htmlFor="profile-image">Profile Image</label>
               <input
@@ -124,8 +131,10 @@ const UpdateUser = (props) => {
               <input
                 type="text"
                 name="first_name"
+                required
                 id="first_name"
                 className="form-control"
+                value={userToUpdate.first_name || ""}
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -133,10 +142,11 @@ const UpdateUser = (props) => {
               <label htmlFor="last-name">Last Name</label>
               <input
                 type="text"
+                required
                 name="last_name"
                 id="last-name"
                 className="form-control"
-                value={userToUpdate.last_name}
+                value={userToUpdate.last_name || ""}
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -145,7 +155,7 @@ const UpdateUser = (props) => {
               <input
                 type="email"
                 name="email"
-                value={userToUpdate.email}
+                value={userToUpdate.email || ""}
                 id="email"
                 className="form-control"
                 onChange={(e) => handleChange(e)}
@@ -157,7 +167,7 @@ const UpdateUser = (props) => {
                 type="text"
                 name="profession"
                 id="profession"
-                value={userToUpdate.profession}
+                value={userToUpdate.profession || ""}
                 className="form-control"
                 onChange={(e) => handleChange(e)}
               />
@@ -167,7 +177,7 @@ const UpdateUser = (props) => {
               <input
                 type="text"
                 name="office"
-                value={userToUpdate.office}
+                value={userToUpdate.office || ""}
                 id="office"
                 className="form-control"
                 onChange={(e) => handleChange(e)}
@@ -178,7 +188,7 @@ const UpdateUser = (props) => {
               <input
                 type="text"
                 name="phone_number"
-                value={userToUpdate.phone_number}
+                value={userToUpdate.phone_number || ""}
                 id="phone-number"
                 className="form-control"
                 onChange={(e) => handleChange(e)}
