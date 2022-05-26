@@ -76,6 +76,7 @@ const UpdateUser = (props) => {
   }
 
   const handleChange = (e) => {
+      debugger
     if (e.target.value) {
       console.log(e.target.name, e.target.value)
       setUserToUpdate({ ...userToUpdate, [e.target.name]: e.target.value })
@@ -124,7 +125,6 @@ const UpdateUser = (props) => {
                 type="text"
                 name="first_name"
                 id="first_name"
-                value={userToUpdate.first_name}
                 className="form-control"
                 onChange={(e) => handleChange(e)}
               />

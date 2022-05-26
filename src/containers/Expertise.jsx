@@ -159,6 +159,13 @@ export default class Expertise extends React.Component {
                           </button>
                         </td>
                         <td>
+                          <Link to={`/updateExpertise/${experti.id}`}>
+                            <button className={`btn btn-sm btn-success`}>
+                              Update
+                            </button>
+                          </Link>
+                        </td>
+                        <td>
                           <Link
                             to={`/addExpertise/${
                               experti.category && experti.category.id

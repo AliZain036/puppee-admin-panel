@@ -70,6 +70,11 @@ class App extends React.Component {
                 <Route exact path="/addCompany" component={AddCompany} />
                 <Route
                   exact
+                  path="/updateCompany/:company_id"
+                  component={AddCompany}
+                />
+                <Route
+                  exact
                   path="/expertiseCategories"
                   component={ExpertiseCategories}
                 />
@@ -85,10 +90,16 @@ class App extends React.Component {
                 />
                 <Route exact path="/languages" component={Languages} />
                 <Route exact path="/addLanguage" component={AddLanguage} />
+                <Route exact path="/updateLanguage/:language_id" component={AddLanguage} />
                 <Route exact path="/expertise" component={Expertise} />
                 <Route
                   exact
                   path="/addExpertise/:id"
+                  component={AddExpertise}
+                />
+                <Route
+                  exact
+                  path="/updateExpertise/:expertise_id"
                   component={AddExpertise}
                 />
                 <Route exact path="/addExpertise" component={AddExpertise} />

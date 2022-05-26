@@ -1,9 +1,7 @@
 import React from "react";
 import { Button } from "reactstrap";
 import SwalAutoHide from "sweetalert2";
-import {
-  addUpdateData,
-} from "../backend/utility";
+import { addUpdateData, getDataById } from "../backend/utility";
 export default class AddLanguage extends React.Component {
   constructor(props) {
     super(props);
@@ -11,32 +9,67 @@ export default class AddLanguage extends React.Component {
     this.state = {
       newLanguage: "",
       languages: [],
+      language: {},
+      language_id: null
     };
   }
 
-  async handleSubmit(e) {
-    e.preventDefault()
-    let reqBody = {
-      name: this.state.newLanguage
+  componentDidMount() {
+    if (this.props.match.params && this.props.match.params.language_id) {
+      let { language_id } = this.props.match.params;
+      this.state.language_id = language_id
+      this.getLanguageById(language_id);
     }
-    let result = await addUpdateData("add-language", reqBody);
-    if(result) {
-      this.setState({ newLanguage: "" })
+  }
+
+  async getLanguageById(id) {
+    let reqBody = {
+      language_id: id,
+    };
+    let response = await getDataById("show-language", reqBody);
+    if (response.data) {
+      this.setState({
+        newLanguage: response.data.name,
+        language: response.data,
+      });
+    }
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault();
+    let reqBody = {
+      name: this.state.newLanguage,
+    };
+    let result,
+      message = "";
+    if (this.state.language_id !== null) {
+      reqBody.language_id = this.state.language_id;
+      result = await addUpdateData("edit-language", reqBody);
+      message = "Lanuage has been updated";
+      if (result.errors) {
+        message = result.errors.name[0];
+      }
+    } else {
+      result = await addUpdateData("add-language", reqBody);
+      message = "New language has been added";
+    }
+    if (result.data) {
+      this.setState({ newLanguage: "" });
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
         title: "Success.",
         showConfirmButton: false,
-        text: "Language Added Successfully",
+        text: message,
       });
-      this.props.history.push("/languages")
+      this.props.history.push("/languages");
     } else {
       SwalAutoHide.fire({
         icon: "error",
         timer: 2000,
         title: "Failed.",
         showConfirmButton: false,
-        text: "Something Went Wrong!",
+        text: message,
       });
     }
   }
@@ -62,7 +95,7 @@ export default class AddLanguage extends React.Component {
                         id="demo-form2"
                         data-parsley-validate
                         className="form-horizontal form-label-left"
-                        onSubmit={e => this.handleSubmit(e)}
+                        onSubmit={(e) => this.handleSubmit(e)}
                       >
                         <div className="form-group row">
                           <label className="control-label col-md-3 col-sm-3">

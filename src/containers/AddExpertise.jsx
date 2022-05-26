@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "reactstrap";
 import SwalAutoHide from "sweetalert2";
-import { addUpdateData, getAllData } from "../backend/utility";
+import { addUpdateData, getAllData, getDataById } from "../backend/utility";
 
 export default class AddExpertise extends React.Component {
   constructor(props) {
@@ -11,16 +11,35 @@ export default class AddExpertise extends React.Component {
       category: {},
       categories: [],
       category_id: null,
+      expertise: null
     };
   }
 
   async componentDidMount() {
+    if(this.props.match.params.expertise_id) {
+      let { expertise_id } = this.props.match.params;
+      this.getSingleExpertise(expertise_id)
+    }
     let result = await getAllData("show-categories");
     if (result && result.data) {
       let category = result.data.find(
         (el) => el.id === +this.props.match.params.id
       );
       this.setState({ category, categories: result.data });
+    }
+  }
+
+  async getSingleExpertise(id) {
+    let reqBody = {
+      expertise_id: id,
+    };
+    let expertise = await getDataById("show-single-expertise", reqBody);
+    if(expertise.data) {
+      this.setState({
+        expertise: expertise.data,
+        category_id: expertise.category_id,
+        description: expertise.data.name
+      });
     }
   }
 
@@ -31,14 +50,27 @@ export default class AddExpertise extends React.Component {
       name: this.state.description,
       category_id: id ? id : this.state.category_id,
     };
-    let result = await addUpdateData("add-expertise", reqBody);
-    if (result && result.data) {
+    let result, message;
+    if(this.state.expertise != null) {
+      reqBody.category_id = this.state.expertise.category_id;
+      reqBody.expertise_id = this.state.expertise.id;
+      result = await addUpdateData("update-expertise", reqBody);
+      if(result.data) {
+        message = "Expertise has been updaed successfully"
+      }
+    } else {
+      result = await addUpdateData("add-expertise", reqBody);
+      if(result.data) {
+        message = "New expertise has been added successfully"
+      }
+    }
+    if (result.data) {
       SwalAutoHide.fire({
         icon: "success",
         timer: 2000,
         title: "Success.",
         showConfirmButton: false,
-        text: "New Expertise Successfully!",
+        text: message,
       });
       this.props.history.push("/expertise");
     } else {
@@ -53,7 +85,7 @@ export default class AddExpertise extends React.Component {
   }
 
   async handleCategoryChange(e) {
-    this.setState({ category_id: e.target.value });
+    this.setState({ expertise: { category_id: e.target.value } });
   }
 
   render() {
@@ -104,11 +136,20 @@ export default class AddExpertise extends React.Component {
                             />
                           </div>
                           {!this.state.category && (
-                            <div className={`form-group col-xs-12 col-sm-12 ${this.state.category ? 'col-md-8' : 'col-md-4'}`}>
+                            <div
+                              className={`form-group col-xs-12 col-sm-12 ${
+                                this.state.category ? "col-md-8" : "col-md-4"
+                              }`}
+                            >
                               <select
                                 className="form-control"
                                 onChange={(e) => this.handleCategoryChange(e)}
                                 id="exampleSelect"
+                                value={
+                                  (this.state.expertise &&
+                                    this.state.expertise.category_id) ||
+                                  ""
+                                }
                               >
                                 {this.state.categories &&
                                   this.state.categories.map((item) => {

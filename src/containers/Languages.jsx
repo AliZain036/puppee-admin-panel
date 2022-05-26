@@ -2,11 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Cookie from "js-cookie";
 import SwalAutoHide from "sweetalert2";
-import {
-  getAllData,
-  deleteRecord,
-  searchData,
-} from "../backend/utility";
+import { getAllData, deleteRecord, searchData } from "../backend/utility";
 export default class Languages extends React.Component {
   constructor(props) {
     super(props);
@@ -91,7 +87,9 @@ export default class Languages extends React.Component {
                   name="search"
                   placeholder="Enter keyword"
                   value={this.state.searchQuery}
-                  onChange={(e) => this.setState({ searchQuery: e.target.value })}
+                  onChange={(e) =>
+                    this.setState({ searchQuery: e.target.value })
+                  }
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
                       this.handleSearch();
@@ -141,6 +139,13 @@ export default class Languages extends React.Component {
                           >
                             Delete
                           </button>
+                        </td>
+                        <td>
+                          <Link to={`/updateLanguage/${language.id}`}>
+                            <button className="btn btn-sm btn-success">
+                              Update
+                            </button>
+                          </Link>
                         </td>
                       </tr>
                     );

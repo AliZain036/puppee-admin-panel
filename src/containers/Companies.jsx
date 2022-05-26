@@ -2,11 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Cookie from "js-cookie";
 import SwalAutoHide from "sweetalert2";
-import {
-  getAllData,
-  deleteRecord,
-  searchData,
-} from "../backend/utility";
+import { getAllData, deleteRecord, searchData } from "../backend/utility";
 
 export default class Companies extends React.Component {
   constructor(props) {
@@ -14,7 +10,7 @@ export default class Companies extends React.Component {
 
     this.state = {
       companies: [],
-      searchQuery: ""
+      searchQuery: "",
     };
   }
 
@@ -69,7 +65,7 @@ export default class Companies extends React.Component {
         this.setState({ companies: [], searchQuery: "" });
       }
     } else {
-      this.getCompanies()
+      this.getCompanies();
     }
   }
 
@@ -133,6 +129,16 @@ export default class Companies extends React.Component {
                       <tr key={company.id}>
                         <td>{index + 1}</td>
                         <td>{company.name}</td>
+                        <td>
+                          <Link to={`/updateCompany/${company.id}`}>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-success"
+                            >
+                              Update
+                            </button>
+                          </Link>
+                        </td>
                         <td>
                           <button
                             onClick={() => this.handleDeleteCompany(company)}
