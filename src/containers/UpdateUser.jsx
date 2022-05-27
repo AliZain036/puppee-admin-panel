@@ -11,7 +11,7 @@ const UpdateUser = (props) => {
     last_name: '',
     image: null,
     email: '',
-    phone_number: '',
+    phone: '',
     office: '',
     profession: '',
     user_id: '',
@@ -36,7 +36,7 @@ const UpdateUser = (props) => {
           last_name: user.last_name,
           email: user.email,
           office: user.profile && user.profile.company_name,
-          phone_number: user.phone_number,
+          phone: user.phone,
           profession: user.profile && user.profile.profession,
           user_id: user.id,
         })
@@ -75,7 +75,7 @@ const UpdateUser = (props) => {
     fd.append('profession', userToUpdate.profession)
     fd.append('office', userToUpdate.office)
     fd.append('email', userToUpdate.email)
-    fd.append('phone_number', userToUpdate.phone_number)
+    fd.append('phone', userToUpdate.phone)
     fd.append('user_id', userToUpdate.user_id)
       axios
         .post(
@@ -187,8 +187,8 @@ const UpdateUser = (props) => {
               <label htmlFor="phone-number">Phone Number</label>
               <input
                 type="text"
-                name="phone_number"
-                value={userToUpdate.phone_number || ""}
+                name="phone"
+                value={userToUpdate.phone || ""}
                 id="phone-number"
                 className="form-control"
                 onChange={(e) => handleChange(e)}
