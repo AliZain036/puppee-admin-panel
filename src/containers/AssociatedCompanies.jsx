@@ -76,10 +76,10 @@ export default class AssociatedCompanies extends React.Component {
       <div className="row animated fadeIn">
         <div className="col-12">
           <div className="row space-1">
-            <div className="col-sm-4">
+            <div className="col-md-4 col-xs-12 col-sm-12">
               <h3>List of Associated Companies</h3>
             </div>
-            <div className="col-sm-4">
+            <div className="col-md-4 col-xs-12 col-sm-12">
               <div className="input-group">
                 <input
                   className="form-control"
@@ -91,8 +91,8 @@ export default class AssociatedCompanies extends React.Component {
                     this.setState({ searchQuery: event.target.value })
                   }
                   onKeyPress={(event) => {
-                    if (event.key === 'Enter') {
-                      this.handleSearch()
+                    if (event.key === "Enter") {
+                      this.handleSearch();
                     }
                   }}
                 />
@@ -106,6 +106,13 @@ export default class AssociatedCompanies extends React.Component {
                   </button>
                 </span>
               </div>
+            </div>
+            <div className="col-md-4 col-xs-12 col-sm-12 pull-right mobile-space">
+              <Link to={"/addExpertiseCategories"}>
+                <button type="button" className="btn btn-success">
+                  Add New Category
+                </button>
+              </Link>
             </div>
 
             {/* <div className="col-sm-4 pull-right mobile-space">
@@ -137,9 +144,7 @@ export default class AssociatedCompanies extends React.Component {
                         <td>{cat.category && cat.category.name}</td>
                         <td>
                           <Link to={`/updateAssociatedCompany/${cat.id}`}>
-                            <button
-                              className={`btn btn-sm btn-success`}
-                            >
+                            <button className={`btn btn-sm btn-success`}>
                               Update
                             </button>
                           </Link>
@@ -153,13 +158,13 @@ export default class AssociatedCompanies extends React.Component {
                           </button>
                         </td>
                       </tr>
-                    )
+                    );
                   })}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
