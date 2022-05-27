@@ -63,17 +63,19 @@ class Header extends Component {
         </NavbarToggler>
         <NavbarBrand href="/" className="p-0">
           <div style={style.logoWrapper} className={`svg-logo`}>
-            <img
-              className={`companyLogo`}
-              src={`${require("panzer.png")}`}
-            />
+            <Link to={'/'}>
+              <img
+                className={`companyLogo`}
+                src={`${require("panzer.png")}`}
+              />
+            </Link>
           </div>
-          <div className={`png-logo`}>
+          {/* <div className={`png-logo`}> */}
             {/* <img
               className={`img-fluid companyLogo`}
               src={`${require("panzer.png")}`}
-            /> */}
-          </div>
+            // /> */}
+          {/* </div> */}
         </NavbarBrand>
         <NavbarToggler
           className="d-md-down-none mr-auto"
