@@ -1,7 +1,9 @@
 {
   "projects": {
     "default": "network-desk-163d7",
-    "network-desk": "network-desk-163d7"
+    "network-desk": "network-desk-163d7",
+    "puppee": "puppee-admin-panel"
   },
-  "targets": {}
+  "targets": {},
+  "etags": {}
 }

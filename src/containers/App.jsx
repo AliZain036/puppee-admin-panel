@@ -1,45 +1,59 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Switch, Route, withRouter, BrowserRouter as Router } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import Sidebar from "../components/Sidebar";
-import Breadcrumb from "../components/Breadcrumb";
-import Stats from "../containers/Stats";
-import { Container } from "reactstrap";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import {
+  Switch,
+  Route,
+  withRouter,
+  BrowserRouter as Router,
+} from 'react-router-dom'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import Sidebar from '../components/Sidebar'
+import Breadcrumb from '../components/Breadcrumb'
+import Stats from '../containers/Stats'
+import { Container } from 'reactstrap'
 
-import UserDetails from "./UserDetails";
-import Customers from "./Customers";
-import Posts from "./Posts";
-import ViewPosts from "./ViewPosts";
-import TermsAndConditions from "./TermsAndConditions";
-import PrivacyPolicy from "./PrivacyPolicy";
-import CookiePolicy from "./CookiePolicy";
-import About from "./About";
-import Referal from "./Referal";
-import ViewReferal from "./ViewReferals";
-import Languages from "./Languages";
-import Companies from "./Companies";
-import Expertise from "./Expertise";
-import AddLanguage from "./AddLanguage";
-import AddCompany from "./AddCompany";
-import AddExpertise from "./AddExpertise";
-import ExpertiseCategories from "./ExpertiseCategories";
-import AddExpertiseCategory from "./AddExpertiseCategory";
-import AssociateCompany from "./AssociateCompany";
-import AssociatedCompanies from "./AssociatedCompanies";
-import Login from "./Login";
-import UpdateUser from "./UpdateUser";
-import UpdatePost from "./UpdatePost";
+import UserDetails from './UserDetails'
+import Customers from './Customers'
+import Posts from './Posts'
+import ViewPosts from './ViewPosts'
+import TermsAndConditions from './TermsAndConditions'
+import PrivacyPolicy from './PrivacyPolicy'
+import CookiePolicy from './CookiePolicy'
+import About from './About'
+import Referal from './Referal'
+import ViewReferal from './ViewReferals'
+import Languages from './Languages'
+import Companies from './Companies'
+import Expertise from './Expertise'
+import AddLanguage from './AddLanguage'
+import AddCompany from './AddCompany'
+import AddExpertise from './AddExpertise'
+import ExpertiseCategories from './ExpertiseCategories'
+import AddExpertiseCategory from './AddExpertiseCategory'
+import AssociateCompany from './AssociateCompany'
+import AssociatedCompanies from './AssociatedCompanies'
+import Login from './Login'
+import UpdateUser from './UpdateUser'
+import UpdatePost from './UpdatePost'
+import Users from './Users'
+import Cookie from 'js-cookie'
 
 class App extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       user: null,
-    };
+    }
+  }
+
+  async componentDidMount() {
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (!user) {
+      this.props.history.push('/login')
+    }
   }
 
   render() {
@@ -129,14 +143,18 @@ class App extends React.Component {
                     component={}
                   /> */}
                 <Route exact path="/about" component={About} />
+                <Route exact path="/users" component={Users} />
                 <Route exact path="/customers" component={Customers} />
                 <Route exact path="/posts" component={Posts} />
                 <Route exact path="/viewposts/:postId" component={ViewPosts} />
-                <Route exact path="/updatePost/:postId" component={UpdatePost} />
+                <Route
+                  exact
+                  path="/updatePost/:postId"
+                  component={UpdatePost}
+                />
                 <Route exact path="/referal" component={Referal} />
                 <Route exact path="/referal/:refId" component={ViewReferal} />
-                <Route exact path="/" component={Stats} />
-                <Route path="/*" name="Stats" component={Stats} />
+                <Route path="/*" name="Users" component={Users} />
               </Switch>
               {/* </Router> */}
             </Container>
@@ -144,7 +162,7 @@ class App extends React.Component {
         </div>
         <Footer />
       </div>
-    );
+    )
   }
 }
 
@@ -152,12 +170,12 @@ App.propTypes = {
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   user: PropTypes.object,
-};
+}
 
 function mapStateToProps(state) {
   return {
     user: state.user,
-  };
+  }
 }
 
-export default withRouter(connect(mapStateToProps)(App));
+export default withRouter(connect(mapStateToProps)(App))

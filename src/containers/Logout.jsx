@@ -1,25 +1,25 @@
-import React, { Component } from "react";
-import axios from "axios";
-import Cookie from "js-cookie";
+import React, { Component } from 'react'
+import axios from 'axios'
+import Cookie from 'js-cookie'
 
 class Logout extends Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   componentDidMount() {
-    axios.defaults.headers.common["Authorization"] = "";
-    if (process.env.NODE_ENV === "production") {
-      Cookie.remove("token");
+    axios.defaults.headers.common['Authorization'] = ''
+    if (process.env.NODE_ENV === 'production') {
+      localStorage.removeItem('user')
     } else {
-      Cookie.remove("token");
+      localStorage.removeItem('user')
     }
-    window.location.href = "/login";
+    window.location.href = '/login'
   }
 
   render() {
-    return <div></div>;
+    return <div></div>
   }
 }
 
-export default Logout;
+export default Logout

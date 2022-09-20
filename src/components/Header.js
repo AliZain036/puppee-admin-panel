@@ -84,7 +84,7 @@ class Header extends Component {
           <span className="navbar-toggler-icon"></span>
         </NavbarToggler>
         <h3 className="mr-auto d-md-down-none admin-heading">
-          Network Desk Admin Dashboard
+          Puppee Admin Dashboard
         </h3>
         {this.props.currentUserImage ? (
           <div className="user-image">

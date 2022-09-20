@@ -27,7 +27,7 @@ export default class Posts extends React.Component {
   }
 
   async getAllPosts() {
-    let allPosts = await getAllData("show-all-posts");
+    let allPosts = await getAllData("posts/all/62c0b0e28bda435977e9407d");
     this.setState({ userPosts: allPosts.data.data });
   }
 

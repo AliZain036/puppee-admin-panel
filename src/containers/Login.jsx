@@ -51,8 +51,18 @@ class Login extends Component {
     if (!this.state.loading) {
       this.setState({ loading: true });
       if (email && password) {
-        let res = await login(reqBody);
-        if (!res.data && res.message === "User not found with this email") {
+        let user = await login(reqBody);
+        if (user.message && user.message === "bad password") {
+          SwalAutoHide.fire({
+            icon: "error",
+            timer: 2000,
+            title: "Failed.",
+            showConfirmButton: false,
+            text: "Incorrect Password!",
+          });
+          this.setState({ loading: false });
+          return;
+        } else if (user.message && user.message === "user not found") {
           SwalAutoHide.fire({
             icon: "error",
             timer: 2000,
@@ -62,22 +72,10 @@ class Login extends Component {
           });
           this.setState({ loading: false });
           return;
-        } else if (!res.data && res.message === "Password is incorrect") {
-          SwalAutoHide.fire({
-            icon: "error",
-            timer: 2000,
-            title: "Failed.",
-            showConfirmButton: false,
-            text: "Your password is incorrect!",
-          });
-          this.setState({ loading: false });
-          return;
         }
-        if (res.data) {
-          let user = res.data;
+        if (user._id) {
           localStorage.setItem("user", JSON.stringify(user));
-          Cookie.set("token", user);
-          this.props.history.push("/");
+          this.props.history.push("/users");
         }
       } else {
         this.setState({ loading: false });
@@ -170,7 +168,7 @@ class Login extends Component {
                           fontWeight: "bold",
                         }}
                       >
-                        Network Desk Dashboard
+                        Puppee Dashboard
                       </div>
                     </div>
                   </CardBody>
