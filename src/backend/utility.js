@@ -7,13 +7,10 @@ import SwalAutoHide from 'sweetalert2'
 
 export async function login(reqBody) {
   try {
-    let user = await axios.post(
-      `${baseUrl}users/signin`,
-      reqBody,
-    )
+    let user = await axios.post(`${baseUrl}users/signin`, reqBody)
     return user.data
   } catch (error) {
-    console.error(error);
+    console.error(error)
     return error.response.data
   }
 }
@@ -135,17 +132,10 @@ export async function searchData(url, reqBody) {
 
 export async function deleteRecord(endpoint, reqBody) {
   try {
-    let result = await fetch(`${apiUrl}${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reqBody),
-    })
-      .then((res) => res.json())
-      .then((res) => res)
+    let result = await axios.delete(`${baseUrl}${endpoint}`, { data: reqBody })
     return result
   } catch (error) {
+    console.error(error)
     SwalAutoHide.fire({
       icon: 'error',
       timer: 2000,

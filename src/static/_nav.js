@@ -15,21 +15,21 @@ export default {
       url: "/users",
       icon: "icon-user",
     },
-    // {
-    //   name: "Posts",
-    //   url: "/posts",
-    //   icon: "icon-user",
-    // },
+    {
+      name: "Posts",
+      url: "/posts",
+      icon: "icon-user",
+    },
     // {
     //   name: "Orders",
     //   url: "/orders",
     //   icon: "icon-user",
     // },
-    // {
-    //   name: "Services",
-    //   url: "/services",
-    //   icon: "icon-user",
-    // },
+    {
+      name: "Services",
+      url: "/services",
+      icon: "icon-user",
+    },
     // {
     //   name: "Feedback",
     //   url: "/feedback",

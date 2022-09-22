@@ -39,6 +39,7 @@ import UpdateUser from './UpdateUser'
 import UpdatePost from './UpdatePost'
 import Users from './Users'
 import Cookie from 'js-cookie'
+import Services from './Services';
 
 class App extends React.Component {
   constructor(props) {
@@ -144,6 +145,7 @@ class App extends React.Component {
                   /> */}
                 <Route exact path="/about" component={About} />
                 <Route exact path="/users" component={Users} />
+                <Route exact path="/services" component={Services} />
                 <Route exact path="/customers" component={Customers} />
                 <Route exact path="/posts" component={Posts} />
                 <Route exact path="/viewposts/:postId" component={ViewPosts} />

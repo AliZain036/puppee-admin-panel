@@ -11,6 +11,7 @@ import {
 } from '../backend/utility'
 import { connect } from 'react-redux'
 import { Box, Tab, Tabs, Typography } from '@material-ui/core'
+import Swal from 'sweetalert2'
 // import { Tabs } from 'antd'
 const Users = () => {
   const [state, setState] = useState({
@@ -56,27 +57,27 @@ const Users = () => {
     }))
   }
 
-  // async toggleUserBlock(user) {
-  //   let requestBody = {
-  //     user_id: user.id,
-  //   }
-  //   let userBlockStatus
-  //   if (user.status && user.status === 'active') {
-  //     userBlockStatus = await addUpdateData('admin-block-user', requestBody)
-  //   } else if (user.status && user.status === 'blocked') {
-  //     userBlockStatus = await addUpdateData('admin-unblock-user', requestBody)
-  //   }
-  //   if (userBlockStatus) {
-  //     SwalAutoHide.fire({
-  //       icon: 'success',
-  //       timer: 2000,
-  //       title: 'Success.',
-  //       showConfirmButton: false,
-  //       text: userBlockStatus.message,
-  //     })
-  //     this.componentDidMount()
-  //   }
-  // }
+  const handleDeleteUser = async (id) => {
+    let result = await deleteRecord(`users/${id}`)
+    if (
+      result.data.success === true &&
+      result.data.message === 'User Deleted'
+    ) {
+      Swal.fire({
+        title: 'User Deleted Successfully!',
+        icon: 'success',
+        timer: '2000',
+      })
+      getAllUsers()
+    } else {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong, please try again.',
+        icon: 'error',
+        timer: '2000',
+      })
+    }
+  }
 
   const handleChange = (event, newValue) => {
     setState((prev) => ({ ...prev, value: newValue }))
@@ -124,8 +125,8 @@ const Users = () => {
           <Tab label="Service Provider" />
         </Tabs>
         <TabPanel value={state.value} index={0}>
-          {state.users.length > 0 && (
-            <div className="table-responsive" style={{ height: '500px' }}>
+          {state.users && (
+            <div className="table-responsive" style={{ height: '700px' }}>
               <table className="table table-striped">
                 <thead>
                   <tr>
@@ -138,7 +139,7 @@ const Users = () => {
                 </thead>
 
                 <tbody>
-                  {state.users.length != 0 &&
+                  {state.users &&
                     state.users.map((user, index) => {
                       return (
                         <tr key={user._id}>
@@ -184,32 +185,14 @@ const Users = () => {
                               </button>
                             </Link>
                           </td>
-
-                          {user.isDeleted !== true && (
-                            <td>
-                              <span
-                                className="fa fa-trash"
-                                aria-hidden="true"
-                                style={{ cursor: 'pointer' }}
-                                // onClick={() => {
-                                //   swal({
-                                //     title: 'Delete User?',
-                                //     text:
-                                //       "Are you sure, the user won't be able to use app again!",
-                                //     icon: 'warning',
-                                //     buttons: true,
-                                //     dangerMode: true,
-                                //   }).then(async (willDelete) => {
-                                //     if (willDelete) {
-                                //       this.deleteThisUser(user)
-                                //     } else {
-                                //       return
-                                //     }
-                                //   })
-                                // }}
-                              ></span>
-                            </td>
-                          )}
+                          <td>
+                            <span
+                              className="fa fa-trash"
+                              aria-hidden="true"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleDeleteUser(user._id)}
+                            ></span>
+                          </td>
                         </tr>
                       )
                     })}
@@ -255,32 +238,29 @@ const Users = () => {
                             <td>{user.email}</td>
                             <td>{user.phone_number}</td>
 
-                            <td>
+                            {/* <td>
                               <button
-                                // onClick={() => {
-                                //   this.toggleUserBlock(user)
-                                // }}
                                 className={`btn btn-sm btn-danger`}
                               >
                                 {user.status && user.status === 'active'
                                   ? 'Block'
                                   : 'Unblock'}
                               </button>
-                            </td>
-                            <td>
-                              <Link to={`/userdetails/${user.id}`}>
+                            </td> */}
+                            {/* <td>
+                              <Link to={`/userdetails/${user._id}`}>
                                 <button className={`btn btn-sm btn-success`}>
                                   View
                                 </button>
                               </Link>
-                            </td>
-                            <td>
-                              <Link to={`/updateUser/${user.id}`}>
+                            </td> */}
+                            {/* <td>
+                              <Link to={`/updateUser/${user._id}`}>
                                 <button className={`btn btn-sm btn-success`}>
                                   Update
                                 </button>
                               </Link>
-                            </td>
+                            </td> */}
 
                             {user.isDeleted !== true && (
                               <td>
@@ -288,22 +268,6 @@ const Users = () => {
                                   className="fa fa-trash"
                                   aria-hidden="true"
                                   style={{ cursor: 'pointer' }}
-                                  // onClick={() => {
-                                  //   swal({
-                                  //     title: 'Delete User?',
-                                  //     text:
-                                  //       "Are you sure, the user won't be able to use app again!",
-                                  //     icon: 'warning',
-                                  //     buttons: true,
-                                  //     dangerMode: true,
-                                  //   }).then(async (willDelete) => {
-                                  //     if (willDelete) {
-                                  //       this.deleteThisUser(user)
-                                  //     } else {
-                                  //       return
-                                  //     }
-                                  //   })
-                                  // }}
                                 ></span>
                               </td>
                             )}

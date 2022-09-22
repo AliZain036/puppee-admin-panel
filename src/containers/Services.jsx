@@ -3,46 +3,38 @@ import { Link } from 'react-router-dom'
 import Cookie from 'js-cookie'
 import swal from 'sweetalert'
 import SwalAutoHide from 'sweetalert2'
-import {
-  addUpdateData,
-  deleteRecord,
-  getAllData,
-  searchData,
-} from '../backend/utility'
-import { connect } from 'react-redux'
-import { Box, Tab, Tabs, Typography } from '@material-ui/core'
+import { deleteRecord, getAllData } from '../backend/utility'
 import Swal from 'sweetalert2'
 // import { Tabs } from 'antd'
-const Posts = () => {
-  const [posts, setPosts] = useState([])
+const Services = () => {
+  const [services, setServices] = useState([])
 
   useEffect(() => {
-    getAllPosts()
+    getAllServices()
   }, [])
 
-  const getAllPosts = async () => {
-    let result = await getAllData('posts/all/62c0b0e28bda435977e9407d')
+  const getAllServices = async () => {
+    let result = await getAllData('services')
     if (result.success === true && result.data) {
-      setPosts(result.data)
+      setServices(result.data)
     }
   }
-
-  // const handleChange = (event, newValue) => {
-  //   setState((prev) => ({ ...prev, value: newValue }))
-  // }
 
   const handlePostDelete = async (postId) => {
     let body = {
       postId,
     }
-    let result = await deleteRecord('posts', body)
-    if (result.data.success === true && result.data.message === 'Posts Deleted') {
+    let result = await deleteRecord('services', body)
+    if (
+      result.data.success === true &&
+      result.data.message === 'services Deleted'
+    ) {
       Swal.fire({
         title: 'Post Deleted Successfully!',
         icon: 'success',
         timer: '2000',
       })
-      getAllPosts()
+      getAllServices()
     } else {
       Swal.fire({
         title: 'Error!',
@@ -58,17 +50,19 @@ const Posts = () => {
       <div className="col-12 p-0">
         <div className="row space-1">
           <div className="col-12">
-            <h3>List of Posts</h3>
+            <h3>List of Services</h3>
           </div>
         </div>
-        {posts.length > 0 && (
+        {services.length > 0 && (
           <div className="table-responsive" style={{ height: '700px' }}>
             <table className="table table-striped">
               <thead>
                 <tr>
-                  {/* <th>Sr. #</th> */}
-                  <th>Date</th>
                   <th>Image</th>
+                  <th>Title</th>
+                  <th>Reviews Count</th>
+                  <th>Average Rating</th>
+                  <th>Base Price</th>
                   {/* <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th> */}
@@ -76,12 +70,12 @@ const Posts = () => {
               </thead>
 
               <tbody>
-                {posts.length != 0 &&
-                  posts.map((post, index) => {
+                {services.length != 0 &&
+                  services.map((service, index) => {
                     return (
-                      <tr key={post._id}>
+                      <tr key={service._id}>
                         {/* <td>{index + 1}</td> */}
-                        <td>{new Date(post.timestamp).toLocaleDateString()}</td>
+                        {/* <td>{new Date(service.timestamp).toLocaleDateString()}</td> */}
                         <td>
                           <img
                             style={{
@@ -90,47 +84,46 @@ const Posts = () => {
                               borderRadius: '50%',
                               objectFit: 'cover',
                             }}
-                            src={post.post_images[0].image_url}
+                            src={service.photo}
                           />
                         </td>
-
                         <td>
+                          {service.service_description.slice(0, 25) + '...'}
+                        </td>
+                        <td>{service.reviews_count}</td>
+                        <td>{service.average_rating}</td>
+                        <td>{service.base_price}</td>
+
+                        {/* <td>
                           <button
-                            // onClick={() => {
-                            //   this.togglepostBlock(post)
-                            // }}
                             className={`btn btn-sm btn-danger`}
                           >
-                            {post.status && post.status === 'active'
+                            {service.status && service.status === 'active'
                               ? 'Block'
                               : 'Unblock'}
                           </button>
-                        </td>
-                        <td>
-                          <Link to={`/postdetails/${post.id}`}>
+                        </td> */}
+                        {/* <td>
+                          <Link to={`/servicedetails/${service.id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               View
                             </button>
                           </Link>
-                        </td>
-                        <td>
-                          <Link to={`/updatepost/${post.id}`}>
+                        </td> */}
+                        {/* <td>
+                          <Link to={`/updateservice/${service.id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               Update
                             </button>
                           </Link>
+                        </td> */}
+                        <td>
+                          <span
+                            className="fa fa-trash"
+                            aria-hidden="true"
+                            style={{ cursor: 'pointer' }}
+                          ></span>
                         </td>
-
-                        {post.isDeleted !== true && (
-                          <td>
-                            <span
-                              className="fa fa-trash"
-                              aria-hidden="true"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handlePostDelete(post._id)}
-                            ></span>
-                          </td>
-                        )}
                       </tr>
                     )
                   })}
@@ -143,4 +136,4 @@ const Posts = () => {
   )
 }
 
-export default Posts
+export default Services
