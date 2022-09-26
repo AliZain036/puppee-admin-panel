@@ -83,6 +83,25 @@ const Users = () => {
     setState((prev) => ({ ...prev, value: newValue }))
   }
 
+  const handleUserBlock = async (user) => {
+    let body = {
+      userId: user._id,
+      seller_stripe_account_id: user.seller_stripe_account_id || 'false',
+      blocked: user.blocked === 'block' ? 'unblock' : 'block',
+    }
+    let result = await addUpdateData('users/profile', body)
+    if (result && result.success === true && result.data) {
+      Swal.fire({
+        title: `User ${
+          result.data.blocked === 'block' ? 'Blocked' : 'Unblocked'
+        } Successfully`,
+        icon: 'success',
+        timer: 2000,
+      })
+      getAllUsers()
+    }
+  }
+
   return (
     <div className="row animated fadeIn">
       <div className="col-12 p-0">
@@ -152,7 +171,7 @@ const Users = () => {
                                 borderRadius: '50%',
                                 objectFit: 'cover',
                               }}
-                              src={user.cover_image}
+                              src={user.profile_image_url}
                             />
                           </td>
                           <td>{user.first_name + ' ' + user.last_name}</td>
@@ -161,25 +180,21 @@ const Users = () => {
 
                           <td>
                             <button
-                              // onClick={() => {
-                              //   this.toggleUserBlock(user)
-                              // }}
+                              onClick={() => handleUserBlock(user)}
                               className={`btn btn-sm btn-danger`}
                             >
-                              {user.status && user.status === 'active'
-                                ? 'Block'
-                                : 'Unblock'}
+                              {user.blocked === 'block' ? 'Unblock' : 'Block'}
                             </button>
                           </td>
                           <td>
-                            <Link to={`/userdetails/${user.id}`}>
+                            <Link to={`/userdetails/${user._id}`}>
                               <button className={`btn btn-sm btn-success`}>
                                 View
                               </button>
                             </Link>
                           </td>
                           <td>
-                            <Link to={`/updateUser/${user.id}`}>
+                            <Link to={`/updateUser/${user._id}`}>
                               <button className={`btn btn-sm btn-success`}>
                                 Update
                               </button>
@@ -202,8 +217,8 @@ const Users = () => {
           )}
         </TabPanel>
         <TabPanel value={state.value} index={1}>
-          {state.users.length === 0 && <h3>No users found.</h3>}
-          {state.users.length > 0 && (
+          {state.users && <h3>No users found.</h3>}
+          {state.users && (
             <div className="table-responsive" style={{ height: '500px' }}>
               <table className="table table-striped">
                 <thead>
@@ -217,7 +232,7 @@ const Users = () => {
                 </thead>
 
                 <tbody>
-                  {state.users.length != 0 &&
+                  {state.users &&
                     state.users.map((user, index) => {
                       if (user.user_type === 'browser') {
                         return (
@@ -281,8 +296,8 @@ const Users = () => {
           )}
         </TabPanel>
         <TabPanel value={state.value} index={2}>
-          {state.users.length === 0 && <h3>No users found.</h3>}
-          {state.users.length > 0 && (
+          {state.users && <h3>No users found.</h3>}
+          {state.users && (
             <div className="table-responsive" style={{ height: '500px' }}>
               <table className="table table-striped">
                 <thead>
@@ -296,7 +311,7 @@ const Users = () => {
                 </thead>
 
                 <tbody>
-                  {state.users.length != 0 &&
+                  {state.users &&
                     state.users.map((user, index) => {
                       if (user.user_type === 'seller') {
                         return (
@@ -379,8 +394,8 @@ const Users = () => {
           )}
         </TabPanel>
         <TabPanel value={state.value} index={3}>
-          {state.users.length === 0 && <h3>No users found.</h3>}
-          {state.users.length > 0 && (
+          {state.users && <h3>No users found.</h3>}
+          {state.users && (
             <div className="table-responsive" style={{ height: '500px' }}>
               <table className="table table-striped">
                 <thead>
@@ -394,7 +409,7 @@ const Users = () => {
                 </thead>
 
                 <tbody>
-                  {state.users.length != 0 &&
+                  {state.users &&
                     state.users.map((user, index) => {
                       if (user.user_type === 'service_provider') {
                         return (

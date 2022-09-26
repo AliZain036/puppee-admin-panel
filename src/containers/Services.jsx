@@ -15,7 +15,7 @@ const Services = () => {
 
   const getAllServices = async () => {
     let result = await getAllData('services')
-    if (result.success === true && result.data) {
+    if (result && result.success === true && result.data) {
       setServices(result.data)
     }
   }
@@ -53,7 +53,7 @@ const Services = () => {
             <h3>List of Services</h3>
           </div>
         </div>
-        {services.length > 0 && (
+        {services && services.length > 0 && (
           <div className="table-responsive" style={{ height: '700px' }}>
             <table className="table table-striped">
               <thead>
@@ -70,7 +70,7 @@ const Services = () => {
               </thead>
 
               <tbody>
-                {services.length != 0 &&
+                {services &&
                   services.map((service, index) => {
                     return (
                       <tr key={service._id}>

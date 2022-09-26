@@ -1,7 +1,7 @@
 // import firebase from "firebase";
 // import firestore from "firebase/firestore";
 const apiUrl = 'https://network-desk-backend.herokuapp.com/api/'
-const baseUrl = 'http://54.67.81.85:3000/'
+const baseUrl = 'https://54.67.81.85/'
 import axios from 'axios'
 import SwalAutoHide from 'sweetalert2'
 
@@ -81,28 +81,23 @@ export async function getDataById(url, reqBody) {
   }
 }
 
-export async function addUpdateData(url, reqBody) {
+export async function addUpdateData(endpoint, reqBody) {
   try {
-    let result = {}
-    result = await fetch(`${apiUrl}${url}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(reqBody),
-    })
-      .then((res) => res.json())
-      .then((res) => res)
-    return result
+    let user = await axios.post(`${baseUrl}${endpoint}`, reqBody)
+    return user.data
   } catch (error) {
-    SwalAutoHide.fire({
-      icon: 'error',
-      timer: 2000,
-      title: 'Failed.',
-      showConfirmButton: false,
-      text: error.message,
-    })
+    console.error(error)
+    return error.response.data
+  }
+}
+
+export async function updateRecord(endpoint, reqBody) {
+  try {
+    let response = await axios.put(`${baseUrl}${endpoint}`, reqBody)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    return error.response.data
   }
 }
 

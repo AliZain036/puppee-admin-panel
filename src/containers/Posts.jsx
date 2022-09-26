@@ -8,6 +8,7 @@ import {
   deleteRecord,
   getAllData,
   searchData,
+  updateRecord,
 } from '../backend/utility'
 import { connect } from 'react-redux'
 import { Box, Tab, Tabs, Typography } from '@material-ui/core'
@@ -22,7 +23,7 @@ const Posts = () => {
 
   const getAllPosts = async () => {
     let result = await getAllData('posts/all/62c0b0e28bda435977e9407d')
-    if (result.success === true && result.data) {
+    if (result && result.success === true && result.data) {
       setPosts(result.data)
     }
   }
@@ -36,7 +37,10 @@ const Posts = () => {
       postId,
     }
     let result = await deleteRecord('posts', body)
-    if (result.data.success === true && result.data.message === 'Posts Deleted') {
+    if (
+      result.data.success === true &&
+      result.data.message === 'Posts Deleted'
+    ) {
       Swal.fire({
         title: 'Post Deleted Successfully!',
         icon: 'success',
@@ -50,6 +54,24 @@ const Posts = () => {
         icon: 'error',
         timer: '2000',
       })
+    }
+  }
+
+  const togglePostBlock = async (post) => {
+    let body = {
+      postId: post._id,
+      blocked: post.blocked === 'block' ? 'unblock' : 'block',
+    }
+    let result = await updateRecord('posts', body)
+    if (result && result.success === true && result.data) {
+      Swal.fire({
+        title: `Post ${
+          result.data.blocked === 'block' ? 'Blocked' : 'Unblocked'
+        } Successfully`,
+        icon: 'success',
+        timer: 2000,
+      })
+      getAllPosts()
     }
   }
 
@@ -93,28 +115,25 @@ const Posts = () => {
                             src={post.post_images[0].image_url}
                           />
                         </td>
-
                         <td>
                           <button
-                            // onClick={() => {
-                            //   this.togglepostBlock(post)
-                            // }}
+                            onClick={() => togglePostBlock(post)}
                             className={`btn btn-sm btn-danger`}
                           >
-                            {post.status && post.status === 'active'
-                              ? 'Block'
-                              : 'Unblock'}
+                            {post && post.blocked === 'block'
+                              ? 'Unblock'
+                              : 'Block'}
                           </button>
                         </td>
                         <td>
-                          <Link to={`/postdetails/${post.id}`}>
+                          <Link to={`/postdetails/${post._id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               View
                             </button>
                           </Link>
                         </td>
                         <td>
-                          <Link to={`/updatepost/${post.id}`}>
+                          <Link to={`/updatepost/${post._id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               Update
                             </button>
