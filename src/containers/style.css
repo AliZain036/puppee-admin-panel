@@ -54,3 +54,8 @@
 .comment {
   border: 1px solid #555;
 }
+
+label {
+  margin-top: 1rem;
+  margin-bottom: 0 !important;
+}

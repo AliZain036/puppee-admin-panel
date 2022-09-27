@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom'
 import Cookie from 'js-cookie'
 import swal from 'sweetalert'
 import SwalAutoHide from 'sweetalert2'
-import { deleteRecord, getAllData } from '../backend/utility'
+import {
+  addUpdateData,
+  deleteRecord,
+  getAllData,
+  updateRecord,
+} from '../backend/utility'
 import Swal from 'sweetalert2'
 // import { Tabs } from 'antd'
 const Services = () => {
@@ -20,19 +25,13 @@ const Services = () => {
     }
   }
 
-  const handlePostDelete = async (postId) => {
-    let body = {
-      postId,
-    }
-    let result = await deleteRecord('services', body)
-    if (
-      result.data.success === true &&
-      result.data.message === 'services Deleted'
-    ) {
+  const handleServiceDelete = async (serviceId) => {
+    let result = await deleteRecord(`services/${serviceId}`)
+    if (result && result.data.success === true) {
       Swal.fire({
-        title: 'Post Deleted Successfully!',
+        title: 'Service Deleted Successfully!',
         icon: 'success',
-        timer: '2000',
+        timer: 2000,
       })
       getAllServices()
     } else {
@@ -40,8 +39,26 @@ const Services = () => {
         title: 'Error!',
         text: 'Something went wrong, please try again.',
         icon: 'error',
-        timer: '2000',
+        timer: 2000,
       })
+    }
+  }
+
+  const toggleServiceBlock = async (service) => {
+    let body = {
+      blocked:
+        service.blocked && service.blocked === 'block' ? 'unblock' : 'block',
+    }
+    let response = await updateRecord(`services/${service._id}`, body)
+    if (response && response.success === true) {
+      Swal.fire({
+        title: `Service ${
+          response.data.blocked === 'block' ? 'Blocked' : 'Unblocked'
+        } Successfully!`,
+        icon: 'success',
+        timer: 2000,
+      })
+      getAllServices()
     }
   }
 
@@ -60,12 +77,10 @@ const Services = () => {
                 <tr>
                   <th>Image</th>
                   <th>Title</th>
+                  <th>Description</th>
                   <th>Reviews Count</th>
                   <th>Average Rating</th>
                   <th>Base Price</th>
-                  {/* <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th> */}
                 </tr>
               </thead>
 
@@ -87,6 +102,7 @@ const Services = () => {
                             src={service.photo}
                           />
                         </td>
+                        <td>{service.you_offering}</td>
                         <td>
                           {service.service_description.slice(0, 25) + '...'}
                         </td>
@@ -94,34 +110,36 @@ const Services = () => {
                         <td>{service.average_rating}</td>
                         <td>{service.base_price}</td>
 
-                        {/* <td>
+                        <td>
                           <button
                             className={`btn btn-sm btn-danger`}
+                            onClick={() => toggleServiceBlock(service)}
                           >
-                            {service.status && service.status === 'active'
-                              ? 'Block'
-                              : 'Unblock'}
+                            {service.blocked && service.blocked === 'block'
+                              ? 'Unblock'
+                              : 'Block'}
                           </button>
-                        </td> */}
-                        {/* <td>
-                          <Link to={`/servicedetails/${service.id}`}>
+                        </td>
+                        <td>
+                          <Link to={`/servicedetails/${service._id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               View
                             </button>
                           </Link>
-                        </td> */}
-                        {/* <td>
-                          <Link to={`/updateservice/${service.id}`}>
+                        </td>
+                        <td>
+                          <Link to={`/update-service/${service._id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               Update
                             </button>
                           </Link>
-                        </td> */}
+                        </td>
                         <td>
                           <span
                             className="fa fa-trash"
                             aria-hidden="true"
                             style={{ cursor: 'pointer' }}
+                            onClick={() => handleServiceDelete(service._id)}
                           ></span>
                         </td>
                       </tr>

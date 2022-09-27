@@ -125,13 +125,13 @@ const Posts = () => {
                               : 'Block'}
                           </button>
                         </td>
-                        <td>
+                        {/* <td>
                           <Link to={`/postdetails/${post._id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               View
                             </button>
                           </Link>
-                        </td>
+                        </td> */}
                         <td>
                           <Link to={`/updatepost/${post._id}`}>
                             <button className={`btn btn-sm btn-success`}>
