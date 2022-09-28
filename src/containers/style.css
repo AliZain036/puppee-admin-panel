@@ -59,3 +59,8 @@ label {
   margin-top: 1rem;
   margin-bottom: 0 !important;
 }
+
+.rdw-editor-wrapper {
+  height: 500px;
+  background-color: #f5f5f5;
+}

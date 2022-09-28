@@ -4,15 +4,15 @@ import SwalAutoHide from 'sweetalert2'
 import axios from 'axios'
 
 const UpdatePost = (props) => {
-    const [post, setPost] = useState(null)
-    const [postToUpdate, setPostToUpdate] = useState({
-        image: null,
-        location: "",
-        description: "",
-        post_id: "",
-        user_id: ""
-    })
-    
+  const [post, setPost] = useState(null)
+  const [postToUpdate, setPostToUpdate] = useState({
+    image: null,
+    location: '',
+    description: '',
+    post_id: '',
+    user_id: '',
+  })
+
   useEffect(() => {
     getPost()
   }, [])
@@ -26,7 +26,12 @@ const UpdatePost = (props) => {
       let response = await getDataById('show-post', reqBody)
       if (response.data !== null) {
         let post = response.data
-        setPostToUpdate({ user_id: post.user_id, post_id: post.id, location: post.location, description: post.description })
+        setPostToUpdate({
+          user_id: post.user_id,
+          post_id: post.id,
+          location: post.location,
+          description: post.description,
+        })
       }
     } catch (error) {
       SwalAutoHide.fire({
@@ -51,20 +56,17 @@ const UpdatePost = (props) => {
 
   const handleSubmit = async (e) => {
     try {
-    e.preventDefault()
-    let fd = new FormData()
-    if(postToUpdate.image) {
-      fd.append('image[]', postToUpdate.image)
-    }
-    fd.append('location', postToUpdate.location)
-    fd.append('description', postToUpdate.description)
-    fd.append('post_id', postToUpdate.post_id)
-    fd.append('user_id', postToUpdate.user_id)
+      e.preventDefault()
+      let fd = new FormData()
+      if (postToUpdate.image) {
+        fd.append('image[]', postToUpdate.image)
+      }
+      fd.append('location', postToUpdate.location)
+      fd.append('description', postToUpdate.description)
+      fd.append('post_id', postToUpdate.post_id)
+      fd.append('user_id', postToUpdate.user_id)
       axios
-        .post(
-          'https://network-desk-backend.herokuapp.com/api/update-post',
-          fd,
-        )
+        .post('https://network-desk-backend.herokuapp.com/api/update-post', fd)
         .then((res) => {
           if (res.data != null) {
             SwalAutoHide.fire({
@@ -117,7 +119,7 @@ const UpdatePost = (props) => {
                 required
                 id="location"
                 className="form-control"
-                value={postToUpdate.location || ""}
+                value={postToUpdate.location || ''}
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -129,7 +131,7 @@ const UpdatePost = (props) => {
                 name="description"
                 id="description"
                 className="form-control"
-                value={postToUpdate.description || ""}
+                value={postToUpdate.description || ''}
                 onChange={(e) => handleChange(e)}
               />
             </div>

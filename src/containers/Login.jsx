@@ -168,7 +168,7 @@ class Login extends Component {
                           fontWeight: "bold",
                         }}
                       >
-                        Puppee Dashboard
+                        PupEEE Dashboard
                       </div>
                     </div>
                   </CardBody>

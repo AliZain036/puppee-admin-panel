@@ -2,6 +2,8 @@
 // import firestore from "firebase/firestore";
 const apiUrl = 'https://network-desk-backend.herokuapp.com/api/'
 const baseUrl = 'https://54.67.81.85/'
+const uploadSingleFileUrl = 'https://54.67.81.85:8080/upload-to-s3'
+
 import axios from 'axios'
 import SwalAutoHide from 'sweetalert2'
 
@@ -128,6 +130,22 @@ export async function searchData(url, reqBody) {
 export async function deleteRecord(endpoint, reqBody) {
   try {
     let result = await axios.delete(`${baseUrl}${endpoint}`, { data: reqBody })
+    return result
+  } catch (error) {
+    console.error(error)
+    SwalAutoHide.fire({
+      icon: 'error',
+      timer: 2000,
+      title: 'Failed.',
+      showConfirmButton: false,
+      text: error.message,
+    })
+  }
+}
+
+export async function uploadSingleFile(reqBody) {
+  try {
+    let result = await axios.delete(`${uploadSingleFileUrl}`, { data: reqBody })
     return result
   } catch (error) {
     console.error(error)

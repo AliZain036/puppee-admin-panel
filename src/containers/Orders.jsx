@@ -7,71 +7,59 @@ import {
   addUpdateData,
   deleteRecord,
   getAllData,
-  searchData,
   updateRecord,
 } from '../backend/utility'
-import { connect } from 'react-redux'
-import { Box, Tab, Tabs, Typography } from '@material-ui/core'
 import Swal from 'sweetalert2'
 // import { Tabs } from 'antd'
-const Posts = () => {
-  const [posts, setPosts] = useState([])
+const Orders = () => {
+  const [orders, setOrders] = useState([])
 
   useEffect(() => {
-    getAllPosts()
+    getAllOrders()
   }, [])
 
-  const getAllPosts = async () => {
-    let result = await getAllData('posts/all/62c0b0e28bda435977e9407d')
+  const getAllOrders = async () => {
+    let result = await getAllData('service-orders')
     if (result && result.success === true && result.data) {
-      setPosts(result.data)
+      setOrders(result.data)
     }
   }
 
-  // const handleChange = (event, newValue) => {
-  //   setState((prev) => ({ ...prev, value: newValue }))
-  // }
-
-  const handlePostDelete = async (postId) => {
-    let body = {
-      postId,
-    }
-    let result = await deleteRecord('posts', body)
-    if (
-      result.data.success === true &&
-      result.data.message === 'Posts Deleted'
-    ) {
+  const handleOrderDelete = async (orderId) => {
+    let result = await deleteRecord(`service-orders/${orderId}`)
+    if (result && result.data.success === true) {
       Swal.fire({
-        title: 'Post Deleted Successfully!',
+        title: 'Order Deleted Successfully!',
         icon: 'success',
-        timer: '2000',
+        timer: 2000,
       })
-      getAllPosts()
+      getAllOrders()
     } else {
       Swal.fire({
         title: 'Error!',
         text: 'Something went wrong, please try again.',
         icon: 'error',
-        timer: '2000',
+        timer: 2000,
       })
     }
   }
 
-  const togglePostBlock = async (post) => {
+  const toggleOrderBlock = async (order) => {
     let body = {
-      postId: post._id,
-      blocked: post.blocked === 'block' ? 'unblock' : 'block',
+      service_order_id: order._id,
+      blocked: order.blocked && order.blocked === 'block' ? 'unblock' : 'block',
+      status: order.status,
     }
-    let result = await updateRecord('posts', body)
-    if (result && result.success === true && result.data) {
+    let response = await updateRecord(`service-orders`, body)
+    if (response && response.success === true) {
       Swal.fire({
-        title: `Post ${
-          result.data.blocked === 'block' ? 'Blocked' : 'Unblocked'
-        } Successfully`,
+        title: `Order ${
+          response.data.blocked === 'block' ? 'Blocked' : 'Unblocked'
+        } Successfully!`,
         icon: 'success',
         timer: 2000,
       })
-      getAllPosts()
+      getAllOrders()
     }
   }
 
@@ -80,30 +68,31 @@ const Posts = () => {
       <div className="col-12 p-0">
         <div className="row space-1">
           <div className="col-12">
-            <h3>List of Posts</h3>
+            <h3>List of Orders</h3>
           </div>
         </div>
-        {posts.length > 0 && (
+        {orders && orders.length > 0 && (
           <div className="table-responsive" style={{ height: '700px' }}>
             <table className="table table-striped">
               <thead>
                 <tr>
-                  {/* <th>Sr. #</th> */}
                   <th>Date</th>
-                  <th>Image</th>
-                  {/* <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th> */}
+                  <th>Title</th>
+                  <th>Cover Image</th>
+                  <th>Total Price</th>
+                  <th>Description</th>
+                  <th>Address</th>
+                  <th>Status</th>
                 </tr>
               </thead>
 
               <tbody>
-                {posts.length != 0 &&
-                  posts.map((post, index) => {
+                {orders &&
+                  orders.map((order, index) => {
                     return (
-                      <tr key={post._id}>
-                        {/* <td>{index + 1}</td> */}
-                        <td>{new Date(post.timestamp).toLocaleDateString()}</td>
+                      <tr key={order._id}>
+                        <td>{order.date}</td>
+                        <td>{order.title}</td>
                         <td>
                           <img
                             style={{
@@ -112,44 +101,45 @@ const Posts = () => {
                               borderRadius: '50%',
                               objectFit: 'cover',
                             }}
-                            src={post.post_images[0].image_url}
+                            src={order.cover_image}
                           />
                         </td>
+                        <td>{order.total_price}</td>
+                        <td>{order.description}</td>
+                        <td>{order.address}</td>
+                        <td>{order.status}</td>
                         <td>
                           <button
-                            onClick={() => togglePostBlock(post)}
                             className={`btn btn-sm btn-danger`}
+                            onClick={() => toggleOrderBlock(order)}
                           >
-                            {post && post.blocked === 'block'
+                            {order.blocked && order.blocked === 'block'
                               ? 'Unblock'
                               : 'Block'}
                           </button>
                         </td>
                         <td>
-                          <Link to={`/post-details/${post._id}`}>
+                          <Link to={`/orderdetails/${order._id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               View
                             </button>
                           </Link>
                         </td>
                         <td>
-                          <Link to={`/updatepost/${post._id}`}>
+                          <Link to={`/update-order/${order._id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               Update
                             </button>
                           </Link>
                         </td>
-
-                        {post.isDeleted !== true && (
-                          <td>
-                            <span
-                              className="fa fa-trash"
-                              aria-hidden="true"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handlePostDelete(post._id)}
-                            ></span>
-                          </td>
-                        )}
+                        <td>
+                          <span
+                            className="fa fa-trash"
+                            aria-hidden="true"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleOrderDelete(order._id)}
+                          ></span>
+                        </td>
                       </tr>
                     )
                   })}
@@ -162,4 +152,4 @@ const Posts = () => {
   )
 }
 
-export default Posts
+export default Orders

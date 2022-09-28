@@ -11,24 +11,24 @@ export default {
     //   icon: "icon-user",
     // },
     {
-      name: "Users",
-      url: "/users",
-      icon: "icon-user",
+      name: 'Users',
+      url: '/users',
+      icon: 'icon-user',
     },
     {
-      name: "Posts",
-      url: "/posts",
-      icon: "icon-user",
+      name: 'Posts',
+      url: '/posts',
+      icon: 'icon-user',
     },
-    // {
-    //   name: "Orders",
-    //   url: "/orders",
-    //   icon: "icon-user",
-    // },
     {
-      name: "Services",
-      url: "/services",
-      icon: "icon-user",
+      name: 'Orders',
+      url: '/orders',
+      icon: 'icon-user',
+    },
+    {
+      name: 'Services',
+      url: '/services',
+      icon: 'icon-user',
     },
     // {
     //   name: "Feedback",
@@ -45,11 +45,11 @@ export default {
     //   url: "/about",
     //   icon: "icon-people",
     // },
-    // {
-    //   name: "Terms And Conditions",
-    //   url: "/terms",
-    //   icon: "icon-people",
-    // },
+    {
+      name: 'Terms And Conditions',
+      url: '/terms',
+      icon: 'icon-people',
+    },
     // {
     //   name: "Languages",
     //   url: "/languages",
@@ -77,21 +77,21 @@ export default {
     //   url: "/expertiseCategories",
     //   icon: "icon-people",
     // },
-    // {
-    //   name: "Privacy Policy",
-    //   url: "/privacy",
-    //   icon: "icon-people",
-    // },
+    {
+      name: 'Privacy Policy',
+      url: '/privacy',
+      icon: 'icon-people',
+    },
     // {
     //   name: "Cookie Policy",
     //   url: "/cookie",
     //   icon: "icon-people",
     // },
     {
-      name: "Logout",
-      url: "/logout",
-      icon: "icon-logout",
-      variant: "roomy-blue",
+      name: 'Logout',
+      url: '/logout',
+      icon: 'icon-logout',
+      variant: 'roomy-blue',
     },
   ],
-};
+}

@@ -17,7 +17,7 @@ import { Container } from 'reactstrap'
 import UserDetails from './UserDetails'
 import Customers from './Customers'
 import Posts from './Posts'
-import ViewPosts from './ViewPosts'
+import ViewPosts from './ViewPost'
 import TermsAndConditions from './TermsAndConditions'
 import PrivacyPolicy from './PrivacyPolicy'
 import CookiePolicy from './CookiePolicy'
@@ -42,6 +42,9 @@ import Cookie from 'js-cookie'
 import Services from './Services'
 import ServiceDetails from './ServiceDetails'
 import UpdateService from './UpdateService'
+import Orders from './Orders'
+import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import ViewPost from './ViewPost'
 
 class App extends React.Component {
   constructor(props) {
@@ -147,6 +150,7 @@ class App extends React.Component {
                   /> */}
                 <Route exact path="/about" component={About} />
                 <Route exact path="/users" component={Users} />
+                <Route exact path="/orders" component={Orders} />
                 <Route exact path="/services" component={Services} />
                 <Route
                   exact
@@ -160,7 +164,11 @@ class App extends React.Component {
                 />
                 <Route exact path="/customers" component={Customers} />
                 <Route exact path="/posts" component={Posts} />
-                <Route exact path="/viewposts/:postId" component={ViewPosts} />
+                <Route
+                  exact
+                  path="/post-details/:postId"
+                  component={ViewPost}
+                />
                 <Route
                   exact
                   path="/updatePost/:postId"

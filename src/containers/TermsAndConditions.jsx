@@ -1,82 +1,28 @@
-import React from "react";
-import "draft-js/dist/Draft.css";
-import "./style.css";
-import {
-  addUpdateData,
-  getAllData,
-} from "../backend/utility";
-import SwalAutoHide from "sweetalert2";
+import { EditorState } from 'draft-js'
+import React, { useState } from 'react'
+import { Editor } from 'react-draft-wysiwyg'
 
-export default class TermsAndConditions extends React.Component {
-  constructor(props) {
-    super(props);
+const TermsAndConditions = () => {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty())
 
-    this.state = {
-      description: "",
-    };
+  const handleEditorStateChange = (editorState) => {
+    setEditorState(editorState)
   }
 
-  componentDidMount() {
-      this.getTermsAndConditions()
-  }
-
-  async getTermsAndConditions() {
-    let result = await getAllData("show-terms-conditions");
-    if(result) {
-      this.setState({description: result.data.description})
-    }
-  }
-
-  async updateTerms() {
-    let reqBody = {
-      description: this.state.description
-    }
-    let result = await addUpdateData("add-terms-conditions", reqBody);
-    debugger;
-    if(result) {
-      this.setState({description: result.data.description})
-      SwalAutoHide.fire({
-        icon: "success",
-        timer: 2000,
-        title: "Success.",
-        showConfirmButton: false,
-        text: "Terms and Conditions Updated Successfully",
-      });
-    } else {
-      SwalAutoHide.fire({
-        icon: "error",
-        timer: 2000,
-        title: "Success.",
-        showConfirmButton: false,
-        text: "Something went wrong!!",
-      });
-    }
-  }
-
-  render() {
-    return (
-      <div className="row animated fadeIn">
-        <div className="col-12">
-          <div className="row space-1">
-            <div className="col-12"></div>
-            <textarea
-              value={this.state.description}
-              onChange={(e) => {
-                this.setState({
-                  description: e.target.value,
-                });
-              }}
-              style={{ minHeight: 300, marginBottom: 20, width: "100%" }}
-            />
-            <button
-              onClick={() => this.updateTerms()}
-              className={`btn btn-sm btn-success`}
-            >
-              Save
-            </button>
-          </div>
-        </div>
+  return (
+    <div className="row animated fadeIn">
+      <div className="col-12">
+        <Editor
+          editorState={editorState}
+          // onEditorStateChange={handleEditorStateChange}
+          onContentStateChange={(e) => {
+            console.log(e)
+          }}
+        />
       </div>
-    );
-  }
+      <h3 className="my-3">Terms and Conditions</h3>
+    </div>
+  )
 }
+
+export default TermsAndConditions

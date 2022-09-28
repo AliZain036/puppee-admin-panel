@@ -6,72 +6,130 @@ import SwalAutoHide from 'sweetalert2'
 import { addUpdateData, getAllData, uploadSingleFile } from '../backend/utility'
 const { Option } = Select
 
-const UpdateUser = ({ props }) => {
+const ViewPost = ({ props }) => {
   const urlPathName = window.location.pathname.split('/')
-  const userId = urlPathName[urlPathName.length - 1]
-  const [userDetails, setUserDetails] = useState({
-    birth_day: '',
-    city: '',
-    country: '',
-    country_code: '',
-    country_phone_code: '',
-    profile_image_url: '',
-    patch_video_url: '',
-    past_work_images: [],
-    first_name: '',
-    gender: '',
-    interests: [],
-    i_am_a: [],
-    is_phone_number_verified: true,
-    service_provider_image: '',
-    last_name: '',
-    main_language: '',
-    occupation: '',
-    phone_number: '',
-    seller_stripe_account_id: '',
-    state: '',
-    expertise: '',
-    cover_image: '',
-    user_name: '',
-    user_type: '',
-    business_title: '',
-    is_online: false,
-    seller_affiliate_link: [],
-    userId: '',
-    rating: 2,
-    location: {
-      type: '',
-      coordinates: [],
+  const postId = urlPathName[urlPathName.length - 1]
+  const [postDetails, setPostDetails] = useState({
+    number_of_Comments: 3,
+    numberOfDisLikes: 2,
+    whoDisLikes: [
+      {
+        userId: '62e2e2a8547a71b7dfcabdb1',
+      },
+      {
+        userId: '62d72ed4d5520644ac7851d7',
+      },
+    ],
+    numberOfLikes: 1,
+    whoLikes: [
+      {
+        userId: '62eef00cd860c3fa9444a54b',
+      },
+    ],
+    post_videos: [],
+    post_images: [
+      {
+        image_url:
+          'https://pupeee.s3.ap-south-1.amazonaws.com/1659039435652image.jpg',
+        image_text: 'image text',
+        reviews: [],
+        _id: '62e2eed1547a71b7dfcabf76',
+      },
+      {
+        image_url:
+          'https://pupeee.s3.ap-south-1.amazonaws.com/1659039438102image.jpg',
+        image_text: 'image text',
+        reviews: [],
+        _id: '62e2eed1547a71b7dfcabf77',
+      },
+    ],
+    tag_products: [
+      {
+        product_name: 'Lip Stick',
+        affiliate_link: '',
+        _id: '62e2eed1547a71b7dfcabf78',
+      },
+      {
+        product_name: 'Shirt',
+        affiliate_link: '',
+        _id: '62e2eed1547a71b7dfcabf79',
+      },
+      {
+        product_name: 'Trouser',
+        affiliate_link: '',
+        _id: '62e2eed1547a71b7dfcabf7a',
+      },
+    ],
+    music: {
+      author_name: '',
+      description: '',
+      _id: '62e2eed1547a71b7dfcabf74',
     },
-    email: '',
-    password: '',
-    blocked: false,
+    allow_comments: true,
+    add_caption: 'bahahahajsiuwnw is\n',
+    userId: '62e2e2a8547a71b7dfcabdb1',
+    timestamp: '2022-07-28T20:17:21.493Z',
+    __v: 8,
+    my_list: [],
+    privacy: {
+      other: {
+        radius: {
+          lat: 123,
+          lng: 321,
+          address: 'asda',
+          miles: 12,
+        },
+        local: true,
+        cities_countries: true,
+        global: true,
+      },
+      my_list: [
+        {
+          type: '14',
+          selected: true,
+          members: 15,
+          _id: '62eeb3ead860c3fa944486ff',
+        },
+      ],
+      hide_members_from: [
+        {
+          userId: '62d53e1859414430781fb6b0',
+          first_name: 'first_name',
+          last_name: 'last_name',
+          user_name: 'user_name',
+          profile_image_url: 'profile_image_url',
+          _id: '62eeb3ead860c3fa94448700',
+        },
+      ],
+      _id: '62eeb3ead860c3fa944486fe',
+    },
+    blocked: 'unblock',
   })
   useEffect(() => {
-    getUserDetails()
+    getpostDetails()
   }, [])
 
-  const getUserDetails = async () => {
-    let result = await getAllData(`users/${userId}`)
+  const getpostDetails = async () => {
+    let result = await getAllData(`posts/${postId}`)
     if (result && result.success === true && result.statusCode === 200) {
       console.log(result.data)
-      setUserDetails(result.data)
+      setPostDetails(result.data)
     }
   }
 
   const handleChange = (e) => {
     e.persist()
-    setUserDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    setPostDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     let body = {
-      ...userDetails,
-      userId: userDetails._id,
-      seller_stripe_account_id: userDetails.seller_stripe_account_id || 'false',
+      ...postDetails,
+      userId: postDetails._id,
+      seller_stripe_account_id: postDetails.seller_stripe_account_id || 'false',
     }
-    body.rating = Number(userDetails.rating)
+    body.rating = Number(postDetails.rating)
     let result = await addUpdateData('users/profile', body)
     if (result && result.success === true && result.data) {
       Swal.fire({
@@ -94,7 +152,7 @@ const UpdateUser = ({ props }) => {
     let result = await uploadSingleFile(formData)
     // const profile_image_url = URL.createObjectURL(e.target.files[0])
     if (result && result.success === true) {
-      setUserDetails((prev) => ({ ...prev, profile_image_url }))
+      setPostDetails((prev) => ({ ...prev, profile_image_url }))
     }
   }
 
@@ -102,9 +160,9 @@ const UpdateUser = ({ props }) => {
     <div className="row animated fadeIn">
       <div className="col-12 p-0">
         <h3>Update User Details</h3>
-        {userDetails && (
+        {postDetails && (
           <form onSubmit={handleSubmit}>
-            <div className="row px-3 mt-3">
+            <div className="row">
               <div className="col-12 col-md-6">
                 <label className="m-0">Profile Image: </label>
                 <input
@@ -115,7 +173,7 @@ const UpdateUser = ({ props }) => {
               </div>
               <div className="col-12 mt-2">
                 <img
-                  src={userDetails.profile_image_url}
+                  src={postDetails.profile_image_url}
                   alt=""
                   style={{
                     borderRadius: '50%',
@@ -129,7 +187,7 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">First Name: </label>
                 <input
                   type="text"
-                  value={userDetails.first_name}
+                  value={postDetails.first_name}
                   className="w-100"
                   name="first_name"
                   onChange={(e) => handleChange(e)}
@@ -139,7 +197,7 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">Last Name: </label>
                 <input
                   type="text"
-                  value={userDetails.last_name}
+                  value={postDetails.last_name}
                   className="w-100"
                   name="last_name"
                   onChange={(e) => handleChange(e)}
@@ -149,7 +207,7 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">Email: </label>
                 <input
                   type="text"
-                  value={userDetails.email}
+                  value={postDetails.email}
                   className="w-100"
                   name="email"
                   onChange={(e) => handleChange(e)}
@@ -159,7 +217,7 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">Country: </label>
                 <input
                   type="text"
-                  value={userDetails.country}
+                  value={postDetails.country}
                   className="w-100"
                   name="country"
                   onChange={(e) => handleChange(e)}
@@ -169,7 +227,7 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">City: </label>
                 <input
                   type="text"
-                  value={userDetails.city}
+                  value={postDetails.city}
                   className="w-100"
                   name="city"
                   onChange={(e) => handleChange(e)}
@@ -179,7 +237,7 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">State: </label>
                 <input
                   type="text"
-                  value={userDetails.state}
+                  value={postDetails.state}
                   className="w-100"
                   name="state"
                   onChange={(e) => handleChange(e)}
@@ -189,7 +247,7 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">Phone Number: </label>
                 <input
                   type="text"
-                  value={userDetails.phone_number}
+                  value={postDetails.phone_number}
                   className="w-100"
                   name="phone_number"
                   onChange={(e) => handleChange(e)}
@@ -202,23 +260,22 @@ const UpdateUser = ({ props }) => {
                   className="w-100"
                   onChange={(e) => {
                     e.persist()
-                    setUserDetails((prev) => ({
+                    setPostDetails((prev) => ({
                       ...prev,
                       gender: e.target.value,
                     }))
                   }}
-                  value={userDetails.gender}
+                  value={postDetails.gender}
                 >
                   <option value="male">Male</option>
                   <option value="female">Female</option>
-                  <option value="other">Other</option>
                 </select>
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Rating: </label>
                 <input
                   type="number"
-                  value={userDetails.rating}
+                  value={postDetails.rating}
                   className="w-100"
                   name="rating"
                   onChange={(e) => handleChange(e)}
@@ -228,7 +285,7 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">Occupation: </label>
                 <input
                   type="text"
-                  value={userDetails.occupation}
+                  value={postDetails.occupation}
                   className="w-100"
                   name="occupation"
                   onChange={(e) => handleChange(e)}
@@ -238,20 +295,18 @@ const UpdateUser = ({ props }) => {
                 <label className="m-0">Main Language: </label>
                 <input
                   type="text"
-                  value={userDetails.main_language}
+                  value={postDetails.main_language}
                   className="w-100"
                   name="main_language"
                   onChange={(e) => handleChange(e)}
                 />
               </div>
               {/* <h5>Qualification Details: </h5> */}
-              {/* {userDetails.} */}
-              <div>
-                <button className={`btn btn-sm btn-success mt-3`} type="submit">
-                  Update
-                </button>
-              </div>
+              {/* {postDetails.} */}
             </div>
+            <button className={`btn btn-sm btn-success mt-3`} type="submit">
+              Update
+            </button>
           </form>
         )}
       </div>
@@ -259,4 +314,4 @@ const UpdateUser = ({ props }) => {
   )
 }
 
-export default UpdateUser
+export default ViewPost
