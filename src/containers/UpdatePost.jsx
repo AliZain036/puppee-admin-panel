@@ -18,30 +18,30 @@ const UpdatePost = (props) => {
   }, [])
 
   const getPost = async () => {
-    try {
-      let { postId } = props.match.params
-      let reqBody = {
-        post_id: postId,
-      }
-      let response = await getDataById('show-post', reqBody)
-      if (response.data !== null) {
-        let post = response.data
-        setPostToUpdate({
-          user_id: post.user_id,
-          post_id: post.id,
-          location: post.location,
-          description: post.description,
-        })
-      }
-    } catch (error) {
-      SwalAutoHide.fire({
-        icon: 'error',
-        timer: 2000,
-        title: 'Failed.',
-        showConfirmButton: false,
-        text: 'Something went wrong!',
-      })
-    }
+    // try {
+    //   let { postId } = props.match.params
+    //   let reqBody = {
+    //     post_id: postId,
+    //   }
+    //   let response = await getDataById('show-post', reqBody)
+    //   if (response.data !== null) {
+    //     let post = response.data
+    //     setPostToUpdate({
+    //       user_id: post.user_id,
+    //       post_id: post.id,
+    //       location: post.location,
+    //       description: post.description,
+    //     })
+    //   }
+    // } catch (error) {
+    //   SwalAutoHide.fire({
+    //     icon: 'error',
+    //     timer: 2000,
+    //     title: 'Failed.',
+    //     showConfirmButton: false,
+    //     text: 'Something went wrong!',
+    //   })
+    // }
   }
 
   const selectedFileHandler = (e) => {

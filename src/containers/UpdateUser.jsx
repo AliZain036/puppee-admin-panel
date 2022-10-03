@@ -1,10 +1,13 @@
-import { Select } from 'antd'
+import { Select, Input, InputNumber } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import SwalAutoHide from 'sweetalert2'
 import { addUpdateData, getAllData, uploadSingleFile } from '../backend/utility'
 const { Option } = Select
+import ReactPhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/material.css'
+import { Country, State, City } from 'country-state-city'
 
 const UpdateUser = ({ props }) => {
   const urlPathName = window.location.pathname.split('/')
@@ -47,9 +50,33 @@ const UpdateUser = ({ props }) => {
     password: '',
     blocked: false,
   })
+  const [occupations, setOccupations] = useState([])
+  const [languages, setLanguages] = useState([])
   useEffect(() => {
     getUserDetails()
+    getAllOccupations()
+    getAllLanguages()
   }, [])
+
+  const getAllOccupations = async () => {
+    const result = await getAllData('occupations')
+    if (result && result.success === true) {
+      setOccupations(result.data)
+    }
+  }
+
+  const getAllLanguages = async () => {
+    const result = await getAllData('languages')
+    if (result && result.success === true) {
+      setLanguages(result.data)
+    }
+  }
+
+  const [location, setLocation] = useState({
+    conutries: Country.getAllCountries(),
+    states: [],
+    cities: [],
+  })
 
   const getUserDetails = async () => {
     let result = await getAllData(`users/${userId}`)
@@ -60,7 +87,6 @@ const UpdateUser = ({ props }) => {
   }
 
   const handleChange = (e) => {
-    e.persist()
     setUserDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -72,6 +98,9 @@ const UpdateUser = ({ props }) => {
       seller_stripe_account_id: userDetails.seller_stripe_account_id || 'false',
     }
     body.rating = Number(userDetails.rating)
+    body.country = userDetails.country.name
+    body.state = userDetails.country.state
+    body.city = userDetails.country.city
     let result = await addUpdateData('users/profile', body)
     if (result && result.success === true && result.data) {
       Swal.fire({
@@ -86,17 +115,16 @@ const UpdateUser = ({ props }) => {
   const handleProfileImageChange = async (e) => {
     e.persist()
     if (!e.target.files[0]) return
-    // let body = {
-    //   file: e.target.files[0],
-    // }
-    let formData = new FormData()
-    formData.append('file', e.target.files[0])
-    let result = await uploadSingleFile(formData)
-    // const profile_image_url = URL.createObjectURL(e.target.files[0])
-    if (result && result.success === true) {
-      setUserDetails((prev) => ({ ...prev, profile_image_url }))
+    let result = await uploadSingleFile(e.target.files[0])
+    if (result && result.data.success === true) {
+      setUserDetails((prev) => ({
+        ...prev,
+        profile_image_url: result.data.url,
+      }))
     }
   }
+
+  console.log(userDetails)
 
   return (
     <div className="row animated fadeIn">
@@ -106,11 +134,12 @@ const UpdateUser = ({ props }) => {
           <form onSubmit={handleSubmit}>
             <div className="row px-3 mt-3">
               <div className="col-12 col-md-6">
-                <label className="m-0">Profile Image: </label>
+                <label className="m-0">Upload Profile Image</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleProfileImageChange}
+                  style={{ width: '90px' }}
                 />
               </div>
               <div className="col-12 mt-2">
@@ -127,7 +156,7 @@ const UpdateUser = ({ props }) => {
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">First Name: </label>
-                <input
+                <Input
                   type="text"
                   value={userDetails.first_name}
                   className="w-100"
@@ -137,7 +166,7 @@ const UpdateUser = ({ props }) => {
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Last Name: </label>
-                <input
+                <Input
                   type="text"
                   value={userDetails.last_name}
                   className="w-100"
@@ -147,8 +176,8 @@ const UpdateUser = ({ props }) => {
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Email: </label>
-                <input
-                  type="text"
+                <Input
+                  type="email"
                   value={userDetails.email}
                   className="w-100"
                   name="email"
@@ -157,96 +186,204 @@ const UpdateUser = ({ props }) => {
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Country: </label>
-                <input
-                  type="text"
+                <Select
+                  showSearch
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={true}
                   value={userDetails.country}
                   className="w-100"
-                  name="country"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">City: </label>
-                <input
-                  type="text"
-                  value={userDetails.city}
-                  className="w-100"
-                  name="city"
-                  onChange={(e) => handleChange(e)}
-                />
+                  onChange={(country) => {
+                    const selectedCountry = location.conutries.find(
+                      (el) => el.name === country,
+                    )
+                    setLocation((prev) => ({
+                      ...prev,
+                      states: State.getStatesOfCountry(selectedCountry.isoCode),
+                    }))
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      country: selectedCountry,
+                    }))
+                  }}
+                >
+                  {location &&
+                    location.conutries &&
+                    location.conutries.map((item, index) => (
+                      <Option key={index} value={item.name}>
+                        {item.name}
+                      </Option>
+                    ))}
+                </Select>
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">State: </label>
-                <input
-                  type="text"
+                <Select
+                  showSearch
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={true}
                   value={userDetails.state}
                   className="w-100"
-                  name="state"
-                  onChange={(e) => handleChange(e)}
-                />
+                  onChange={(state) => {
+                    const selectedState = location.states.find(
+                      (el) => el.name === state,
+                    )
+                    setLocation((prev) => ({
+                      ...prev,
+                      cities: City.getCitiesOfState(
+                        selectedState.countryCode,
+                        selectedState.isoCode,
+                      ),
+                    }))
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      state: selectedState,
+                    }))
+                  }}
+                >
+                  {location &&
+                    location.states &&
+                    location.states.map((item, index) => (
+                      <Option key={index} value={item.name}>
+                        {item.name}
+                      </Option>
+                    ))}
+                </Select>
+              </div>
+              <div className="col-12 col-md-6 mt-2">
+                <label className="m-0">City: </label>
+                <Select
+                  showSearch
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={true}
+                  className="w-100"
+                  value={userDetails.city}
+                  onChange={(city) => {
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      city: city,
+                    }))
+                  }}
+                >
+                  {location &&
+                    location.cities &&
+                    location.cities.map((item, index) => (
+                      <Option key={index} value={item.name}>
+                        {item.name}
+                      </Option>
+                    ))}
+                </Select>
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Phone Number: </label>
-                <input
-                  type="text"
+                <ReactPhoneInput
+                  inputExtraProps={{
+                    name: 'phone_number',
+                    required: true,
+                    autoFocus: true,
+                  }}
                   value={userDetails.phone_number}
-                  className="w-100"
-                  name="phone_number"
-                  onChange={(e) => handleChange(e)}
+                  onChange={(phone_number) => {
+                    setUserDetails((prev) => ({ ...prev, phone_number }))
+                  }}
                 />
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Gender: </label>
-                <select
-                  name="gender"
+                <Select
+                  showSearch
+                  defaultActiveFirstOption={false}
+                  // style={{ width: 300, marginTop: 30, marginLeft: 20 }}
+                  showArrow={false}
+                  filterOption={true}
                   className="w-100"
-                  onChange={(e) => {
-                    e.persist()
-                    setUserDetails((prev) => ({
-                      ...prev,
-                      gender: e.target.value,
-                    }))
-                  }}
                   value={userDetails.gender}
+                  onChange={(gender) => {
+                    setUserDetails((prev) => ({ ...prev, gender }))
+                  }}
                 >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
+                  <Option value={'male'}>Male</Option>
+                  <Option value={'female'}>Female</Option>
+                  <Option value={'other'}>Other</Option>
+                </Select>
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Rating: </label>
-                <input
+                <InputNumber
                   type="number"
                   value={userDetails.rating}
                   className="w-100"
                   name="rating"
-                  onChange={(e) => handleChange(e)}
+                  min={0}
+                  // onKeyDown={(e) => {
+                  //   if (typeof e.key !== 'number') e.preventDefault()
+                  //   else
+                  //     setUserDetails((prev) => ({
+                  //       ...prev.birth_day,
+                  //       rating: e,
+                  //     }))
+                  // }}
+                  onChange={(e) => {
+                    e.target.value
+                    if (typeof e.key !== 'number') e.preventDefault()
+                    else
+                      setUserDetails((prev) => ({
+                        ...prev.birth_day,
+                        rating: e,
+                      }))
+                  }}
                 />
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Occupation: </label>
-                <input
-                  type="text"
-                  value={userDetails.occupation}
+                <Select
+                  showSearch
+                  defaultActiveFirstOption={false}
+                  // style={{ width: 300, marginTop: 30, marginLeft: 20 }}
+                  showArrow={false}
+                  filterOption={true}
                   className="w-100"
-                  name="occupation"
-                  onChange={(e) => handleChange(e)}
-                />
+                  value={userDetails.occupation}
+                  onChange={(occ, option) => {
+                    console.log({ option })
+                    setUserDetails((prev) => ({ ...prev, occupation: occ }))
+                  }}
+                >
+                  {occupations &&
+                    occupations.map((item, index) => (
+                      <Option key={item.id} value={item.name}>
+                        {item.name}
+                      </Option>
+                    ))}
+                </Select>
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Main Language: </label>
-                <input
-                  type="text"
+                <Select
+                  showSearch
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={true}
                   value={userDetails.main_language}
                   className="w-100"
-                  name="main_language"
-                  onChange={(e) => handleChange(e)}
-                />
+                  onChange={(language) => {
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      main_language: language,
+                    }))
+                  }}
+                >
+                  {languages &&
+                    languages.map((item, index) => (
+                      <Option key={item._id} value={item.name}>
+                        {item.name}
+                      </Option>
+                    ))}
+                </Select>
               </div>
-              {/* <h5>Qualification Details: </h5> */}
-              {/* {userDetails.} */}
-              <div>
+              <div className="col-12">
                 <button className={`btn btn-sm btn-success mt-3`} type="submit">
                   Update
                 </button>

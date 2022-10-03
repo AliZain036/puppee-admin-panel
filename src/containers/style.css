@@ -64,3 +64,22 @@ label {
   height: 500px;
   background-color: #f5f5f5;
 }
+
+.special-label {
+  display: none !important;
+}
+
+.react-tel-input input {
+  width: 100% !important;
+}
+
+.ant-upload-list.ant-upload-list-text {
+  display: none !important;
+}
+
+#upload-image-label {
+  padding: 10px;
+  background: green;
+  display: table;
+  color: #fff;
+}

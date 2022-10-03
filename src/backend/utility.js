@@ -143,9 +143,12 @@ export async function deleteRecord(endpoint, reqBody) {
   }
 }
 
-export async function uploadSingleFile(reqBody) {
+export const uploadSingleFile = async (file) => {
   try {
-    let result = await axios.delete(`${uploadSingleFileUrl}`, { data: reqBody })
+    console.log({ file })
+    let formData = new FormData()
+    formData.append('file', file)
+    let result = await axios.post(`${uploadSingleFileUrl}`, formData)
     return result
   } catch (error) {
     console.error(error)

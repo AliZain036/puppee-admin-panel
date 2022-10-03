@@ -252,41 +252,39 @@ const Users = () => {
                             </td>
                             <td>{user.first_name + ' ' + user.last_name}</td>
                             <td>{user.email}</td>
-                            <td>{user.phone_number}</td>
+                            <td>{'+' + user.phone_number}</td>
 
-                            {/* <td>
+                            <td>
                               <button
+                                onClick={() => handleUserBlock(user)}
                                 className={`btn btn-sm btn-danger`}
                               >
-                                {user.status && user.status === 'active'
-                                  ? 'Block'
-                                  : 'Unblock'}
+                                {user.blocked === 'block' ? 'Unblock' : 'Block'}
                               </button>
-                            </td> */}
-                            {/* <td>
+                            </td>
+                            <td>
                               <Link to={`/userdetails/${user._id}`}>
                                 <button className={`btn btn-sm btn-success`}>
                                   View
                                 </button>
                               </Link>
-                            </td> */}
-                            {/* <td>
+                            </td>
+                            <td>
                               <Link to={`/updateUser/${user._id}`}>
                                 <button className={`btn btn-sm btn-success`}>
                                   Update
                                 </button>
                               </Link>
-                            </td> */}
+                            </td>
 
-                            {user.isDeleted !== true && (
-                              <td>
-                                <span
-                                  className="fa fa-trash"
-                                  aria-hidden="true"
-                                  style={{ cursor: 'pointer' }}
-                                ></span>
-                              </td>
-                            )}
+                            <td>
+                              <span
+                                className="fa fa-trash"
+                                aria-hidden="true"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleDeleteUser(user._id)}
+                              ></span>
+                            </td>
                           </tr>
                         )
                       }
@@ -335,56 +333,35 @@ const Users = () => {
 
                             <td>
                               <button
-                                // onClick={() => {
-                                //   this.toggleUserBlock(user)
-                                // }}
+                                onClick={() => handleUserBlock(user)}
                                 className={`btn btn-sm btn-danger`}
                               >
-                                {user.status && user.status === 'active'
-                                  ? 'Block'
-                                  : 'Unblock'}
+                                {user.blocked === 'block' ? 'Unblock' : 'Block'}
                               </button>
                             </td>
                             <td>
-                              <Link to={`/userdetails/${user.id}`}>
+                              <Link to={`/userdetails/${user._id}`}>
                                 <button className={`btn btn-sm btn-success`}>
                                   View
                                 </button>
                               </Link>
                             </td>
                             <td>
-                              <Link to={`/updateUser/${user.id}`}>
+                              <Link to={`/updateUser/${user._id}`}>
                                 <button className={`btn btn-sm btn-success`}>
                                   Update
                                 </button>
                               </Link>
                             </td>
 
-                            {user.isDeleted !== true && (
-                              <td>
-                                <span
-                                  className="fa fa-trash"
-                                  aria-hidden="true"
-                                  style={{ cursor: 'pointer' }}
-                                  // onClick={() => {
-                                  //   swal({
-                                  //     title: 'Delete User?',
-                                  //     text:
-                                  //       "Are you sure, the user won't be able to use app again!",
-                                  //     icon: 'warning',
-                                  //     buttons: true,
-                                  //     dangerMode: true,
-                                  //   }).then(async (willDelete) => {
-                                  //     if (willDelete) {
-                                  //       this.deleteThisUser(user)
-                                  //     } else {
-                                  //       return
-                                  //     }
-                                  //   })
-                                  // }}
-                                ></span>
-                              </td>
-                            )}
+                            <td>
+                              <span
+                                className="fa fa-trash"
+                                aria-hidden="true"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleDeleteUser(user._id)}
+                              ></span>
+                            </td>
                           </tr>
                         )
                       }
@@ -433,56 +410,35 @@ const Users = () => {
 
                             <td>
                               <button
-                                // onClick={() => {
-                                //   this.toggleUserBlock(user)
-                                // }}
+                                onClick={() => handleUserBlock(user)}
                                 className={`btn btn-sm btn-danger`}
                               >
-                                {user.status && user.status === 'active'
-                                  ? 'Block'
-                                  : 'Unblock'}
+                                {user.blocked === 'block' ? 'Unblock' : 'Block'}
                               </button>
                             </td>
                             <td>
-                              <Link to={`/userdetails/${user.id}`}>
+                              <Link to={`/userdetails/${user._id}`}>
                                 <button className={`btn btn-sm btn-success`}>
                                   View
                                 </button>
                               </Link>
                             </td>
                             <td>
-                              <Link to={`/updateUser/${user.id}`}>
+                              <Link to={`/updateUser/${user._id}`}>
                                 <button className={`btn btn-sm btn-success`}>
                                   Update
                                 </button>
                               </Link>
                             </td>
 
-                            {user.isDeleted !== true && (
-                              <td>
-                                <span
-                                  className="fa fa-trash"
-                                  aria-hidden="true"
-                                  style={{ cursor: 'pointer' }}
-                                  // onClick={() => {
-                                  //   swal({
-                                  //     title: 'Delete User?',
-                                  //     text:
-                                  //       "Are you sure, the user won't be able to use app again!",
-                                  //     icon: 'warning',
-                                  //     buttons: true,
-                                  //     dangerMode: true,
-                                  //   }).then(async (willDelete) => {
-                                  //     if (willDelete) {
-                                  //       this.deleteThisUser(user)
-                                  //     } else {
-                                  //       return
-                                  //     }
-                                  //   })
-                                  // }}
-                                ></span>
-                              </td>
-                            )}
+                            <td>
+                              <span
+                                className="fa fa-trash"
+                                aria-hidden="true"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleDeleteUser(user._id)}
+                              ></span>
+                            </td>
                           </tr>
                         )
                       }

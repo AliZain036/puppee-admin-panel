@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import SwalAutoHide from 'sweetalert2'
 import { getAllData } from '../backend/utility'
+import ReactPhoneInput from 'react-phone-input-2'
 
 const UserDetails = ({ props }) => {
   const urlPathName = window.location.pathname.split('/')

@@ -1,4 +1,4 @@
-import { Select } from 'antd'
+import { Input, Select } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
@@ -144,13 +144,9 @@ const ViewPost = ({ props }) => {
   const handleProfileImageChange = async (e) => {
     e.persist()
     if (!e.target.files[0]) return
-    // let body = {
-    //   file: e.target.files[0],
-    // }
     let formData = new FormData()
     formData.append('file', e.target.files[0])
     let result = await uploadSingleFile(formData)
-    // const profile_image_url = URL.createObjectURL(e.target.files[0])
     if (result && result.success === true) {
       setPostDetails((prev) => ({ ...prev, profile_image_url }))
     }
@@ -159,155 +155,48 @@ const ViewPost = ({ props }) => {
   return (
     <div className="row animated fadeIn">
       <div className="col-12 p-0">
-        <h3>Update User Details</h3>
+        <h3>Post Details</h3>
         {postDetails && (
-          <form onSubmit={handleSubmit}>
-            <div className="row">
-              <div className="col-12 col-md-6">
-                <label className="m-0">Profile Image: </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfileImageChange}
-                />
-              </div>
-              <div className="col-12 mt-2">
-                <img
-                  src={postDetails.profile_image_url}
-                  alt=""
-                  style={{
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    width: '200px',
-                    height: '200px',
-                  }}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">First Name: </label>
-                <input
-                  type="text"
-                  value={postDetails.first_name}
-                  className="w-100"
-                  name="first_name"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">Last Name: </label>
-                <input
-                  type="text"
-                  value={postDetails.last_name}
-                  className="w-100"
-                  name="last_name"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">Email: </label>
-                <input
-                  type="text"
-                  value={postDetails.email}
-                  className="w-100"
-                  name="email"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">Country: </label>
-                <input
-                  type="text"
-                  value={postDetails.country}
-                  className="w-100"
-                  name="country"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">City: </label>
-                <input
-                  type="text"
-                  value={postDetails.city}
-                  className="w-100"
-                  name="city"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">State: </label>
-                <input
-                  type="text"
-                  value={postDetails.state}
-                  className="w-100"
-                  name="state"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">Phone Number: </label>
-                <input
-                  type="text"
-                  value={postDetails.phone_number}
-                  className="w-100"
-                  name="phone_number"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">Gender: </label>
-                <select
-                  name="gender"
-                  className="w-100"
-                  onChange={(e) => {
-                    e.persist()
-                    setPostDetails((prev) => ({
-                      ...prev,
-                      gender: e.target.value,
-                    }))
-                  }}
-                  value={postDetails.gender}
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">Rating: </label>
-                <input
-                  type="number"
-                  value={postDetails.rating}
-                  className="w-100"
-                  name="rating"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">Occupation: </label>
-                <input
-                  type="text"
-                  value={postDetails.occupation}
-                  className="w-100"
-                  name="occupation"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              <div className="col-12 col-md-6 mt-2">
-                <label className="m-0">Main Language: </label>
-                <input
-                  type="text"
-                  value={postDetails.main_language}
-                  className="w-100"
-                  name="main_language"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              {/* <h5>Qualification Details: </h5> */}
-              {/* {postDetails.} */}
+          <div className="col-12 row">
+            <div className="col-12 col-md-6">
+              <label>Date</label>
+              <Input
+                readOnly
+                value={new Date(postDetails.timestamp).toLocaleDateString()}
+              />
             </div>
-            <button className={`btn btn-sm btn-success mt-3`} type="submit">
-              Update
-            </button>
-          </form>
+            <div className="col-12 col-md-6">
+              <label>Number of Likes</label>
+              <Input readOnly value={postDetails.numberOfLikes} />
+            </div>
+            <div className="col-12 col-md-6">
+              <label>Number of Dislikes</label>
+              <Input readOnly value={postDetails.numberOfDisLikes} />
+            </div>
+            <div className="col-12 col-md-6">
+              <label>No of Comments</label>
+              <Input readOnly value={postDetails.number_of_Comments} />
+            </div>
+            <div className="col-12">
+              <label>Post Images</label>
+            </div>
+            <div className="col-12 row mt-3">
+              {postDetails.post_images &&
+                postDetails.post_images.map((item, index) => (
+                  <div className="col-12 col-md-4">
+                    <img
+                      src={item.image_url}
+                      alt=""
+                      key={item._id}
+                      width={'100%'}
+                      height={'100%'}
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
+                ))}
+              <div className="col-12 col-md-4"></div>
+            </div>
+          </div>
         )}
       </div>
     </div>
