@@ -1,6 +1,9 @@
+import { Input, InputNumber, Select } from 'antd'
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
-import { getAllData, updateRecord } from '../backend/utility'
+import { getAllData, updateRecord, uploadSingleFile } from '../backend/utility'
+
+const { Option } = Select
 
 const UpdateService = () => {
   const urlPathName = window.location.pathname.split('/')
@@ -38,6 +41,18 @@ const UpdateService = () => {
     setServiceDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  const handleServiceImageUpload = async (e) => {
+    e.persist()
+    if (!e.target.files[0]) return
+    let result = await uploadSingleFile(e.target.files[0])
+    if (result && result.data.success === true) {
+      setServiceDetails((prev) => ({
+        ...prev,
+        photo: result.data.url,
+      }))
+    }
+  }
+
   const handleServiceUpdate = async (e) => {
     e.preventDefault()
     let body = {
@@ -62,23 +77,53 @@ const UpdateService = () => {
         <h3>Service Details</h3>
         <form onSubmit={handleServiceUpdate}>
           <div>
-            <label className="d-block">Service Image: </label>
-            <img src={serviceDetails.photo} alt="" />
+            <label>Upload Profile Image:</label>
+            <input
+              type="file"
+              accept="image/*"
+              style={{ width: '90px' }}
+              onChange={handleServiceImageUpload}
+            />
+            <img
+              src={serviceDetails.photo}
+              className="d-block mt-3"
+              alt=""
+              width={'400px'}
+              height={'400px'}
+            />
           </div>
           <div className="mt-3 row">
             <div className="col-12 col-md-6">
               <label className="">Service Type: </label>
-              <input
+              {/* <Input
                 type="text"
                 className="w-100"
                 name="instant_or_schedule_service"
                 onChange={handleChange}
                 value={serviceDetails.instant_or_schedule_service}
-              />
+              /> */}
+              <Select
+                showSearch
+                defaultActiveFirstOption={false}
+                // style={{ width: 300, marginTop: 30, marginLeft: 20 }}
+                showArrow={false}
+                filterOption={true}
+                className="w-100"
+                value={serviceDetails.instant_or_schedule_service}
+                onChange={(value) => {
+                  setServiceDetails((prev) => ({
+                    ...prev,
+                    instant_or_schedule_service: value,
+                  }))
+                }}
+              >
+                <Option value={'Instant Service'}>Instant Service</Option>
+                <Option value={'Scheduled Service'}>Scheduled Service</Option>
+              </Select>
             </div>
             <div className="col-12 col-md-6">
               <label className="">Service Title: </label>
-              <input
+              <Input
                 type="text"
                 className="w-100"
                 name="you_offering"
@@ -88,7 +133,7 @@ const UpdateService = () => {
             </div>
             <div className="col-12 col-md-6">
               <label className="">Service Description: </label>
-              <input
+              <Input
                 type="text"
                 className="w-100"
                 name="service_description"
@@ -98,9 +143,10 @@ const UpdateService = () => {
             </div>
             <div className="col-12 col-md-6">
               <label className="">Average Rating: </label>
-              <input
+              <InputNumber
                 type="number"
                 className="w-100"
+                min={0}
                 onChange={handleChange}
                 name="average_rating"
                 value={serviceDetails.average_rating}
@@ -108,8 +154,9 @@ const UpdateService = () => {
             </div>
             <div className="col-12 col-md-6">
               <label className="">Base Price: </label>
-              <input
+              <InputNumber
                 type="number"
+                min={0}
                 className="w-100"
                 name="base_price"
                 onChange={handleChange}
@@ -117,8 +164,8 @@ const UpdateService = () => {
               />
             </div>
             <div className="col-12 col-md-6">
-              <label className="">Reviews: </label>
-              <input
+              <label className="">Reviews Count: </label>
+              <Input
                 type="number"
                 className="w-100"
                 name="reviews_count"

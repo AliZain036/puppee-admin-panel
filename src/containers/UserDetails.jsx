@@ -148,6 +148,11 @@ const UserDetails = ({ props }) => {
             </div>
           </div>
         )}
+        <div className='mt-3'>
+          <Link to={'/users'}>
+            <button className="btn btn-primary">Back</button>
+          </Link>
+        </div>
       </div>
     </div>
   )

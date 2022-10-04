@@ -13,13 +13,7 @@ const PrivacyPolicy = () => {
     <div className="row animated fadeIn">
       <div className="col-12">
         <h3 className="my-3">Privacy Policy</h3>
-        <Editor
-          editorState={editorState}
-          // onEditorStateChange={handleEditorStateChange}
-          onContentStateChange={(e) => {
-            console.log(e)
-          }}
-        />
+        <Editor />
       </div>
     </div>
   )

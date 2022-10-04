@@ -1,3 +1,4 @@
+import { Input } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { getAllData } from '../backend/utility'
 import UserDetails from './UserDetails'
@@ -38,13 +39,17 @@ const ServiceDetails = () => {
       <div className="col-12">
         <h3>Service Details</h3>
         <div>
-          <label className="d-block">Service Image: </label>
-          <img src={serviceDetails.photo} alt="" />
+          <img
+            src={serviceDetails.photo}
+            alt=""
+            width={'400px'}
+            height="400px"
+          />
         </div>
         <div className="mt-3 row">
           <div className="col-12 col-md-6">
             <label className="">Service Type: </label>
-            <input
+            <Input
               type="text"
               className="w-100"
               readOnly
@@ -53,7 +58,7 @@ const ServiceDetails = () => {
           </div>
           <div className="col-12 col-md-6">
             <label className="">Service Title: </label>
-            <input
+            <Input
               type="text"
               className="w-100"
               readOnly
@@ -62,7 +67,7 @@ const ServiceDetails = () => {
           </div>
           <div className="col-12 col-md-6">
             <label className="">Service Description: </label>
-            <input
+            <Input
               type="text"
               className="w-100"
               readOnly
@@ -71,7 +76,7 @@ const ServiceDetails = () => {
           </div>
           <div className="col-12 col-md-6">
             <label className="">Average Rating: </label>
-            <input
+            <Input
               type="text"
               className="w-100"
               readOnly
@@ -80,7 +85,7 @@ const ServiceDetails = () => {
           </div>
           <div className="col-12 col-md-6">
             <label className="">Base Price: </label>
-            <input
+            <Input
               type="text"
               className="w-100"
               readOnly
@@ -89,7 +94,7 @@ const ServiceDetails = () => {
           </div>
           <div className="col-12 col-md-6">
             <label className="">Reviews: </label>
-            <input
+            <Input
               type="text"
               className="w-100"
               readOnly

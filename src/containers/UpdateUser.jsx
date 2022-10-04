@@ -81,7 +81,7 @@ const UpdateUser = ({ props }) => {
   const getUserDetails = async () => {
     let result = await getAllData(`users/${userId}`)
     if (result && result.success === true && result.statusCode === 200) {
-      console.log(result.data)
+      console.log(result.data, ' ==== user-details')
       setUserDetails(result.data)
     }
   }
@@ -383,7 +383,15 @@ const UpdateUser = ({ props }) => {
                     ))}
                 </Select>
               </div>
-              <div className="col-12">
+              <div className="col-12 d-flex justify-content-between align-items-center flex-wrap">
+                <Link to={'/users'}>
+                  <button
+                    className={`btn btn-sm btn-primary mt-3`}
+                    type="button"
+                  >
+                    Back
+                  </button>
+                </Link>
                 <button className={`btn btn-sm btn-success mt-3`} type="submit">
                   Update
                 </button>

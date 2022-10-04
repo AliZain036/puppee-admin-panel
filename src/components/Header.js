@@ -1,58 +1,59 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Nav,
   NavItem,
   NavbarToggler,
   NavbarBrand,
   UncontrolledTooltip,
-} from "reactstrap";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+} from 'reactstrap'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import PupEEELogo from '../assets/icons/pupeee-logo.png'
 
 const style = {
   logoWrapper: {
-    width: "100%",
-    margin: "0 auto",
-    overflow: "hidden",
+    width: '100%',
+    margin: '0 auto',
+    overflow: 'hidden',
   },
   svg: {
-    width: "100%",
-    fill: "#ef5350",
-    height: "36px",
+    width: '100%',
+    fill: '#ef5350',
+    height: '36px',
   },
   img: {
-    height: "35px",
-    width: "35px",
-    borderRadius: "50%",
-    margin: "0 10px",
+    height: '35px',
+    width: '35px',
+    borderRadius: '50%',
+    margin: '0 10px',
   },
   companyLogo: {
-    width: "130px",
-    height: "45px",
-    objectFit: "contain",
-    overflow: "hidden",
+    width: '130px',
+    height: '45px',
+    objectFit: 'contain',
+    overflow: 'hidden',
   },
-};
+}
 
 class Header extends Component {
   sidebarToggle(e) {
-    e.preventDefault();
-    document.body.classList.toggle("sidebar-hidden");
+    e.preventDefault()
+    document.body.classList.toggle('sidebar-hidden')
   }
 
   sidebarMinimize(e) {
-    e.preventDefault();
-    document.body.classList.toggle("sidebar-minimized");
+    e.preventDefault()
+    document.body.classList.toggle('sidebar-minimized')
   }
 
   mobileSidebarToggle(e) {
-    e.preventDefault();
-    document.body.classList.toggle("sidebar-mobile-show");
+    e.preventDefault()
+    document.body.classList.toggle('sidebar-mobile-show')
   }
 
   asideToggle(e) {
-    e.preventDefault();
-    document.body.classList.toggle("aside-menu-hidden");
+    e.preventDefault()
+    document.body.classList.toggle('aside-menu-hidden')
   }
 
   render() {
@@ -64,14 +65,11 @@ class Header extends Component {
         <NavbarBrand href="/" className="p-0">
           <div style={style.logoWrapper} className={`svg-logo`}>
             <Link to={'/'}>
-              <img
-                className={`companyLogo`}
-                src={`${require("panzer.png")}`}
-              />
+              <img className={`companyLogo py-1`} src={PupEEELogo} />
             </Link>
           </div>
           {/* <div className={`png-logo`}> */}
-            {/* <img
+          {/* <img
               className={`img-fluid companyLogo`}
               src={`${require("panzer.png")}`}
             // /> */}
@@ -103,18 +101,18 @@ class Header extends Component {
           </div>
         ) : null}
       </header>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state) => {
-  const user = state.user.user || {};
+  const user = state.user.user || {}
   return {
     currentUserImage: user.profile_image,
     currentUserId: user.id,
-    currentUserFullName: user.first_name + " " + user.last_name,
+    currentUserFullName: user.first_name + ' ' + user.last_name,
     currentUserEmail: user.email,
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps)(Header)

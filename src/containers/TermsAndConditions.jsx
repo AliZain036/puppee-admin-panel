@@ -11,16 +11,10 @@ const TermsAndConditions = () => {
 
   return (
     <div className="row animated fadeIn">
-      <div className="col-12">
-        <Editor
-          editorState={editorState}
-          // onEditorStateChange={handleEditorStateChange}
-          onContentStateChange={(e) => {
-            console.log(e)
-          }}
-        />
-      </div>
       <h3 className="my-3">Terms and Conditions</h3>
+      <div className="col-12">
+        <Editor />
+      </div>
     </div>
   )
 }
