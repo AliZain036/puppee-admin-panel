@@ -82,6 +82,11 @@ export default {
       url: '/privacy',
       icon: 'icon-people',
     },
+    {
+      name: 'About Us',
+      url: '/about-us',
+      icon: 'icon-people',
+    },
     // {
     //   name: "Cookie Policy",
     //   url: "/cookie",

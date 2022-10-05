@@ -119,7 +119,7 @@ const Orders = () => {
                           </button>
                         </td>
                         <td>
-                          <Link to={`/orderdetails/${order._id}`}>
+                          <Link to={`/order-details/${order._id}`}>
                             <button className={`btn btn-sm btn-success`}>
                               View
                             </button>

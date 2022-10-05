@@ -83,3 +83,15 @@ label {
   display: table;
   color: #fff;
 }
+
+.RichTextEditor__root___2QXK- {
+  height: 400px !important;
+}
+
+.RichTextEditor__root___2QXK- div:nth-child(2) {
+  height: 100%;
+}
+
+.public-DraftStyleDefault-ltr {
+  margin: 0 !important;
+}

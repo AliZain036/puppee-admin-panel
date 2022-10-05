@@ -45,7 +45,9 @@ import UpdateService from './UpdateService'
 import Orders from './Orders'
 import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import ViewPost from './ViewPost'
-
+import OrderDetails from './OrderDetails'
+import AboutUs from './AboutUs'
+import UpdateOrder from './UpdateOrder'
 
 class App extends React.Component {
   constructor(props) {
@@ -152,6 +154,13 @@ class App extends React.Component {
                 <Route exact path="/about" component={About} />
                 <Route exact path="/users" component={Users} />
                 <Route exact path="/orders" component={Orders} />
+                <Route exact path="/about-us" component={AboutUs} />
+                <Route
+                  exact
+                  path="/order-details/:id"
+                  component={OrderDetails}
+                />
+                <Route exact path="/update-order/:id" component={UpdateOrder} />
                 <Route exact path="/services" component={Services} />
                 <Route
                   exact

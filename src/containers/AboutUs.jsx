@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Editor } from 'react-draft-wysiwyg'
 import RichTextEditor from 'react-rte'
 
-const TermsAndConditions = () => {
+const AboutUs = () => {
   const [editorState, setEditorState] = useState(
     RichTextEditor.createEmptyValue(),
   )
@@ -95,4 +95,4 @@ const TermsAndConditions = () => {
   )
 }
 
-export default TermsAndConditions
+export default AboutUs

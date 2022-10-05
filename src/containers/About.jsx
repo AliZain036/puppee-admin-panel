@@ -1,54 +1,51 @@
-import React from "react";
-import "draft-js/dist/Draft.css";
-import "./style.css";
-import SwalAutoHide from "sweetalert2";
-import {
-  addUpdateData,
-  getAllData,
-} from "../backend/utility";
+import React from 'react'
+import 'draft-js/dist/Draft.css'
+import './style.css'
+import SwalAutoHide from 'sweetalert2'
+import { addUpdateData, getAllData } from '../backend/utility'
 
 export default class About extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      description: "",
-    };
+      description: '',
+    }
   }
 
   componentDidMount() {
-    this.getAboutUsDescription()  
+    this.getAboutUsDescription()
   }
 
   async getAboutUsDescription() {
-    let result = await getAllData("show-aboutus");
-    if(result) {
-      this.setState({ description: result.data.description });
+    let result = await getAllData('show-aboutus')
+    if (result) {
+      this.setState({ description: result.data.description })
     }
   }
 
   async updateAbout() {
     let reqBody = {
-      description: this.state.description
+      description: this.state.description,
     }
-    let result = await addUpdateData("add-aboutus", reqBody);
+    let result = await addUpdateData('add-aboutus', reqBody)
     if (result) {
-      this.setState({ description: result.data.description });
+      this.setState({ description: result.data.description })
       SwalAutoHide.fire({
-        icon: "success",
+        icon: 'success',
         timer: 2000,
-        title: "Success.",
+        title: 'Success.',
         showConfirmButton: false,
-        text: "About Us Updated Successfully!",
-      });
+        text: 'About Us Updated Successfully!',
+      })
     } else {
       SwalAutoHide.fire({
-        icon: "error",
+        icon: 'error',
         timer: 2000,
-        title: "Failed.",
+        title: 'Failed.',
         showConfirmButton: false,
-        text: "Something went wrong!!",
-      });
+        text: 'Something went wrong!!',
+      })
     }
   }
 
@@ -63,9 +60,9 @@ export default class About extends React.Component {
               onChange={(e) => {
                 this.setState({
                   description: e.target.value,
-                });
+                })
               }}
-              style={{ minHeight: 300, marginBottom: 20, width: "100%" }}
+              style={{ minHeight: 300, marginBottom: 20, width: '100%' }}
             />
             <button
               onClick={() => this.updateAbout()}
@@ -76,6 +73,6 @@ export default class About extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
