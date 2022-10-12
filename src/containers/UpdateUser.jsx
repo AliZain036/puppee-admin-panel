@@ -58,6 +58,16 @@ const UpdateUser = ({ props }) => {
     getAllLanguages()
   }, [])
 
+  useEffect(() => {
+    if (userDetails.rating === null) {
+      let value = userDetails.rating
+      if (value) {
+        value.slice(0, userDetails.length - 1)
+      }
+      setUserDetails((prev) => ({ ...prev, rating: value }))
+    }
+  }, [userDetails.rating])
+
   const getAllOccupations = async () => {
     const result = await getAllData('occupations')
     if (result && result.success === true) {
@@ -87,6 +97,9 @@ const UpdateUser = ({ props }) => {
   }
 
   const handleChange = (e) => {
+    if (e.target.name === 'rating') {
+      console.log(value)
+    }
     setUserDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -123,6 +136,14 @@ const UpdateUser = ({ props }) => {
       }))
     }
   }
+
+  const handleRatingInput = (e) => {
+    if (typeof e.key === 'number') {
+      setUserDetails((prev) => ({ ...prev, rating: e.key }))
+    }
+  }
+
+  console.log(userDetails.rating)
 
   return (
     <div className="row animated fadeIn">
@@ -315,23 +336,40 @@ const UpdateUser = ({ props }) => {
                   className="w-100"
                   name="rating"
                   min={0}
-                  // onKeyDown={(e) => {
-                  //   if (typeof e.key !== 'number') e.preventDefault()
-                  //   else
-                  //     setUserDetails((prev) => ({
-                  //       ...prev.birth_day,
-                  //       rating: e,
-                  //     }))
-                  // }}
                   onChange={(e) => {
-                    e.target.value
-                    if (typeof e.key !== 'number') e.preventDefault()
-                    else
+                    const re = /^[0-9]+$/
+                    if (re.test(e.toString())) {
+                      console.log('valid')
                       setUserDetails((prev) => ({
-                        ...prev.birth_day,
+                        ...prev,
                         rating: e,
                       }))
+                    } else {
+                      
+                    }
+                    // if (!e) {
+                    //   setUserDetails((prev) => ({
+                    //     ...prev,
+                    //     rating: null,
+                    //   }))
+                    //   return
+                    // }
+                    // if (typeof e !== 'number') return
+                    // else
+                    //   setUserDetails((prev) => ({
+                    //     ...prev,
+                    //     rating: e,
+                    //   }))
                   }}
+                  // onKeyDown={(e) => {
+                  //   const value = Number(e.key)
+                  //   if (typeof value == 'number') {
+                  //     setUserDetails((prev) => ({
+                  //       ...prev,
+                  //       rating: prev.rating + e.key,
+                  //     }))
+                  //   }
+                  // }}
                 />
               </div>
               <div className="col-12 col-md-6 mt-2">

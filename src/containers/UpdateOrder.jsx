@@ -41,12 +41,13 @@ const UpdateOrder = () => {
     e.preventDefault()
     let body = {
       ...orderDetails,
-      service_order_id: orderDetails._id,
+      service_order_id: orderDetails && orderDetails._id,
     }
-    body.service_provider_id = body.service_provider_id ?? '';
+    body.service_provider_id = body.service_provider_id
+      ? body.service_provider_id
+      : ''
     body.rating = Number(orderDetails.rating)
     let result = await addUpdateData('service-orders', body)
-    debugger
     if (result && result.success === true && result.data) {
       Swal.fire({
         title: 'Order Details Updated Successfully',

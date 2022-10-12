@@ -7,21 +7,66 @@ import {
   addUpdateData,
   deleteRecord,
   getAllData,
+  searchData,
   updateRecord,
 } from '../backend/utility'
 import Swal from 'sweetalert2'
+import { Button, Input, Select } from 'antd'
 // import { Tabs } from 'antd'
 const Orders = () => {
   const [orders, setOrders] = useState([])
+  const [occupations, setOccupations] = useState([])
+  const [occupationFilters, setOccupationFilters] = useState([])
 
   useEffect(() => {
     getAllOrders()
+    getAllOccupations()
   }, [])
 
   const getAllOrders = async () => {
     let result = await getAllData('service-orders')
     if (result && result.success === true && result.data) {
       setOrders(result.data)
+    }
+  }
+
+  const getAllOccupations = async () => {
+    const result = await getAllData('occupations')
+    if (result && result.success === true) {
+      setOccupations(result.data)
+    }
+  }
+  const [searchInput, setSearchInput] = useState('')
+
+  const filterOrders = async (field) => {
+    let body = {
+      search: {
+        field: 'occupation',
+        value: occupationFilters,
+      },
+    }
+    let result = await searchData('service-orders/search', body)
+    if (result && result.success === true) {
+      console.log(result.data)
+      setOrders(result.data)
+    }
+  }
+
+  const searchOrders = async () => {
+    let body = {
+      search: {
+        field: 'title',
+        value: [searchInput],
+      },
+    }
+    if (!searchInput) {
+      getAllOrders()
+    } else {
+      let result = await searchData('service-orders/search', body)
+      if (result && result.success === true) {
+        console.log(result.data)
+        setOrders(result.data)
+      }
     }
   }
 
@@ -68,7 +113,62 @@ const Orders = () => {
       <div className="col-12 p-0">
         <div className="row space-1">
           <div className="col-12">
-            <h3>List of Orders</h3>
+            <div className="d-flex justify-content-between align-items-center">
+              <h3>List of Orders</h3>
+              <div
+                className="d-flex align-items-center"
+                style={{ gap: '.5rem' }}
+              >
+                <Select
+                  showSearch
+                  mode="multiple"
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={true}
+                  placeholder="Filter by occupation"
+                  style={{
+                    width: '300px',
+                  }}
+                  value={occupationFilters}
+                  onChange={(occ, option) => {
+                    setOccupationFilters(occ)
+                  }}
+                >
+                  {occupations &&
+                    occupations.map((item, index) => (
+                      <Select.Option key={item.id} value={item.name}>
+                        {item.name}
+                      </Select.Option>
+                    ))}
+                </Select>
+                <Button
+                  className="btn btn-primary pointer"
+                  onClick={filterOrders}
+                >
+                  Filter
+                </Button>
+                <Button
+                  className="btn btn-primary pointer"
+                  onClick={() => {
+                    setOccupationFilters([])
+                    getAllOrders()
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            </div>
+            <div className="text-end">
+              <Input
+                allowClear
+                // style={{ width: '40%' }}
+                value={searchInput}
+                className="my-3"
+                onChange={(e) => setSearchInput(e.target.value)}
+                onPressEnter={() => searchOrders()}
+                placeholder="Enter title and press enter to search"
+              />
+            </div>
           </div>
         </div>
         {orders && orders.length > 0 && (

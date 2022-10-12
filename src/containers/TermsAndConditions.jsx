@@ -1,12 +1,34 @@
 import { EditorState } from 'draft-js'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Editor } from 'react-draft-wysiwyg'
 import RichTextEditor from 'react-rte'
+import { addUpdateData, getAllData } from '../backend/utility'
 
 const TermsAndConditions = () => {
   const [editorState, setEditorState] = useState(
     RichTextEditor.createEmptyValue(),
   )
+
+  const [TermsAndConditions, setTermsAndConditions] = useState('')
+
+  useEffect(() => {
+    getTermsAndConditionsDescription()
+  }, [])
+
+  const getTermsAndConditionsDescription = async () => {
+    let result = await getAllData('static-data')
+    if (result && result.success === true) {
+      let item = result.data.find(
+        (item) => item.type === 'term_condition',
+      )
+      if(item) {
+        setTermsAndConditions(item)
+      }
+      // console.log(
+      //   editorState.setContentFromString(result.data[0].data, 'html'),
+      // )
+    }
+  }
 
   const handleEditorStateChange = (editorState) => {
     setEditorState(editorState)
@@ -19,6 +41,11 @@ const TermsAndConditions = () => {
   const handleSubmit = async (e) => {
     console.log(editorState.setContentFromString('', 'html'))
     console.log(editorState.toString('html'))
+    const body = {
+      type: 'term_condition',
+      data: editorState.toString('html'),
+    }
+    let result = await addUpdateData('static-data', body)
   }
 
   const toolbarConfig = {

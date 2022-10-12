@@ -84,7 +84,7 @@ label {
   color: #fff;
 }
 
-.RichTextEditor__root___2QXK- {
+.RichTextEditor__editor___1QqIU {
   height: 400px !important;
 }
 
@@ -94,4 +94,8 @@ label {
 
 .public-DraftStyleDefault-ltr {
   margin: 0 !important;
+}
+
+.RichTextEditor__root___2QXK- {
+  height: auto;
 }

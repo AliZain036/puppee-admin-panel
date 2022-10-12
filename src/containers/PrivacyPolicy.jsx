@@ -1,12 +1,36 @@
 import { EditorState } from 'draft-js'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Editor } from 'react-draft-wysiwyg'
 import RichTextEditor from 'react-rte'
+import { addUpdateData, getAllData } from '../backend/utility'
 
 const PrivacyPolicy = () => {
   const [editorState, setEditorState] = useState(
     RichTextEditor.createEmptyValue(),
+    // RichTextEditor.createValueFromString(
+    //   '<p><u><strong>Privacy policy&nbsp;</strong></u></p>',
+    // ),
   )
+  const [privacyPolicy, setPrivacyPolicy] = useState(null)
+
+  useEffect(() => {
+    getAboutUsDescription()
+  }, [])
+
+  const getAboutUsDescription = async () => {
+    let result = await getAllData('static-data')
+    editorState.setEditorState()
+    if (result && result.success === true) {
+      let privacyTerms = result.data.find(
+        (item) => item.type === 'privacy_policy',
+      )
+      // console.log(
+      //   editorState.setContentFromString(result.data[0].data, 'html'),
+      // )
+      setPrivacyPolicy(privacyTerms)
+      console.log(privacyTerms)
+    }
+  }
 
   const handleEditorStateChange = (editorState) => {
     setEditorState(editorState)
@@ -17,8 +41,13 @@ const PrivacyPolicy = () => {
   }
 
   const handleSubmit = async (e) => {
-    console.log(editorState.setContentFromString('', 'html'))
+    console.log(editorState)
     console.log(editorState.toString('html'))
+    // const body = {
+    //   type: 'privacy_policy',
+    //   data: editorState.toString('html'),
+    // }
+    // let result = await addUpdateData('static-data', body)
   }
 
   const toolbarConfig = {
@@ -77,8 +106,8 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="row animated fadeIn">
-      <h3 className="my-3">Terms and Conditions</h3>
       <div className="col-12">
+        <h3 className="my-3">Privacy Policy</h3>
         {/* <Editor /> */}
         <RichTextEditor
           value={editorState}

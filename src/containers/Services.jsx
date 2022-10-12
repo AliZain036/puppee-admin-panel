@@ -7,26 +7,83 @@ import {
   addUpdateData,
   deleteRecord,
   getAllData,
+  getDataById,
+  searchData,
   updateRecord,
 } from '../backend/utility'
 import Swal from 'sweetalert2'
+import { Button, Input, Select, Spin } from 'antd'
+import { useRef } from 'react'
 // import { Tabs } from 'antd'
 const Services = () => {
   const [services, setServices] = useState([])
+  const [occupations, setOccupations] = useState([])
+  const [occupationFilters, setOccupationFilters] = useState([])
+  const [searchInput, setSearchInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     getAllServices()
+    getAllOccupations()
   }, [])
 
+  // const searchInput = useRef('')
+
+  const getAllOccupations = async () => {
+    const result = await getAllData('occupations')
+    if (result && result.success === true) {
+      setOccupations(result.data)
+    }
+  }
+
   const getAllServices = async () => {
+    setIsLoading((prev) => !prev)
     let result = await getAllData('services')
+    setIsLoading((prev) => !prev)
     if (result && result.success === true && result.data) {
       setServices(result.data)
     }
   }
 
+  const filterServices = async () => {
+    let body = {
+      search: {
+        field: 'occupation',
+        value: occupationFilters,
+      },
+    }
+    setIsLoading((prev) => !prev)
+    let result = await searchData('services/search', body)
+    setIsLoading((prev) => !prev)
+    if (result && result.success === true) {
+      setServices(result.data)
+    }
+  }
+
+  const searchServices = async () => {
+    let body = {
+      search: {
+        field: 'you_offering',
+        value: [searchInput],
+      },
+    }
+    let result
+    if (!searchInput) {
+      getAllServices()
+    } else {
+      setIsLoading((prev) => !prev)
+      result = await searchData('services/search', body)
+      setIsLoading((prev) => !prev)
+      if (result && result.success === true) {
+        setServices(result.data)
+      }
+    }
+  }
+
   const handleServiceDelete = async (serviceId) => {
+    setIsLoading((prev) => !prev)
     let result = await deleteRecord(`services/${serviceId}`)
+    setIsLoading((prev) => !prev)
     if (result && result.data.success === true) {
       Swal.fire({
         title: 'Service Deleted Successfully!',
@@ -67,11 +124,71 @@ const Services = () => {
       <div className="col-12 p-0">
         <div className="row space-1">
           <div className="col-12">
-            <h3>List of Services</h3>
+            <div className="d-flex justify-content-between align-items-center">
+              <h3>List of Services</h3>
+              <div
+                className="d-flex align-items-center"
+                style={{ gap: '.5rem' }}
+              >
+                <Select
+                  showSearch
+                  mode="multiple"
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={true}
+                  placeholder="Filter by occupation"
+                  style={{
+                    width: '300px',
+                  }}
+                  value={occupationFilters}
+                  onChange={(occ, option) => {
+                    setOccupationFilters(occ)
+                  }}
+                >
+                  {occupations &&
+                    occupations.map((item, index) => (
+                      <Select.Option key={item.id} value={item.name}>
+                        {item.name}
+                      </Select.Option>
+                    ))}
+                </Select>
+                <Button
+                  className="btn btn-primary pointer"
+                  onClick={filterServices}
+                >
+                  Filter
+                </Button>
+                <Button
+                  className="btn btn-primary pointer"
+                  onClick={() => {
+                    setOccupationFilters([])
+                    getAllServices()
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            </div>
+            <div className="text-end">
+              <Input
+                allowClear
+                className="my-3"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onPressEnter={() => searchServices()}
+                placeholder="Enter title and press enter to search"
+              />
+            </div>
           </div>
         </div>
+        {!services && services.length === 0 && <h3>No Services found.</h3>}
+        {isLoading && (
+          <div className="h-100 w-100 d-flex justify-content-center align-items-center">
+            <Spin />
+          </div>
+        )}
         {services && services.length > 0 && (
-          <div className="table-responsive" style={{ height: '700px' }}>
+          <div className="table-responsive" style={{ height: '500px' }}>
             <table className="table table-striped">
               <thead>
                 <tr>

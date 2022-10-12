@@ -106,7 +106,7 @@ export async function updateRecord(endpoint, reqBody) {
 export async function searchData(url, reqBody) {
   try {
     let result = []
-    result = await fetch(`${apiUrl}${url}`, {
+    result = await fetch(`${baseUrl}${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
