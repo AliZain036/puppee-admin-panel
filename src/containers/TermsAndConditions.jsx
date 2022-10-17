@@ -1,37 +1,35 @@
-import { EditorState } from 'draft-js'
 import React, { useEffect, useState } from 'react'
+import { getAllData, updateRecord } from '../backend/utility'
 import { Editor } from 'react-draft-wysiwyg'
-import RichTextEditor from 'react-rte'
-import { addUpdateData, getAllData } from '../backend/utility'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import {
+  EditorState,
+  convertToRaw,
+  convertFromHTML,
+  ContentState,
+} from 'draft-js'
+import draftToHtml from 'draftjs-to-html'
+import Swal from 'sweetalert2'
 
 const TermsAndConditions = () => {
-  const [editorState, setEditorState] = useState(
-    RichTextEditor.createEmptyValue(),
-  )
-
-  const [TermsAndConditions, setTermsAndConditions] = useState('')
-
+  const [editorState, setEditorState] = useState(EditorState.createEmpty())
+  
   useEffect(() => {
-    getTermsAndConditionsDescription()
+    getTermsAndConditions()
   }, [])
 
-  const getTermsAndConditionsDescription = async () => {
+  const getTermsAndConditions = async () => {
     let result = await getAllData('static-data')
-    if (result && result.success === true) {
-      let item = result.data.find(
-        (item) => item.type === 'term_condition',
+    if (result.success === true) {
+      const res = result.data.find(
+        (el) => el._id === '634481abd9e33b9da4979527',
       )
-      if(item) {
-        setTermsAndConditions(item)
-      }
-      // console.log(
-      //   editorState.setContentFromString(result.data[0].data, 'html'),
-      // )
+      setEditorState(
+        EditorState.createWithContent(
+          ContentState.createFromBlockArray(convertFromHTML(res.data)),
+        ),
+      )
     }
-  }
-
-  const handleEditorStateChange = (editorState) => {
-    setEditorState(editorState)
   }
 
   const onChange = (value) => {
@@ -39,80 +37,34 @@ const TermsAndConditions = () => {
   }
 
   const handleSubmit = async (e) => {
-    console.log(editorState.setContentFromString('', 'html'))
-    console.log(editorState.toString('html'))
+    const html = draftToHtml(convertToRaw(editorState.getCurrentContent()))
     const body = {
       type: 'term_condition',
-      data: editorState.toString('html'),
+      data: html,
     }
-    let result = await addUpdateData('static-data', body)
-  }
-
-  const toolbarConfig = {
-    // Optionally specify the groups to display (displayed in the order listed).
-    display: [
-      'INLINE_STYLE_BUTTONS',
-      'BLOCK_TYPE_BUTTONS',
-      /*'BLOCK_TYPE_DROPDOWN',*/ 'LINK_BUTTONS',
-      'HISTORY_BUTTONS',
-    ],
-    INLINE_STYLE_BUTTONS: [
-      { label: 'Bold', style: 'BOLD', className: 'text-editor__button' },
-      { label: 'Italic', style: 'ITALIC', className: 'text-editor__button' },
-      {
-        label: 'Underline',
-        style: 'UNDERLINE',
-        className: 'text-editor__button',
-      },
-      {
-        label: 'Strike-through',
-        style: 'STRIKETHROUGH',
-        className: 'text-editor__button',
-      },
-    ],
-    BLOCK_TYPE_DROPDOWN: [
-      { label: 'Normal', style: 'unstyled', className: 'text-editor__button' },
-      {
-        label: 'Heading Large',
-        style: 'header-one',
-        className: 'text-editor__button',
-      },
-      {
-        label: 'Heading Medium',
-        style: 'header-two',
-        className: 'text-editor__button',
-      },
-      {
-        label: 'Heading Small',
-        style: 'header-three',
-        className: 'text-editor__button',
-      },
-    ],
-    BLOCK_TYPE_BUTTONS: [
-      {
-        label: 'UL',
-        style: 'unordered-list-item',
-        className: 'text-editor__button',
-      },
-      {
-        label: 'OL',
-        style: 'ordered-list-item',
-        className: 'text-editor__button',
-      },
-    ],
+    let result = await updateRecord(
+      'static-data/634481abd9e33b9da4979527',
+      body,
+    )
+    if (result.success === true) {
+      Swal.fire({
+        title: 'Terms And Conditions Saved Successfully!',
+        icon: 'success',
+        timer: 2000,
+      })
+    }
   }
 
   return (
     <div className="row animated fadeIn">
-      <h3 className="my-3">Terms and Conditions</h3>
       <div className="col-12">
-        {/* <Editor /> */}
-        <RichTextEditor
-          value={editorState}
-          onChange={onChange}
-          placeholder="Write something"
-          toolbarConfig={toolbarConfig}
-          spellCheck={true}
+        <h3 className="my-3">Terms And Conditions</h3>
+        <Editor
+          editorState={editorState}
+          toolbarClassName="toolbarClassName"
+          wrapperClassName="wrapperClassName"
+          editorClassName="editorClassName"
+          onEditorStateChange={onChange}
         />
         <button className="btn btn-success mt-3" onClick={handleSubmit}>
           Save

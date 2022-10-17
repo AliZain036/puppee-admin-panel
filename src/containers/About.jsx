@@ -1,5 +1,4 @@
 import React from 'react'
-import 'draft-js/dist/Draft.css'
 import './style.css'
 import SwalAutoHide from 'sweetalert2'
 import { addUpdateData, getAllData } from '../backend/utility'

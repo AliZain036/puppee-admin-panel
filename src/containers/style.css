@@ -99,3 +99,11 @@ label {
 .RichTextEditor__root___2QXK- {
   height: auto;
 }
+
+.editorClassName.rdw-editor-main {
+  height: calc(100% - 70px);
+}
+
+.DraftEditor-root {
+  height: calc(100% - 19px);
+}
