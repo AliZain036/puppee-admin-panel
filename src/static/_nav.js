@@ -18,17 +18,17 @@ export default {
     {
       name: 'Posts',
       url: '/posts',
-      icon: 'icon-user',
+      icon: 'icon-pen',
     },
     {
       name: 'Orders',
       url: '/orders',
-      icon: 'icon-user',
+      icon: 'icon-order',
     },
     {
       name: 'Services',
       url: '/services',
-      icon: 'icon-user',
+      icon: 'icon-service',
     },
     // {
     //   name: "Feedback",

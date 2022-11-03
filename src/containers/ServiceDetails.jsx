@@ -1,5 +1,6 @@
 import { Input } from 'antd'
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { getAllData } from '../backend/utility'
 import UserDetails from './UserDetails'
 
@@ -102,6 +103,11 @@ const ServiceDetails = () => {
             />
           </div>
         </div>
+        <Link to={'/services'}>
+          <button className="btn btn-primary my3" type="button">
+            Back
+          </button>
+        </Link>
       </div>
     </div>
   )

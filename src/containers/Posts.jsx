@@ -75,6 +75,11 @@ const Posts = () => {
     }
   }
 
+  const getLocaleTimeZone = (timestamp) => {
+    const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone
+    return new Date(timestamp).toLocaleDateString('en-US', { timeZone: tzid })
+  }
+
   return (
     <div className="row animated fadeIn">
       <div className="col-12 p-0">
@@ -90,10 +95,8 @@ const Posts = () => {
                 <tr>
                   {/* <th>Sr. #</th> */}
                   <th>Date</th>
+                  <th>Username</th>
                   <th>Image</th>
-                  {/* <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th> */}
                 </tr>
               </thead>
 
@@ -103,7 +106,9 @@ const Posts = () => {
                     return (
                       <tr key={post._id}>
                         {/* <td>{index + 1}</td> */}
-                        <td>{new Date(post.timestamp).toLocaleDateString()}</td>
+                        <td>{getLocaleTimeZone(post.timestamp)}</td>
+                        <td>{post.userId && post.userId.user_name}</td>
+                        {/* <td>{new Date(post.timestamp).toLocaleDateString()}</td> */}
                         <td>
                           <img
                             style={{

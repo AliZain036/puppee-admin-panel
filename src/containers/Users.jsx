@@ -154,6 +154,7 @@ const Users = () => {
                     <th>Image</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Username</th>
                     <th>Phone</th>
                   </tr>
                 </thead>
@@ -177,6 +178,7 @@ const Users = () => {
                           </td>
                           <td>{user.first_name + ' ' + user.last_name}</td>
                           <td>{user.email}</td>
+                          <td>{user.user_name}</td>
                           <td>{user.phone_number}</td>
 
                           <td>
@@ -218,7 +220,7 @@ const Users = () => {
           )}
         </TabPanel>
         <TabPanel value={state.value} index={1}>
-          {state.users && <h3>No users found.</h3>}
+          {/* {state.users && <h3>No users found.</h3>} */}
           {state.users && (
             <div className="table-responsive" style={{ height: '500px' }}>
               <table className="table table-striped">
@@ -228,6 +230,7 @@ const Users = () => {
                     <th>Image</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Username</th>
                     <th>Phone</th>
                   </tr>
                 </thead>
@@ -252,6 +255,7 @@ const Users = () => {
                             </td>
                             <td>{user.first_name + ' ' + user.last_name}</td>
                             <td>{user.email}</td>
+                            <td>{user.user_name}</td>
                             <td>{'+' + user.phone_number}</td>
 
                             <td>
@@ -295,7 +299,7 @@ const Users = () => {
           )}
         </TabPanel>
         <TabPanel value={state.value} index={2}>
-          {state.users && <h3>No users found.</h3>}
+          {/* {state.users && <h3>No users found.</h3>} */}
           {state.users && (
             <div className="table-responsive" style={{ height: '500px' }}>
               <table className="table table-striped">
@@ -305,6 +309,7 @@ const Users = () => {
                     <th>Image</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Username</th>
                     <th>Phone</th>
                   </tr>
                 </thead>
@@ -329,6 +334,7 @@ const Users = () => {
                             </td>
                             <td>{user.first_name + ' ' + user.last_name}</td>
                             <td>{user.email}</td>
+                            <td>{user.user_name}</td>
                             <td>{user.phone_number}</td>
 
                             <td>
@@ -372,7 +378,7 @@ const Users = () => {
           )}
         </TabPanel>
         <TabPanel value={state.value} index={3}>
-          {state.users && <h3>No users found.</h3>}
+          {/* {state.users && <h3>No users found.</h3>} */}
           {state.users && (
             <div className="table-responsive" style={{ height: '500px' }}>
               <table className="table table-striped">
@@ -382,6 +388,7 @@ const Users = () => {
                     <th>Image</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Username</th>
                     <th>Phone</th>
                   </tr>
                 </thead>
@@ -406,6 +413,7 @@ const Users = () => {
                             </td>
                             <td>{user.first_name + ' ' + user.last_name}</td>
                             <td>{user.email}</td>
+                            <td>{user.user_name}</td>
                             <td>{user.phone_number}</td>
 
                             <td>

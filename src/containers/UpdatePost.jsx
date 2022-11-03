@@ -6,7 +6,7 @@ import {
   updateRecord,
   uploadSingleFile,
 } from '../backend/utility'
-import { Input } from 'antd'
+import { Input, message, Spin, Switch } from 'antd'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
@@ -34,6 +34,8 @@ const UpdatePost = (props) => {
   useEffect(() => {
     getpostDetails()
   }, [])
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const getpostDetails = async () => {
     let result = await getAllData(`posts/${postId}`)
@@ -70,7 +72,20 @@ const UpdatePost = (props) => {
   const handleFileUpload = async (e) => {
     e.persist()
     if (!e.target.files[0]) return
+    // console.log(e.target.files[0])
+    // const MIN_FILE_SIZE = 1024;
+    // const MAX_FILE_SIZE = 5120;
+    // if(e.target.files[0].size > MAX_FILE_SIZE) {
+    //   console.log('file size exceeded')
+    //   message.error('The file size should be limited to 5mb', 4000)
+    //   return
+    // } else {
+    //   console.log('file size not exceeded')
+    //   message.error('The file size should be limited to 5mb', 4000)
+    // }
+    setIsLoading(true)
     let result = await uploadSingleFile(e.target.files[0])
+    setIsLoading(false)
     if (result && result.data.success === true) {
       const arr = [...postDetails.post_images]
       const newImage = {
@@ -135,6 +150,24 @@ const UpdatePost = (props) => {
                   onChange={handleChange}
                 />
               </div>
+              <div className="col-12 col-md-6">
+                <label>Post Status</label>
+                <Input
+                  value={postDetails.blocked}
+                  type={'text'}
+                  name="blocked"
+                  // onChange={handleChange}
+                />
+              </div>
+              <div className="col-12 col-md-6">
+                <label>Change Post Status</label>
+                <Switch
+                  checked={postDetails.blocked === 'unblock' ? false : true}
+                  onChange={checked => {
+                    setPostDetails(prev => ({...prev, blocked: checked ? 'block' : 'unblock'}))
+                  }}
+                />
+              </div>
               {postDetails && postDetails.post_images && (
                 <div className="col-12 p-0">
                   <div className="col-12">
@@ -145,6 +178,11 @@ const UpdatePost = (props) => {
                       onChange={handleFileUpload}
                       style={{ width: '90px', marginLeft: '1rem' }}
                     />
+                    {isLoading && (
+                      <div className="w-100 d-flex align-items-center">
+                        <Spin /> <p>Uploading ... </p>
+                      </div>
+                    )}
                   </div>
                   <div className="col-12 row mt-3 pb-5">
                     {postDetails.post_images &&

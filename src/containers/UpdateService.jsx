@@ -1,5 +1,6 @@
-import { Input, InputNumber, Select } from 'antd'
+import { Input, InputNumber, Select, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { getAllData, updateRecord, uploadSingleFile } from '../backend/utility'
 
@@ -36,6 +37,8 @@ const UpdateService = () => {
     }
   }
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const handleChange = (e) => {
     e.persist()
     setServiceDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -44,7 +47,9 @@ const UpdateService = () => {
   const handleServiceImageUpload = async (e) => {
     e.persist()
     if (!e.target.files[0]) return
+    setIsLoading(true)
     let result = await uploadSingleFile(e.target.files[0])
+    setIsLoading(false)
     if (result && result.data.success === true) {
       setServiceDetails((prev) => ({
         ...prev,
@@ -61,6 +66,8 @@ const UpdateService = () => {
     body.base_price = Number(serviceDetails.base_price)
     body.average_rating = Number(serviceDetails.average_rating)
     body.reviews_count = Number(serviceDetails.reviews_count)
+    body.serviceId = serviceId
+    console.log(serviceDetails)
     let response = await updateRecord(`services/${serviceDetails._id}`, body)
     if (response && response.success === true) {
       Swal.fire({
@@ -74,7 +81,7 @@ const UpdateService = () => {
   return (
     <div className="row animated fadeIn">
       <div className="col-12">
-        <h3>Service Details</h3>
+        <h3>Update Service</h3>
         <form onSubmit={handleServiceUpdate}>
           <div>
             <label>Upload Profile Image:</label>
@@ -84,13 +91,21 @@ const UpdateService = () => {
               style={{ width: '90px' }}
               onChange={handleServiceImageUpload}
             />
-            <img
-              src={serviceDetails.photo}
-              className="d-block mt-3"
-              alt=""
-              width={'400px'}
-              height={'400px'}
-            />
+            {isLoading && (
+              <div className="w-100 d-flex align-items-center">
+                <Spin /> <p>Uploading ... </p>
+              </div>
+            )}
+            {!isLoading && (
+              <img
+                src={serviceDetails.photo}
+                className="d-block mt-3"
+                alt=""
+                width={'400px'}
+                height={'400px'}
+                style={{ objectFit: 'cover' }}
+              />
+            )}
           </div>
           <div className="mt-3 row">
             <div className="col-12 col-md-6">
@@ -174,12 +189,16 @@ const UpdateService = () => {
               />
             </div>
           </div>
-          <div className='d-flex '>
-
+          <div className="d-flex justify-content-between align-items-center flex-wrap">
+            <Link to={'/services'}>
+              <button type="button" className="btn btn-primary mt-3">
+                Back
+              </button>
+            </Link>
+            <button type="submit" className="btn btn-success mt-3">
+              Update Service
+            </button>
           </div>
-          <button type="submit" className="btn btn-success mt-3">
-            Update Service
-          </button>
         </form>
       </div>
     </div>

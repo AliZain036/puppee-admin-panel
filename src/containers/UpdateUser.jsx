@@ -1,4 +1,4 @@
-import { Select, Input, InputNumber } from 'antd'
+import { Select, Input, InputNumber, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
@@ -68,6 +68,8 @@ const UpdateUser = ({ props }) => {
     }
   }, [userDetails.rating])
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const getAllOccupations = async () => {
     const result = await getAllData('occupations')
     if (result && result.success === true) {
@@ -89,11 +91,13 @@ const UpdateUser = ({ props }) => {
   })
 
   const getUserDetails = async () => {
+    setIsLoading(true)
     let result = await getAllData(`users/${userId}`)
     if (result && result.success === true && result.statusCode === 200) {
       console.log(result.data, ' ==== user-details')
       setUserDetails(result.data)
     }
+    setIsLoading(false)
   }
 
   const handleChange = (e) => {
@@ -111,9 +115,10 @@ const UpdateUser = ({ props }) => {
       seller_stripe_account_id: userDetails.seller_stripe_account_id || 'false',
     }
     body.rating = Number(userDetails.rating)
-    body.country = userDetails.country.name
-    body.state = userDetails.country.state
-    body.city = userDetails.country.city
+    body.country = userDetails.country
+    body.state = userDetails.state
+    body.city = userDetails.city
+    setIsLoading(true)
     let result = await addUpdateData('users/profile', body)
     if (result && result.success === true && result.data) {
       Swal.fire({
@@ -123,12 +128,15 @@ const UpdateUser = ({ props }) => {
       })
       history.pushState('', '', '/users')
     }
+    setIsLoading(false)
   }
 
   const handleProfileImageChange = async (e) => {
     e.persist()
     if (!e.target.files[0]) return
+    setIsLoading(true)
     let result = await uploadSingleFile(e.target.files[0])
+    setIsLoading(false)
     if (result && result.data.success === true) {
       setUserDetails((prev) => ({
         ...prev,
@@ -143,7 +151,7 @@ const UpdateUser = ({ props }) => {
     }
   }
 
-  console.log(userDetails.rating)
+  console.log(userDetails.phone_number)
 
   return (
     <div className="row animated fadeIn">
@@ -162,6 +170,11 @@ const UpdateUser = ({ props }) => {
                 />
               </div>
               <div className="col-12 mt-2">
+                {isLoading && (
+                  <div className="w-100 d-flex align-items-center">
+                    <Spin /> <p>Uploading ... </p>
+                  </div>
+                )}
                 <img
                   src={userDetails.profile_image_url}
                   alt=""
@@ -222,7 +235,11 @@ const UpdateUser = ({ props }) => {
                     }))
                     setUserDetails((prev) => ({
                       ...prev,
-                      country: selectedCountry,
+                      country: selectedCountry.name,
+                      country_code: selectedCountry.isoCode,
+                      country_phone_code: selectedCountry.phonecode,
+                      state: '',
+                      city: '',
                     }))
                   }}
                 >
@@ -257,7 +274,8 @@ const UpdateUser = ({ props }) => {
                     }))
                     setUserDetails((prev) => ({
                       ...prev,
-                      state: selectedState,
+                      state: selectedState.name,
+                      city: '',
                     }))
                   }}
                 >
@@ -301,11 +319,24 @@ const UpdateUser = ({ props }) => {
                   inputExtraProps={{
                     name: 'phone_number',
                     required: true,
-                    autoFocus: true,
+                    // autoFocus: true,
                   }}
                   value={userDetails.phone_number}
-                  onChange={(phone_number) => {
-                    setUserDetails((prev) => ({ ...prev, phone_number }))
+                  onChange={(value, country, e, formattedValue) => {
+                    console.log({ value, country, e, formattedValue })
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      phone_number: userDetails.phone_number.startsWith(
+                        '+' + country.dialCode,
+                      )
+                        ? formattedValue
+                        : '',
+                    }))
+                    // if (
+                    //   !userDetails.phone_number.startsWith(country.dialCode)
+                    // ) {
+                    // }
+                    // setUserDetails((prev) => ({ ...prev, phone_number }))
                   }}
                 />
               </div>
@@ -330,46 +361,43 @@ const UpdateUser = ({ props }) => {
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Rating: </label>
+                {/* <input
+                  type="number"
+                  name="test_name"
+                  min="0"
+                  oninput="validity.valid||(value='');"
+                /> */}
+
+                {/* <Input
+                  type="text"
+                  onChange={(e) => {
+                    if (Number(e.target.value)) {
+                      console.log(e.target.value)
+                    } else {
+                      e.target.value = null
+                    }
+                  }}
+                /> */}
+
                 <InputNumber
                   type="number"
                   value={userDetails.rating}
                   className="w-100"
                   name="rating"
                   min={0}
+                  inputMode={'decimal'}
+                  max={5}
+                  onInput="validity.valid||(value='');"
                   onChange={(e) => {
                     const re = /^[0-9]+$/
-                    if (re.test(e.toString())) {
-                      console.log('valid')
+                    if (re.test(e && e.toString())) {
+                      // console.log('valid')
                       setUserDetails((prev) => ({
                         ...prev,
                         rating: e,
                       }))
-                    } else {
-                      
                     }
-                    // if (!e) {
-                    //   setUserDetails((prev) => ({
-                    //     ...prev,
-                    //     rating: null,
-                    //   }))
-                    //   return
-                    // }
-                    // if (typeof e !== 'number') return
-                    // else
-                    //   setUserDetails((prev) => ({
-                    //     ...prev,
-                    //     rating: e,
-                    //   }))
                   }}
-                  // onKeyDown={(e) => {
-                  //   const value = Number(e.key)
-                  //   if (typeof value == 'number') {
-                  //     setUserDetails((prev) => ({
-                  //       ...prev,
-                  //       rating: prev.rating + e.key,
-                  //     }))
-                  //   }
-                  // }}
                 />
               </div>
               <div className="col-12 col-md-6 mt-2">

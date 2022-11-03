@@ -9,6 +9,7 @@ const UpdateOrder = () => {
   const id = urlPathName[urlPathName.length - 1]
   console.log(urlPathName, id)
   const [orderDetails, setOrderDetails] = useState({})
+  const [isLoading, setIsLoading] = useState(second)
 
   useEffect(() => {
     getOrderDetails()
@@ -24,7 +25,9 @@ const UpdateOrder = () => {
   const handleOrderImagePicture = async (e) => {
     e.persist()
     if (!e.target.files[0]) return
+    setIsLoading(true)
     let result = await uploadSingleFile(e.target.files[0])
+    setIsLoading(false)
     if (result && result.data.success === true) {
       setOrderDetails((prev) => ({
         ...prev,
@@ -71,6 +74,11 @@ const UpdateOrder = () => {
             onChange={handleOrderImagePicture}
             style={{ width: '90px' }}
           />
+          {isLoading && (
+            <div className="w-100 d-flex align-items-center">
+              <Spin /> <p>Uploading ... </p>
+            </div>
+          )}
           <img
             src={orderDetails.cover_image}
             alt=""
