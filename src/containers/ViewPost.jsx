@@ -61,12 +61,20 @@ const ViewPost = ({ props }) => {
               <Input readOnly value={postDetails.numberOfLikes} />
             </div>
             <div className="col-12 col-md-6">
+              <label>Username</label>
+              <Input readOnly value={postDetails.userId && postDetails.userId.user_name} />
+            </div>
+            <div className="col-12 col-md-6">
               <label>Number of Dislikes</label>
               <Input readOnly value={postDetails.numberOfDisLikes} />
             </div>
             <div className="col-12 col-md-6">
               <label>No of Comments</label>
               <Input readOnly value={postDetails.number_of_Comments} />
+            </div>
+            <div className="col-12 col-md-6">
+              <label>Block status</label>
+              <Input readOnly value={postDetails.blocked} />
             </div>
             <div className="col-12">
               <h5>Post Music Details</h5>

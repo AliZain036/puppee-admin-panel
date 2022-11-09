@@ -47,6 +47,8 @@ import ViewPost from './ViewPost'
 import OrderDetails from './OrderDetails'
 import AboutUs from './AboutUs'
 import UpdateOrder from './UpdateOrder'
+import EULA from './EULA';
+import Settings from './Settings';
 
 class App extends React.Component {
   constructor(props) {
@@ -130,6 +132,7 @@ class App extends React.Component {
                   component={AddExpertise}
                 />
                 <Route exact path="/addExpertise" component={AddExpertise} />
+                <Route exact path="/settings" component={Settings} />
                 <Route
                   exact
                   path="/associateCompany/:name"
@@ -153,6 +156,7 @@ class App extends React.Component {
                 <Route exact path="/about" component={About} />
                 <Route exact path="/users" component={Users} />
                 <Route exact path="/orders" component={Orders} />
+                <Route exact path="/eula" component={EULA} />
                 <Route exact path="/about-us" component={AboutUs} />
                 <Route
                   exact

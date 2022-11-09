@@ -134,7 +134,7 @@ const UserDetails = ({ props }) => {
               /> */}
             </div>
             <div className="col-12 mt-2 row">
-              <h3 className="m-0 d-block col-12">Qualitification or Degree Details:</h3>
+              <h3 className="m-0 d-block col-12">Qualification or Degree Details:</h3>
               {/* <div className="row"> */}
                 {userDetails.qualifications_or_degree &&
                   userDetails.qualifications_or_degree.length > 0 &&

@@ -13,18 +13,25 @@ import {
 import { connect } from 'react-redux'
 import { Box, Tab, Tabs, Typography } from '@material-ui/core'
 import Swal from 'sweetalert2'
+import { Input } from 'antd'
 // import { Tabs } from 'antd'
 const Posts = () => {
   const [posts, setPosts] = useState([])
+  const [tempPosts, setTempPosts] = useState([])
+  const [userCurrentTimeZone, setUserCurrentTimeZone] = useState()
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     getAllPosts()
+    const timezone = Intl.DateTimeFormat().resolvedOptions()
+    setUserCurrentTimeZone(timezone)
   }, [])
 
   const getAllPosts = async () => {
     let result = await getAllData('posts/all/62c0b0e28bda435977e9407d')
     if (result && result.success === true && result.data) {
       setPosts(result.data)
+      setTempPosts(result.data)
     }
   }
 
@@ -76,8 +83,28 @@ const Posts = () => {
   }
 
   const getLocaleTimeZone = (timestamp) => {
-    const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone
-    return new Date(timestamp).toLocaleDateString('en-US', { timeZone: tzid })
+    // const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone
+    return new Date(timestamp).toLocaleDateString(userCurrentTimeZone.locale, {
+      timeZone: userCurrentTimeZone.timeZone,
+    })
+  }
+
+  const handleUserSearch = () => {
+    let posts = [...tempPosts]
+    setPosts(posts)
+    if (searchQuery) {
+      posts = posts.filter(
+        (post) =>
+          post.userId &&
+          post.userId.user_name &&
+          post.userId.user_name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()),
+      )
+      setPosts(posts)
+    } else {
+      setPosts(tempPosts)
+    }
   }
 
   return (
@@ -85,6 +112,19 @@ const Posts = () => {
       <div className="col-12 p-0">
         <div className="row space-1">
           <div className="col-12">
+            <Input
+              type="text"
+              inputMode="search"
+              className="mb-3"
+              value={searchQuery}
+              placeholder="Search by username"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleUserSearch()
+                }
+              }}
+            />
             <h3>List of Posts</h3>
           </div>
         </div>

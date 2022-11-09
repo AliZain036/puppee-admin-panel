@@ -8,10 +8,12 @@ import {
   deleteRecord,
   getAllData,
   searchData,
+  updateRecord,
 } from '../backend/utility'
 import { connect } from 'react-redux'
 import { Box, Tab, Tabs, Typography } from '@material-ui/core'
 import Swal from 'sweetalert2'
+import { Button, Checkbox } from 'antd'
 
 // import { Tabs } from 'antd'
 const Users = () => {
@@ -46,6 +48,8 @@ const Users = () => {
       </div>
     )
   }
+
+  const [multipleUsersBlockStatus, setMultipleUsersBlockStatus] = useState([])
 
   const getAllUsers = async () => {
     let allUsers = await getAllData('users')
@@ -103,6 +107,57 @@ const Users = () => {
     }
   }
 
+  const handleMultipleUsersBlockUpdate = async () => {
+    let body = {
+      users: multipleUsersBlockStatus,
+    }
+    let result = await updateRecord('users/profile/multiple', body)
+    if (result.success === true) {
+      Swal.fire({ icon: 'success', title: 'Users updated successfully!', timer: 3000 })
+      getAllUsers()
+    }
+  }
+
+  const handleMultipleBlocks = async (value, user) => {
+    setState((prev) => ({
+      ...prev,
+      users: state.users.map((item, index) => {
+        if (item._id === user._id) {
+          return {
+            ...item,
+            blocked: value,
+          }
+        } else return item
+      }),
+    }))
+    let tempUser = multipleUsersBlockStatus.find(
+      (item) => item.userId == user._id,
+    )
+    if (!tempUser) {
+      let item = {
+        userId: user._id,
+        blocked: value,
+      }
+      setMultipleUsersBlockStatus((prev) => [
+        ...prev,
+        { userId: user._id, blocked: value },
+      ])
+    } else if (tempUser) {
+      setMultipleUsersBlockStatus((prev) =>
+        prev.map((item, index) => {
+          if (item.userId === user._id) {
+            return {
+              userId: item.userId,
+              blocked: value,
+            }
+          } else return item
+        }),
+      )
+    }
+  }
+
+  console.log(multipleUsersBlockStatus)
+
   return (
     <div className="row animated fadeIn">
       <div className="col-12 p-0">
@@ -156,6 +211,17 @@ const Users = () => {
                     <th>Email</th>
                     <th>Username</th>
                     <th>Phone</th>
+                    <th>Unblock</th>
+                    <th>Block</th>
+                    <th>
+                      <Button
+                        type="button"
+                        className="btn btn-success"
+                        onClick={handleMultipleUsersBlockUpdate}
+                      >
+                        Update
+                      </Button>
+                    </th>
                   </tr>
                 </thead>
 
@@ -180,15 +246,36 @@ const Users = () => {
                           <td>{user.email}</td>
                           <td>{user.user_name}</td>
                           <td>{user.phone_number}</td>
-
                           <td>
+                            <input
+                              type="radio"
+                              name={user._id}
+                              value="block"
+                              defaultChecked={user.blocked === 'block'}
+                              onChange={(e) =>
+                                handleMultipleBlocks(e.target.value, user)
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              name={user._id}
+                              value="unblock"
+                              defaultChecked={user.blocked !== 'block'}
+                              onChange={(e) =>
+                                handleMultipleBlocks(e.target.value, user)
+                              }
+                            />
+                          </td>
+                          {/* <td>
                             <button
                               onClick={() => handleUserBlock(user)}
                               className={`btn btn-sm btn-danger`}
                             >
                               {user.blocked === 'block' ? 'Unblock' : 'Block'}
                             </button>
-                          </td>
+                          </td> */}
                           <td>
                             <Link to={`/userdetails/${user._id}`}>
                               <button className={`btn btn-sm btn-success`}>

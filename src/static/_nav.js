@@ -83,8 +83,18 @@ export default {
       icon: 'icon-people',
     },
     {
+      name: 'EULA',
+      url: '/eula',
+      icon: 'icon-people',
+    },
+    {
       name: 'About Us',
       url: '/about-us',
+      icon: 'icon-people',
+    },
+    {
+      name: 'Settings',
+      url: '/settings',
       icon: 'icon-people',
     },
     // {

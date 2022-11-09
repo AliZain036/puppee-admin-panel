@@ -1,13 +1,13 @@
 import { Select, Input, InputNumber, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import SwalAutoHide from 'sweetalert2'
 import { addUpdateData, getAllData, uploadSingleFile } from '../backend/utility'
 const { Option } = Select
-import ReactPhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/material.css'
 import { Country, State, City } from 'country-state-city'
+import PhoneInput from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 
 const UpdateUser = ({ props }) => {
   const urlPathName = window.location.pathname.split('/')
@@ -49,6 +49,7 @@ const UpdateUser = ({ props }) => {
     email: '',
     password: '',
     blocked: false,
+    short_id: '',
   })
   const [occupations, setOccupations] = useState([])
   const [languages, setLanguages] = useState([])
@@ -118,6 +119,7 @@ const UpdateUser = ({ props }) => {
     body.country = userDetails.country
     body.state = userDetails.state
     body.city = userDetails.city
+    body.short_id = userDetails.user_name
     setIsLoading(true)
     let result = await addUpdateData('users/profile', body)
     if (result && result.success === true && result.data) {
@@ -193,6 +195,8 @@ const UpdateUser = ({ props }) => {
                   value={userDetails.first_name}
                   className="w-100"
                   name="first_name"
+                  pattern="^[a-zA-Z]*$"
+                  title="First name should only contain alphabetic charaters. e.g. john"
                   onChange={(e) => handleChange(e)}
                 />
               </div>
@@ -202,7 +206,19 @@ const UpdateUser = ({ props }) => {
                   type="text"
                   value={userDetails.last_name}
                   className="w-100"
+                  pattern="^[a-zA-Z]*$"
                   name="last_name"
+                  title="Last name should only contain alphabetic charaters. e.g. doe"
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
+              <div className="col-12 col-md-6 mt-2">
+                <label className="m-0">Username: </label>
+                <Input
+                  type="text"
+                  value={userDetails.user_name}
+                  className="w-100"
+                  name="user_name"
                   onChange={(e) => handleChange(e)}
                 />
               </div>
@@ -315,7 +331,7 @@ const UpdateUser = ({ props }) => {
               </div>
               <div className="col-12 col-md-6 mt-2">
                 <label className="m-0">Phone Number: </label>
-                <ReactPhoneInput
+                {/* <ReactPhoneInput
                   inputExtraProps={{
                     name: 'phone_number',
                     required: true,
@@ -337,6 +353,19 @@ const UpdateUser = ({ props }) => {
                     // ) {
                     // }
                     // setUserDetails((prev) => ({ ...prev, phone_number }))
+                  }}
+                /> */}
+                <PhoneInput
+                  international
+                  countryCallingCodeEditable={false}
+                  defaultCountry="US"
+                  value={userDetails.phone_number}
+                  onChange={(phone_number) => {
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      phone_number: phone_number,
+                    }))
+                    console.log(phone_number)
                   }}
                 />
               </div>
@@ -378,26 +407,46 @@ const UpdateUser = ({ props }) => {
                     }
                   }}
                 /> */}
-
-                <InputNumber
-                  type="number"
+                <Input
+                  type="text"
                   value={userDetails.rating}
                   className="w-100"
                   name="rating"
-                  min={0}
-                  inputMode={'decimal'}
-                  max={5}
-                  onInput="validity.valid||(value='');"
-                  onChange={(e) => {
-                    const re = /^[0-9]+$/
-                    if (re.test(e && e.toString())) {
-                      // console.log('valid')
+                  onInput={(e) => {
+                    e.target.value = Math.max(0, parseInt(e.target.value))
+                      .toString()
+                      .slice(0, 1)
+                    e.target.value = +e.target.value
+                    if (e.target && typeof e.target.value === 'string') {
                       setUserDetails((prev) => ({
                         ...prev,
-                        rating: e,
+                        rating: e.target && e.target.value,
                       }))
                     }
                   }}
+                  // onInput={(e) => {
+                  //   if (isNumber(e)) {
+                  //     console.log('value,   ', e)
+                  //   }
+                  // }}
+                  // onKeyPress={(e) => {
+                  //   e.target.value = Math.max(0, parseInt(e.target.value))
+                  //     .toString()
+                  //     .slice(0, 1)
+                  // }}
+                  pattern="^[0-9\b]+$"
+                  title="Rating should only contain positive numbers"
+                  min={0}
+                  max={5}
+                  // onChange={(e) => {
+                  //   setUserDetails((prev) => ({
+                  //     ...prev,
+                  //     rating: e,
+                  //   }))
+                  //   // if (re.test(e && e.toString())) {
+                  //   //   console.log('valid')
+                  //   // }
+                  // }}
                 />
               </div>
               <div className="col-12 col-md-6 mt-2">

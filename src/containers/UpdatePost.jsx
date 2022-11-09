@@ -9,6 +9,7 @@ import {
 import { Input, message, Spin, Switch } from 'antd'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import { Toast } from 'primereact/toast';
 
 const UpdatePost = (props) => {
   const urlPathName = window.location.pathname.split('/')
@@ -30,6 +31,7 @@ const UpdatePost = (props) => {
     my_list: [],
     privacy: {},
     blocked: '',
+    short_id: '',
   })
   useEffect(() => {
     getpostDetails()
@@ -72,17 +74,19 @@ const UpdatePost = (props) => {
   const handleFileUpload = async (e) => {
     e.persist()
     if (!e.target.files[0]) return
-    // console.log(e.target.files[0])
-    // const MIN_FILE_SIZE = 1024;
-    // const MAX_FILE_SIZE = 5120;
-    // if(e.target.files[0].size > MAX_FILE_SIZE) {
-    //   console.log('file size exceeded')
-    //   message.error('The file size should be limited to 5mb', 4000)
-    //   return
-    // } else {
-    //   console.log('file size not exceeded')
-    //   message.error('The file size should be limited to 5mb', 4000)
+    console.log(e.target.files[0])
+    const MIN_FILE_SIZE = 1024
+    const MAX_FILE_SIZE = 5120
+    if(e.target.files[0].size/1024/1024 > 5.12) {
+      message.config({top: 70, duration: 3})
+      // console.log('file size exceeded')
+      message.error('The file size should be limited to 5mb', 3)
+      return;
+    } 
+    // else {
+    //   message.error('The file size should be limited to 5mb')
     // }
+    // console.log(e.target.files[0].size, MIN_FILE_SIZE, MAX_FILE_SIZE)
     setIsLoading(true)
     let result = await uploadSingleFile(e.target.files[0])
     setIsLoading(false)
@@ -98,8 +102,6 @@ const UpdatePost = (props) => {
       }))
     }
   }
-
-  console.log(postDetails)
 
   return (
     <div className="row animated fadeIn">
@@ -151,6 +153,15 @@ const UpdatePost = (props) => {
                 />
               </div>
               <div className="col-12 col-md-6">
+                <label>Username</label>
+                <Input
+                  value={postDetails}
+                  type={'number'}
+                  name="number_of_Comments"
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-12 col-md-6">
                 <label>Post Status</label>
                 <Input
                   value={postDetails.blocked}
@@ -163,8 +174,11 @@ const UpdatePost = (props) => {
                 <label>Change Post Status</label>
                 <Switch
                   checked={postDetails.blocked === 'unblock' ? false : true}
-                  onChange={checked => {
-                    setPostDetails(prev => ({...prev, blocked: checked ? 'block' : 'unblock'}))
+                  onChange={(checked) => {
+                    setPostDetails((prev) => ({
+                      ...prev,
+                      blocked: checked ? 'block' : 'unblock',
+                    }))
                   }}
                 />
               </div>
