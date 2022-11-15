@@ -53,12 +53,27 @@ const UpdateUser = ({ props }) => {
   })
   const [occupations, setOccupations] = useState([])
   const [languages, setLanguages] = useState([])
+  const [location, setLocation] = useState({
+    conutries: [],
+    states: [],
+    cities: [],
+  })
   useEffect(() => {
     getUserDetails()
     getAllOccupations()
     getAllLanguages()
+    getAllCountries()
   }, [])
 
+  const [countries, setSountries] = useState([])
+
+  const getAllCountries = async () => {
+    let result = await getAllData('static-data/countries/all')
+    if(result.success === true) {
+      setLocation(prev => ({...prev, conutries: result.data}))
+    }
+  }
+ 
   useEffect(() => {
     if (userDetails.rating === null) {
       let value = userDetails.rating
@@ -84,12 +99,6 @@ const UpdateUser = ({ props }) => {
       setLanguages(result.data)
     }
   }
-
-  const [location, setLocation] = useState({
-    conutries: Country.getAllCountries(),
-    states: [],
-    cities: [],
-  })
 
   const getUserDetails = async () => {
     setIsLoading(true)
@@ -147,11 +156,30 @@ const UpdateUser = ({ props }) => {
     }
   }
 
+  useEffect(() => {
+      
+  }, [location])
+  
+
   const handleRatingInput = (e) => {
     if (typeof e.key === 'number') {
       setUserDetails((prev) => ({ ...prev, rating: e.key }))
     }
   }
+
+  const updateCountryStates = async (selectedCountry) => {
+    let result = await getAllData(`static-data/country/${selectedCountry.isoCode}`)
+    if(result.success === true) {
+      setLocation(prev => ({...prev, states: result.data}))
+    }
+  } 
+
+  const updateCountryStateCities = async (selectedState, countryIsoCode) => {
+    let result = await getAllData(`static-data/country/${countryIsoCode}/${selectedState.isoCode}`)
+    if(result.success === true) {
+      setLocation(prev => ({...prev, cities: result.data}))
+    }
+  } 
 
   console.log(userDetails.phone_number)
 
@@ -245,10 +273,11 @@ const UpdateUser = ({ props }) => {
                     const selectedCountry = location.conutries.find(
                       (el) => el.name === country,
                     )
-                    setLocation((prev) => ({
-                      ...prev,
-                      states: State.getStatesOfCountry(selectedCountry.isoCode),
-                    }))
+                    updateCountryStates(selectedCountry)
+                    // setLocation((prev) => ({
+                    //   ...prev,
+                    //   states: State.getStatesOfCountry(selectedCountry.isoCode),
+                    // }))
                     setUserDetails((prev) => ({
                       ...prev,
                       country: selectedCountry.name,
@@ -278,16 +307,18 @@ const UpdateUser = ({ props }) => {
                   value={userDetails.state}
                   className="w-100"
                   onChange={(state) => {
+                    const selectedCountry = location.conutries.find(country => country.name === userDetails.country)
                     const selectedState = location.states.find(
                       (el) => el.name === state,
                     )
-                    setLocation((prev) => ({
-                      ...prev,
-                      cities: City.getCitiesOfState(
-                        selectedState.countryCode,
-                        selectedState.isoCode,
-                      ),
-                    }))
+                    updateCountryStateCities(selectedState, selectedCountry.isoCode)
+                    // setLocation((prev) => ({
+                    //   ...prev,
+                    //   cities: City.getCitiesOfState(
+                    //     selectedState.countryCode,
+                    //     selectedState.isoCode,
+                    //   ),
+                    // }))
                     setUserDetails((prev) => ({
                       ...prev,
                       state: selectedState.name,
@@ -408,22 +439,10 @@ const UpdateUser = ({ props }) => {
                   }}
                 /> */}
                 <Input
-                  type="text"
+                  type="number"
                   value={userDetails.rating}
                   className="w-100"
                   name="rating"
-                  onInput={(e) => {
-                    e.target.value = Math.max(0, parseInt(e.target.value))
-                      .toString()
-                      .slice(0, 1)
-                    e.target.value = +e.target.value
-                    if (e.target && typeof e.target.value === 'string') {
-                      setUserDetails((prev) => ({
-                        ...prev,
-                        rating: e.target && e.target.value,
-                      }))
-                    }
-                  }}
                   // onInput={(e) => {
                   //   if (isNumber(e)) {
                   //     console.log('value,   ', e)
@@ -438,15 +457,12 @@ const UpdateUser = ({ props }) => {
                   title="Rating should only contain positive numbers"
                   min={0}
                   max={5}
-                  // onChange={(e) => {
-                  //   setUserDetails((prev) => ({
-                  //     ...prev,
-                  //     rating: e,
-                  //   }))
-                  //   // if (re.test(e && e.toString())) {
-                  //   //   console.log('valid')
-                  //   // }
-                  // }}
+                  onChange={(e) => {
+                    setUserDetails((prev) => ({
+                      ...prev,
+                      rating: e.target.value,
+                    }))
+                  }}
                 />
               </div>
               <div className="col-12 col-md-6 mt-2">

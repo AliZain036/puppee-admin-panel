@@ -13,13 +13,42 @@ import {
 import { connect } from 'react-redux'
 import { Box, Tab, Tabs, Typography } from '@material-ui/core'
 import Swal from 'sweetalert2'
-import { Input } from 'antd'
+import { Input, Select } from 'antd'
 // import { Tabs } from 'antd'
 const Posts = () => {
   const [posts, setPosts] = useState([])
   const [tempPosts, setTempPosts] = useState([])
   const [userCurrentTimeZone, setUserCurrentTimeZone] = useState()
   const [searchQuery, setSearchQuery] = useState('')
+  const postFilterByDurationOptions = [
+    {
+      label: 'All time',
+      value: 0,
+    },
+    {
+      label: '1 Year Older',
+      value: 1,
+    },
+    {
+      label: '2 Years Older',
+      value: 2,
+    },
+    {
+      label: '3 Years Older',
+      value: 3,
+    },
+    {
+      label: '4 Years Older',
+      value: 4,
+    },
+    {
+      label: '5 Years Older',
+      value: 5,
+    },
+  ]
+  const [selectedFilterValue, setSelectedFilterValue] = useState(
+    postFilterByDurationOptions[0].value,
+  )
 
   useEffect(() => {
     getAllPosts()
@@ -89,6 +118,8 @@ const Posts = () => {
     })
   }
 
+  console.log(posts.length,  " .  length")
+
   const handleUserSearch = () => {
     let posts = [...tempPosts]
     setPosts(posts)
@@ -125,7 +156,46 @@ const Posts = () => {
                 }
               }}
             />
-            <h3>List of Posts</h3>
+          </div>
+          <div className="col-12">
+            <div className="d-flex justify-content-between align-items-center my-3">
+              <h3 className="m-0">List of Posts</h3>
+              <div className="d-flex align-items-center">
+                <label className="m-0">Filter posts by duration</label>
+                <Select
+                  showSearch
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={true}
+                  value={selectedFilterValue}
+                  className="w-100"
+                  onChange={(e) => {
+                    setSelectedFilterValue(e)
+                    if(e !== 0) {
+                      let filterdPosts = posts.map((post) => {
+                        if (e !== 0) {
+                          let filterDate = new Date()
+                          filterDate.setFullYear(filterDate.getFullYear() - e)
+                          if (new Date(post.timestamp) >= filterDate) {
+                            return post
+                          }
+                        }
+                      })
+                      setPosts(filterdPosts)
+                    } else {
+                      setPosts(posts)
+                    }
+                  }}
+                >
+                  {postFilterByDurationOptions &&
+                    postFilterByDurationOptions.map((item, index) => (
+                      <Select.Option key={index} value={item.value}>
+                        {item.label}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </div>
+            </div>
           </div>
         </div>
         {posts.length > 0 && (
