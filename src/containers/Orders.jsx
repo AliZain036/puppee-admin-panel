@@ -47,7 +47,6 @@ const Orders = () => {
     }
     let result = await searchData('service-orders/search', body)
     if (result && result.success === true) {
-      console.log(result.data)
       setOrders(result.data)
     }
   }
@@ -64,7 +63,6 @@ const Orders = () => {
     } else {
       let result = await searchData('service-orders/search', body)
       if (result && result.success === true) {
-        console.log(result.data)
         setOrders(result.data)
       }
     }

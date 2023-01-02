@@ -7,7 +7,6 @@ import { addUpdateData, getAllData, uploadSingleFile } from '../backend/utility'
 const UpdateOrder = () => {
   const urlPathName = window.location.pathname.split('/')
   const id = urlPathName[urlPathName.length - 1]
-  console.log(urlPathName, id)
   const [orderDetails, setOrderDetails] = useState({})
   const [isLoading, setIsLoading] = useState(second)
 

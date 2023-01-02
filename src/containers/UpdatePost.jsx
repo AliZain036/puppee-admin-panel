@@ -42,7 +42,6 @@ const UpdatePost = (props) => {
   const getpostDetails = async () => {
     let result = await getAllData(`posts/${postId}`)
     if (result && result.success === true && result.statusCode === 200) {
-      console.log(result.data, ' ==== post-details')
       setPostDetails(result.data)
     }
   }
@@ -74,19 +73,16 @@ const UpdatePost = (props) => {
   const handleFileUpload = async (e) => {
     e.persist()
     if (!e.target.files[0]) return
-    console.log(e.target.files[0])
     const MIN_FILE_SIZE = 1024
     const MAX_FILE_SIZE = 5120
     if(e.target.files[0].size/1024/1024 > 5.12) {
       message.config({top: 70, duration: 3})
-      // console.log('file size exceeded')
       message.error('The file size should be limited to 5mb', 3)
       return;
     } 
     // else {
     //   message.error('The file size should be limited to 5mb')
     // }
-    // console.log(e.target.files[0].size, MIN_FILE_SIZE, MAX_FILE_SIZE)
     setIsLoading(true)
     let result = await uploadSingleFile(e.target.files[0])
     setIsLoading(false)

@@ -118,8 +118,6 @@ const Posts = () => {
     })
   }
 
-  console.log(posts.length,  " .  length")
-
   const handleUserSearch = () => {
     let posts = [...tempPosts]
     setPosts(posts)

@@ -67,7 +67,6 @@ const UpdateService = () => {
     body.average_rating = Number(serviceDetails.average_rating)
     body.reviews_count = Number(serviceDetails.reviews_count)
     body.serviceId = serviceId
-    console.log(serviceDetails)
     let response = await updateRecord(`services/${serviceDetails._id}`, body)
     if (response && response.success === true) {
       Swal.fire({

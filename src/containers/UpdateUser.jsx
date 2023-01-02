@@ -68,7 +68,7 @@ const UpdateUser = ({ props }) => {
   const [countries, setSountries] = useState([])
 
   const getAllCountries = async () => {
-    let result = await getAllData('static-data/countries/all')
+    let result = await getAllData('static-data/countries')
     if(result.success === true) {
       setLocation(prev => ({...prev, conutries: result.data}))
     }
@@ -104,17 +104,17 @@ const UpdateUser = ({ props }) => {
     setIsLoading(true)
     let result = await getAllData(`users/${userId}`)
     if (result && result.success === true && result.statusCode === 200) {
-      console.log(result.data, ' ==== user-details')
       setUserDetails(result.data)
     }
     setIsLoading(false)
   }
 
   const handleChange = (e) => {
-    if (e.target.name === 'rating') {
-      console.log(value)
+    let value = e.target.value
+    if(typeof e.target.value === 'string') {
+      value.trim()
     }
-    setUserDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    setUserDetails((prev) => ({ ...prev, [e.target.name]: value }))
   }
 
   const handleSubmit = async (e) => {
@@ -181,8 +181,6 @@ const UpdateUser = ({ props }) => {
     }
   } 
 
-  console.log(userDetails.phone_number)
-
   return (
     <div className="row animated fadeIn">
       <div className="col-12 p-0">
@@ -202,7 +200,7 @@ const UpdateUser = ({ props }) => {
               <div className="col-12 mt-2">
                 {isLoading && (
                   <div className="w-100 d-flex align-items-center">
-                    <Spin /> <p>Uploading ... </p>
+                    <Spin />
                   </div>
                 )}
                 <img
@@ -370,7 +368,6 @@ const UpdateUser = ({ props }) => {
                   }}
                   value={userDetails.phone_number}
                   onChange={(value, country, e, formattedValue) => {
-                    console.log({ value, country, e, formattedValue })
                     setUserDetails((prev) => ({
                       ...prev,
                       phone_number: userDetails.phone_number.startsWith(
@@ -396,7 +393,6 @@ const UpdateUser = ({ props }) => {
                       ...prev,
                       phone_number: phone_number,
                     }))
-                    console.log(phone_number)
                   }}
                 />
               </div>
@@ -432,7 +428,6 @@ const UpdateUser = ({ props }) => {
                   type="text"
                   onChange={(e) => {
                     if (Number(e.target.value)) {
-                      console.log(e.target.value)
                     } else {
                       e.target.value = null
                     }
@@ -445,7 +440,6 @@ const UpdateUser = ({ props }) => {
                   name="rating"
                   // onInput={(e) => {
                   //   if (isNumber(e)) {
-                  //     console.log('value,   ', e)
                   //   }
                   // }}
                   // onKeyPress={(e) => {
@@ -476,7 +470,6 @@ const UpdateUser = ({ props }) => {
                   className="w-100"
                   value={userDetails.occupation}
                   onChange={(occ, option) => {
-                    console.log({ option })
                     setUserDetails((prev) => ({ ...prev, occupation: occ }))
                   }}
                 >

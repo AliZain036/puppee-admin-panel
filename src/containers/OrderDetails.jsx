@@ -7,7 +7,6 @@ import { getAllData } from '../backend/utility'
 const OrderDetails = () => {
   const urlPathName = window.location.pathname.split('/')
   const id = urlPathName[urlPathName.length - 1]
-  console.log(urlPathName, id)
   const [orderDetails, setOrderDetails] = useState({})
 
   useEffect(() => {

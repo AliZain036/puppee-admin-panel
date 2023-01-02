@@ -34,7 +34,6 @@ const ViewPost = ({ props }) => {
   const getpostDetails = async () => {
     let result = await getAllData(`posts/${postId}`)
     if (result && result.success === true && result.statusCode === 200) {
-      console.log(result.data, ' ==== post-details')
       setPostDetails(result.data)
     }
   }

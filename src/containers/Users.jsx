@@ -156,8 +156,6 @@ const Users = () => {
     }
   }
 
-  console.log(multipleUsersBlockStatus)
-
   return (
     <div className="row animated fadeIn">
       <div className="col-12 p-0">
