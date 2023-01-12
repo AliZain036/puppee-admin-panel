@@ -93,6 +93,10 @@ export async function addUpdateData(endpoint, reqBody) {
   }
 }
 
+
+
+
+
 export async function updateRecord(endpoint, reqBody) {
   try {
     let response = await axios.put(`${baseUrl}${endpoint}`, reqBody)
@@ -157,4 +161,73 @@ export const uploadSingleFile = async (file) => {
       text: error.message,
     })
   }
+}
+
+
+export async function getUserImages(endpoint = '') {
+    try {
+        let response = await axios.get(`${baseUrl}${endpoint}`)
+        return response.data
+    } catch (error) {
+        console.error(error)
+        SwalAutoHide.fire({
+            icon: 'error',
+            timer: 2000,
+            title: 'Failed.',
+            showConfirmButton: false,
+            text: error.message,
+        })
+    }
+}
+
+
+
+export const postDeleteUserImage = async (endpoint,data) => {
+    try {
+        let result = await axios.put(`${baseUrl}${endpoint}`,data)
+        return result
+    } catch (error) {
+        SwalAutoHide.fire({
+            icon: 'error',
+            timer: 2000,
+            title: 'Failed.',
+            showConfirmButton: false,
+            text: error.message,
+        })
+    }
+}
+
+
+export const updateUserFeedback = async (endpoint,data) => {
+    try {
+        let result = await axios.put(`${baseUrl}${endpoint}`,data)
+        return result
+    } catch (error) {
+        SwalAutoHide.fire({
+            icon: 'error',
+            timer: 2000,
+            title: 'Failed.',
+            showConfirmButton: false,
+            text: error.message,
+        })
+    }
+}
+
+
+
+
+export async function getUserFeedback(endpoint = '') {
+    try {
+        let response = await axios.get(`${baseUrl}${endpoint}`)
+        return response.data
+    } catch (error) {
+        console.error(error)
+        SwalAutoHide.fire({
+            icon: 'error',
+            timer: 2000,
+            title: 'Failed.',
+            showConfirmButton: false,
+            text: error.message,
+        })
+    }
 }

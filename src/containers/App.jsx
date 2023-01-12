@@ -49,6 +49,7 @@ import AboutUs from './AboutUs'
 import UpdateOrder from './UpdateOrder'
 import EULA from './EULA';
 import Settings from './Settings';
+import UserFeedback from "./UserFeedback";
 
 class App extends React.Component {
   constructor(props) {
@@ -87,6 +88,11 @@ class App extends React.Component {
                   path="/updateUser/:userId"
                   component={UpdateUser}
                 />
+                  <Route
+                      exact
+                      path="/userFeedback/:userId"
+                      component={UserFeedback}
+                  />
                 <Route exact path="/terms" component={TermsAndConditions} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/cookie" component={CookiePolicy} />

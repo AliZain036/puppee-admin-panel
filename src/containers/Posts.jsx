@@ -199,12 +199,16 @@ const Posts = () => {
         {posts.length > 0 && (
           <div className="table-responsive" style={{ height: '700px' }}>
             <table className="table table-striped">
-              <thead>
-                <tr>
+              <thead style={{position:"relative"}}>
+                <tr style={{position:"sticky",top:0,background:"white",zIndex:10}}>
                   {/* <th>Sr. #</th> */}
                   <th>Date</th>
                   <th>Username</th>
                   <th>Image</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
                 </tr>
               </thead>
 
@@ -225,7 +229,7 @@ const Posts = () => {
                               borderRadius: '50%',
                               objectFit: 'cover',
                             }}
-                            src={post.post_images[0].image_url}
+                            src={post && post.post_images && (post.post_images).length>0 && post.post_images[0] && post.post_images[0].image_url}
                           />
                         </td>
                         <td>
